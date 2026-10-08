@@ -389,6 +389,12 @@ body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-b
 .sw button.on{border-color:var(--ink)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
+.pill.cr{background:#ffe3f0;color:#b3366b}
+.askbg{position:fixed;inset:0;z-index:92;background:rgba(30,22,60,.55);display:flex;align-items:center;justify-content:center;padding:24px;animation:pup .2s ease both}
+.askbox{background:#fff;color:#2d2a45;border-radius:22px;padding:22px 20px 16px;max-width:360px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.askbox h4{margin:0 0 6px;font-size:19px}.askbox p{margin:0 0 16px;opacity:.8;line-height:1.4}
+.askbox .row{display:flex;gap:10px}.askbox button{flex:1;border:0;border-radius:14px;min-height:48px;font-size:16px;font-weight:600;background:#eceaf7;color:#4a3fa0}
+.askbox button.yes{background:linear-gradient(135deg,#a98af0,#8a63e0);color:#fff}
 /* Letras */
 #player .pextra{display:flex;justify-content:center;margin:2px 0 0}
 #player .pextra button{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:8px 18px;font-size:14px;font-weight:600;min-height:40px}
@@ -1071,6 +1077,8 @@ async function openEditor(id){
         </div>
         <label class="f">Fecha objetivo</label><input class="in" type="date" id="eDue" value="${esc(s.due||"")}">
         <label class="f">Trabajando ahora</label><div class="chips"><button type="button" class="chip ${s.focus?"on":""}" id="eFocus">Estoy con ella ahora</button></div>
+        <label class="f">Marca</label><div class="chips"><button type="button" class="chip ${s.cringe?"on":""}" id="eCringe">Da cringe</button></div>
+        <div class="hint">Antes de escucharla te preguntará si estás segura, y en álbumes y aleatorio te preguntará si quieres incluirlas.</div>
         <div class="hint" style="margin-top:6px">Márcala si es una de las canciones en las que estás trabajando estos días. Aparecerá arriba en la pestaña Plan.</div>
       </div>
       <div class="grp violet">
@@ -1234,6 +1242,7 @@ async function openEditor(id){
   $("#eTitle").addEventListener("input", () => { if(!s.cover) $("#eCover").innerHTML = coverHtml({title:$("#eTitle").value, cover:null}, true); });
   $("#eProg").oninput = e => $("#eProgVal").textContent = e.target.value+"%";
   $("#eFocus").onclick = () => $("#eFocus").classList.toggle("on");
+  $("#eCringe").onclick = () => $("#eCringe").classList.toggle("on");
   $("#eQuick").querySelectorAll("button").forEach(b => b.onclick = () => { $("#eProg").value = b.dataset.n; $("#eProgVal").textContent = b.dataset.n+"%"; });
   $("#eFormats").querySelectorAll("button").forEach(b => b.onclick = () => {
     const f = b.dataset.f; s.formats = s.formats.includes(f) ? s.formats.filter(x=>x!==f) : [...s.formats, f];
@@ -1261,7 +1270,7 @@ async function openEditor(id){
     s.title = title; s.artist = artist; s.style = style;
     s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
     s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value; s.bpm = $("#eBpm").value ? String(Math.max(30,Math.min(300,parseInt($("#eBpm").value,10)||0))) : ""; s.notes = $("#eNotes").value.trim(); s.lyrics = $("#eLyrics").value.replace(/\s+$/,"");
-    s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on");
+    s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on"); s.cringe = $("#eCringe").classList.contains("on");
     s.links = s.links.map(l => ({label:(l.label||"").trim()||"Enlace", url:(l.url||"").trim()})).filter(l => l.url);
     s.updatedAt = Date.now();
     s.fileCount = existing.filter(f=>!removed.has(f.id)).length + pending.length;
@@ -1385,7 +1394,7 @@ const IC = {
   list:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="12" height="2.4" rx="1.2"/><rect x="4" y="10.8" width="12" height="2.4" rx="1.2"/><rect x="4" y="16.6" width="8" height="2.4" rx="1.2"/><path d="M18 14.5v5.2l4-2.6z"/></svg>'
 };
 const starRowHtml = (r, cls="") => `<span class="stars ${cls}" role="group" aria-label="Nota">${[1,2,3,4,5].map(i=>`<button type="button" data-r="${i}" class="${i<=r?"on":""}" aria-label="${i} estrellas">★</button>`).join("")}</span>`;
-function ratingPills(s){ return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:""); }
+function ratingPills(s){ return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:"") + (s.cringe?`<span class="pill cr">cringe</span>`:""); }
 function playBtn(s){ return s.hasTrack ? `<button class="cplay" data-play="${s.id}" aria-label="Reproducir ${esc(s.title)}">${IC.play}</button>` : ""; }
 function bindPlayButtons(root, list){
   root.querySelectorAll(".cplay").forEach(b => b.onclick = e => { e.stopPropagation(); playList(list.map(x=>x.id), b.dataset.play, null); });
@@ -1420,10 +1429,35 @@ function buildOrder(first){
   }
   PL.order = idx; PL.pos = PL.order.indexOf(first);
 }
-function playList(ids, startId, shuffle){
-  const valid = ids.filter(i => { const s = byId(i); return s && s.hasTrack; });
+function askYesNo(title, text, yes, no){
+  return new Promise(res => {
+    const bg = document.createElement("div"); bg.className = "askbg";
+    bg.innerHTML = `<div class="askbox" role="dialog" aria-modal="true"><h4>${esc(title)}</h4><p>${esc(text||"")}</p><div class="row"><button class="no">${esc(no||"No")}</button><button class="yes">${esc(yes||"Sí")}</button></div></div>`;
+    document.body.appendChild(bg);
+    const done = v => { bg.remove(); res(v); };
+    bg.querySelector(".yes").onclick = () => done(true); bg.querySelector(".no").onclick = () => done(false);
+    bg.addEventListener("click", e => { if(e.target===bg) done(false); });
+  });
+}
+async function playList(ids, startId, shuffle){
+  let valid = ids.filter(i => { const s = byId(i); return s && s.hasTrack; });
   if(!valid.length){ toast("Ninguna canción de esta lista tiene audio. Añade el mp3 en la ficha."); return; }
   unlockAudio();
+  const cr = i => !!(byId(i) && byId(i).cringe);
+  if(startId && cr(startId)){
+    if(!(await askYesNo("¿Estás segura?", "Esta canción está marcada como cringe.", "Sí, escucharla", "No"))) return;
+  }
+  const others = valid.filter(i => i!==startId && cr(i));
+  if(others.length){
+    const nonCr = valid.filter(i => !cr(i));
+    const q = nonCr.length || (startId && cr(startId) && valid.length>1) ? "¿Quieres escuchar también las que dan cringe?" : "¿Estás segura?";
+    const txt = nonCr.length || startId ? others.length + (others.length===1 ? " canción de esta lista da cringe." : " canciones de esta lista dan cringe.") : "Todas las de esta lista dan cringe.";
+    const incl = await askYesNo(q, txt, "Sí, incluirlas", nonCr.length || startId ? "No, sin ellas" : "No");
+    if(!incl){
+      valid = valid.filter(i => !cr(i) || i===startId);
+      if(!valid.length) return;
+    }
+  }
   if(shuffle!==null && shuffle!==undefined) PL.shuffle = shuffle;
   PL.ids = valid;
   let first = startId ? valid.indexOf(startId) : (PL.shuffle ? Math.floor(Math.random()*valid.length) : 0);
