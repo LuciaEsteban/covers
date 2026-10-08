@@ -325,7 +325,7 @@ const DONE = ["Grabada","Publicada"];
 const PRIORITIES = ["Alta","Media","Baja"];
 const GOALS = ["Completa","Fragmento"];
 const HAVE = ["Nada todavía","Fragmento","Completa"];
-const FORMATS = ["BandLab","Vídeo","Instagram","Audio","Otro"];
+const FORMATS = ["BandLab","Instagram","YouTube","TikTok","Vídeo","Audio","Otro"];
 const BASE_STYLES = ["Pop","Pop rock","Rock","Balada","Indie","Soul / R&B","Latino","Musical / BSO","Jazz","Folk / Acústico","Electrónica"];
 const LINK_LABELS = ["BandLab","Instagram","YouTube","Drive","Spotify","Letra","Otro"];
 const DAY = 86400000;
@@ -447,8 +447,14 @@ function uniqueValues(getVals, extra){
   (extra||[]).forEach(v => { if(!m.has(fold(v))) out.push({key:fold(v), name:v, n:0}); });
   return out.sort((a,b)=>b.n-a.n || a.name.localeCompare(b.name,"es"));
 }
-const allArtists = () => uniqueValues(s => [s.artist]);
-const allStyleItems = () => uniqueValues(s => [s.style], BASE_STYLES);
+function savedList(k){ try{ const v = JSON.parse(localStorage.getItem("covers.list."+k)||"[]"); return Array.isArray(v) ? v : []; }catch(e){ return []; } }
+function rememberValue(k, v){
+  v = (v||"").trim(); if(!v) return;
+  const l = savedList(k); if(l.some(x => fold(x)===fold(v))) return;
+  l.push(v); try{ localStorage.setItem("covers.list."+k, JSON.stringify(l)); }catch(e){}
+}
+const allArtists = () => uniqueValues(s => [s.artist], savedList("artists"));
+const allStyleItems = () => uniqueValues(s => [s.style], [...BASE_STYLES, ...savedList("styles")]);
 function canonical(items, val){ const k = fold(val); const f = items.find(i => i.key===k); return f ? f.name : val.trim(); }
 function attachSuggest(input, getItems){
   const box = document.createElement("div"); box.className = "sugg hidden";
@@ -513,7 +519,7 @@ function filtered(){
     else if(ui.status!=="Todas" && s.status!==ui.status) return false;
     if(ui.tag && !(s.tags||[]).includes(ui.tag)) return false;
     if(q){
-      const hay = [s.title,s.artist,s.style,s.status,s.tone,s.notes,...(s.tags||[]),...(s.formats||[])].join(" ").toLowerCase();
+      const hay = [s.title,s.artist,s.style,s.status,s.tone,s.notes,...(s.tags||[]),...(s.formats||[]),...(s.planFormats||[])].join(" ").toLowerCase();
       if(!q.split(/\s+/).every(w => hay.includes(w))) return false;
     }
     return true;
@@ -628,7 +634,8 @@ async function openDetail(id){
           <span>Estilo</span><span>${esc(s.style||"-")}</span>
           <span>Quiero hacerla</span><span>${esc(s.goal||"-")}</span>
           <span>Tengo</span><span>${esc(s.have||"-")}</span>
-          <span>Dónde está</span><span>${(s.formats||[]).length ? (s.formats||[]).map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
+          <span>Plataforma donde está</span><span>${(s.formats||[]).length ? (s.formats||[]).map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
+          <span>Plataforma donde la quiero hacer</span><span>${(s.planFormats||[]).length ? s.planFormats.map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
           <span>Tono</span><span>${esc(s.tone||"-")}</span>
           <span>Fecha objetivo</span><span>${s.due ? esc(new Date(s.due+"T00:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"long"})) : "-"}</span>
           <span>Plan</span><span>${s.focus ? "En foco ahora" : "-"}</span>
@@ -750,7 +757,7 @@ async function openEditor(id){
   const isNew = !id;
   const orig = isNew ? null : byId(id);
   const s = isNew ? { id:uid(), title:"", artist:"", style:"", status:"Idea", priority:"Media", goal:"Completa", have:"Nada todavía",
-      progress:0, formats:[], tags:[], links:[], tone:"", due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
+      progress:0, formats:[], planFormats:[], tags:[], links:[], tone:"", due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
     : JSON.parse(JSON.stringify(orig));
   const existing = isNew ? [] : (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt);
   const pending = []; const removed = new Set();
@@ -786,8 +793,10 @@ async function openEditor(id){
         <label class="f">Avance: <span id="eProgVal">${s.progress}%</span></label>
         <input type="range" class="rng" id="eProg" min="0" max="100" step="5" value="${s.progress}">
         <div class="quick" id="eQuick">${[0,25,50,75,100].map(n=>`<button type="button" class="chip" data-n="${n}">${n}%</button>`).join("")}</div>
-        <label class="f">Dónde está</label>
+        <label class="f">Plataforma donde está</label>
         <div class="chips" style="flex-wrap:wrap" id="eFormats">${FORMATS.map(f=>`<button type="button" class="chip ${s.formats.includes(f)?"on":""}" data-f="${esc(f)}">${esc(f)}</button>`).join("")}</div>
+        <label class="f">Plataforma donde la quiero hacer</label>
+        <div class="chips" style="flex-wrap:wrap" id="ePlanFormats">${FORMATS.map(f=>`<button type="button" class="chip ${(s.planFormats||[]).includes(f)?"on":""}" data-f="${esc(f)}">${esc(f)}</button>`).join("")}</div>
         <label class="f">Etiquetas</label>
         <div class="tagbox" id="eTagBox"><input id="eTagIn" list="dlTags" placeholder="Añadir y pulsar intro" autocomplete="off" autocapitalize="none" enterkeyhint="done"></div>
         <datalist id="dlTags">${allTags().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
@@ -901,6 +910,11 @@ async function openEditor(id){
     const f = b.dataset.f; s.formats = s.formats.includes(f) ? s.formats.filter(x=>x!==f) : [...s.formats, f];
     b.classList.toggle("on");
   });
+  s.planFormats = s.planFormats || [];
+  $("#ePlanFormats").querySelectorAll("button").forEach(b => b.onclick = () => {
+    const f = b.dataset.f; s.planFormats = s.planFormats.includes(f) ? s.planFormats.filter(x=>x!==f) : [...s.planFormats, f];
+    b.classList.toggle("on");
+  });
   $("#eCancel").onclick = closeLayer;
   const del = $("#eDelete");
   if(del) del.onclick = async () => {
@@ -919,6 +933,7 @@ async function openEditor(id){
     const artist = canonical(allArtists(), $("#eArtist").value), style = canonical(allStyleItems(), $("#eStyle").value);
     const dup = songs.find(x => x.id!==s.id && fold(x.title)===fold(title) && fold(x.artist)===fold(artist));
     if(dup){ toast("Esa canción ya existe: " + dup.title + (dup.artist ? " de " + dup.artist : "") + "."); $("#eTitle").focus(); return; }
+    rememberValue("artists", artist); rememberValue("styles", style);
     s.title = title; s.artist = artist; s.style = style;
     s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
     s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value.trim(); s.notes = $("#eNotes").value.trim();
@@ -1230,7 +1245,7 @@ const blobToDataUrl = b => new Promise((res, rej) => { const r = new FileReader(
 async function exportBackup(withFiles){
   try{
     toast("Preparando copia...");
-    const out = { app:"mis-covers", version:2, exportedAt:new Date().toISOString(), songs, albums, files:[] };
+    const out = { app:"mis-covers", version:2, exportedAt:new Date().toISOString(), songs, albums, lists:{artists:savedList("artists"), styles:savedList("styles")}, files:[] };
     if(withFiles){
       for(const f of await dbAll("files")) out.files.push({ id:f.id, songId:f.songId, name:f.name, type:f.type, size:f.size, addedAt:f.addedAt, data: await blobToDataUrl(f.blob) });
     } else { out.songs = songs.map(s => ({...s, fileCount:0})); }
@@ -1248,6 +1263,8 @@ async function importBackup(file){
     if(!confirm(`Se importarán ${data.songs.length} canciones. Las que tengan el mismo identificador se sobrescribirán. ¿Continuar?`)) return;
     for(const s of data.songs) await dbPut("songs", s);
     for(const al of (data.albums||[])) await dbPut("albums", al);
+    if(data.lists){ (data.lists.artists||[]).forEach(v => rememberValue("artists", v)); (data.lists.styles||[]).forEach(v => rememberValue("styles", v)); }
+    songs.forEach(()=>{}); data.songs.forEach(x => { rememberValue("artists", x.artist); rememberValue("styles", x.style); });
     for(const f of (data.files||[])){
       const blob = await (await fetch(f.data)).blob();
       await dbPut("files", { id:f.id, songId:f.songId, name:f.name, type:f.type, size:f.size, addedAt:f.addedAt, blob });
