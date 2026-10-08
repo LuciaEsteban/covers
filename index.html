@@ -231,6 +231,13 @@ nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-
 .tile:active{transform:scale(.97)}
 .mosaic{display:grid;grid-template-columns:1fr 1fr;gap:4px;aspect-ratio:1;border-radius:14px;overflow:hidden}
 .mosaic .m{background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-weight:700;color:rgba(45,42,69,.7);font-size:22px}
+.sgwrap{position:relative}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:30;background:#fff;border:1px solid var(--violet-line);border-radius:14px;box-shadow:0 10px 28px rgba(80,60,140,.22);overflow:hidden;max-height:240px;overflow-y:auto}
+.sugg button{display:flex;width:100%;align-items:center;justify-content:space-between;gap:8px;border:0;background:#fff;text-align:left;padding:12px 14px;min-height:46px;font-size:16px;color:#2d2a45;border-bottom:1px solid #f0ecfa}
+.sugg button:last-child{border-bottom:0}
+.sugg button:active{background:var(--accent-soft)}
+.sugg small{color:var(--muted);font-size:12px;flex:none}
+.sugg .new{color:var(--accent);font-weight:600}
 .mosaic.one{display:block;background-size:cover;background-position:center}
 .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .gal .ph{position:relative;aspect-ratio:1;border-radius:12px;background-size:cover;background-position:center;background-color:var(--violet-line);border:0;padding:0;overflow:hidden}
@@ -432,6 +439,34 @@ let albums = [];
 async function loadSongs(){ songs = await dbAll("songs"); albums = await dbAll("albums"); }
 const byId = id => songs.find(s => s.id===id);
 function allTags(){ const m = new Map(); songs.forEach(s => (s.tags||[]).forEach(t => m.set(t, (m.get(t)||0)+1))); return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(e=>e[0]); }
+const fold = x => (x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
+function uniqueValues(getVals, extra){
+  const m = new Map();
+  songs.forEach(s => getVals(s).forEach(v => { const k = fold(v); if(!k) return; const e = m.get(k) || {n:0, spell:new Map()}; e.n++; e.spell.set(v.trim(), (e.spell.get(v.trim())||0)+1); m.set(k,e); }));
+  const out = [...m.entries()].map(([k,e]) => ({key:k, name:[...e.spell.entries()].sort((a,b)=>b[1]-a[1])[0][0], n:e.n}));
+  (extra||[]).forEach(v => { if(!m.has(fold(v))) out.push({key:fold(v), name:v, n:0}); });
+  return out.sort((a,b)=>b.n-a.n || a.name.localeCompare(b.name,"es"));
+}
+const allArtists = () => uniqueValues(s => [s.artist]);
+const allStyleItems = () => uniqueValues(s => [s.style], BASE_STYLES);
+function canonical(items, val){ const k = fold(val); const f = items.find(i => i.key===k); return f ? f.name : val.trim(); }
+function attachSuggest(input, getItems){
+  const box = document.createElement("div"); box.className = "sugg hidden";
+  input.parentNode.classList.add("sgwrap"); input.parentNode.appendChild(box);
+  const show = () => {
+    const q = fold(input.value); const items = getItems();
+    let list = items.filter(i => !q || i.key.includes(q));
+    list.sort((a,b) => (b.key.startsWith(q)-a.key.startsWith(q)) || b.n-a.n);
+    list = list.slice(0,6);
+    const exact = items.some(i => i.key===q);
+    let h = list.map(i => `<button type="button" data-v="${esc(i.name)}">${esc(i.name)}${i.n?`<small>${i.n} ${i.n===1?"canción":"canciones"}</small>`:""}</button>`).join("");
+    if(q && !exact) h += `<button type="button" class="new" data-v="${esc(input.value.trim())}">Crear nuevo: ${esc(input.value.trim())}</button>`;
+    box.innerHTML = h; box.classList.toggle("hidden", !h);
+  };
+  input.addEventListener("input", show); input.addEventListener("focus", show);
+  input.addEventListener("blur", () => setTimeout(() => { box.classList.add("hidden"); const v = input.value.trim(); if(v) input.value = canonical(getItems(), v); }, 150));
+  box.addEventListener("pointerdown", e => { e.preventDefault(); const b = e.target.closest("button"); if(!b) return; input.value = b.dataset.v; box.classList.add("hidden"); });
+}
 function allStyles(){ const set = new Set(BASE_STYLES); songs.forEach(s => s.style && set.add(s.style)); return [...set]; }
 
 /* ========================= Pestañas y arranque ========================= */
@@ -737,9 +772,8 @@ async function openEditor(id){
         <div id="ePasteZone" class="pastezone" contenteditable="true" role="textbox" aria-label="Zona para pegar una imagen" data-ph="Otra forma: mantén pulsado aquí y elige Pegar"></div>
         <div class="hint" style="margin-top:6px">Copia una imagen en Safari (mantén pulsada y elige Copiar) y pégala aquí. Se guarda dentro de la app, no como enlace.</div>
         <label class="f">Canción *</label><input class="in" id="eTitle" value="${esc(s.title)}" autocomplete="off">
-        <label class="f">Artista</label><input class="in" id="eArtist" value="${esc(s.artist)}" autocomplete="off">
-        <label class="f">Estilo</label><input class="in" id="eStyle" list="dlStyles" value="${esc(s.style)}" autocomplete="off">
-        <datalist id="dlStyles">${allStyles().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
+        <label class="f">Artista</label><div><input class="in" id="eArtist" value="${esc(s.artist)}" autocomplete="off" autocapitalize="words"></div>
+        <label class="f">Estilo</label><div><input class="in" id="eStyle" value="${esc(s.style)}" autocomplete="off"></div>
       </div>
       <div class="grp warm">
         <h3 class="sec">Organización</h3>
@@ -876,11 +910,16 @@ async function openEditor(id){
       await dbDel("songs", s.id); await loadSongs(); closeLayer(); render(); toast("Canción eliminada.");
     }catch(err){ toast("No se pudo eliminar."); }
   };
+  attachSuggest($("#eArtist"), allArtists);
+  attachSuggest($("#eStyle"), allStyleItems);
   $("#eSave").onclick = async () => {
     addTag();
     const title = $("#eTitle").value.trim();
     if(!title){ toast("Escribe el nombre de la canción."); $("#eTitle").focus(); return; }
-    s.title = title; s.artist = $("#eArtist").value.trim(); s.style = $("#eStyle").value.trim();
+    const artist = canonical(allArtists(), $("#eArtist").value), style = canonical(allStyleItems(), $("#eStyle").value);
+    const dup = songs.find(x => x.id!==s.id && fold(x.title)===fold(title) && fold(x.artist)===fold(artist));
+    if(dup){ toast("Esa canción ya existe: " + dup.title + (dup.artist ? " de " + dup.artist : "") + "."); $("#eTitle").focus(); return; }
+    s.title = title; s.artist = artist; s.style = style;
     s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
     s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value.trim(); s.notes = $("#eNotes").value.trim();
     s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on");
