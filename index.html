@@ -559,7 +559,7 @@ async function tx(store, mode, fn){
 const req = r => new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
 const dbAll = store => tx(store,"readonly", t => req(t.objectStore(store).getAll()));
 const dbPut = (store, v, o) => { if((store==="songs"||store==="albums") && !(o&&o.noMod)) v.mod = Date.now(); return tx(store,"readwrite", t => req(t.objectStore(store).put(v))).then(r => { if(!(o&&o.noSync)) cloudChanged(); return r; }); };
-const dbDel = (store, k, o) => tx(store,"readwrite", t => req(t.objectStore(store).delete(k))).then(r => { if(!(o&&o.noSync)) cloudChanged(); return r; });
+const dbDel = (store, k, o) => tx(store,"readwrite", t => req(t.objectStore(store).delete(k))).then(r => { if(!(o&&o.noSync)){ if(store==="songs"||store==="albums"){ try{ const st = stGet(); st.dead = st.dead||{}; st.dead[k] = Date.now(); stSet(st); }catch(e){} } cloudChanged(); } return r; });
 const dbFilesOf = id => tx("files","readonly", t => req(t.objectStore("files").index("songId").getAll(id)));
 async function dbClear(){ await tx(["songs","files","albums"],"readwrite", t => { t.objectStore("songs").clear(); t.objectStore("files").clear(); t.objectStore("albums").clear(); }); }
 
@@ -1939,13 +1939,15 @@ async function syncOnce(opts){
 
   // 3) Decisiones
   const plan = { pull:[], push:[], delLocal:[], delRemote:[] };
+  const dead = st.dead || (st.dead = {}); // borrados explicitos hechos en este dispositivo; la ausencia nunca borra datos
+  for(const id of Object.keys(dead)) if(local.song.has(id) || local.album.has(id)) delete dead[id];
   for(const kind of ["song","album"]){
     const ids = new Set([...local[kind].keys(), ...remote[kind].keys()]);
     for(const id of ids){
       const L = local[kind].get(id), R = remote[kind].get(id), k = st.known[id];
       if(L && R){ const rm = R.meta.mod||0, lm = L.mod||0; if(rm>lm) plan.pull.push({kind,id}); else if(lm>rm) plan.push.push({kind,id}); }
-      else if(L && !R){ if(k!==undefined && !((L.mod||0) > k)) plan.delLocal.push({kind,id}); else plan.push.push({kind,id}); }
-      else if(!L && R){ if(k!==undefined && !((R.meta.mod||0) > k)) plan.delRemote.push({kind,id}); else plan.pull.push({kind,id}); }
+      else if(L && !R){ plan.push.push({kind,id}); }
+      else if(!L && R){ if(dead[id]) plan.delRemote.push({kind,id}); else plan.pull.push({kind,id}); }
     }
   }
   const dels = plan.delLocal.length + plan.delRemote.length;
@@ -1991,7 +1993,7 @@ async function syncOnce(opts){
   const entries = []; const uploaded = new Map(); const known = new Set([...T.values()].map(x => x.sha));
   const usedFolders = new Set();
   const delFolder = folder => { const pre = folder + "/"; for(const p of T.keys()) if(p.startsWith(pre)) entries.push({ path:p, mode:"100644", type:"blob", sha:null }); };
-  for(const {kind,id} of plan.delRemote){ const R = remote[kind].get(id); delFolder(R.folder); delete st.known[id]; }
+  for(const {kind,id} of plan.delRemote){ const R = remote[kind].get(id); delFolder(R.folder); delete st.known[id]; delete dead[id]; }
   const pushedIds = [];
   let pi = 0;
   for(const {kind,id} of plan.push){
@@ -2081,6 +2083,15 @@ function renderCloudStatus(){
 }
 document.addEventListener("visibilitychange", () => { if(document.visibilityState==="visible") scheduleSync(400); });
 window.addEventListener("online", () => scheduleSync(800));
+
+/* Tirar hacia abajo para actualizar desde la nube */
+(function(){
+  let y0=null, ok=false;
+  const atTop = () => (document.scrollingElement||document.documentElement).scrollTop <= 0 && !document.querySelector("#player.open, #viewer.open, .sheet.open");
+  document.addEventListener("touchstart", e => { y0 = (e.touches.length===1 && atTop()) ? e.touches[0].clientY : null; ok=false; }, {passive:true});
+  document.addEventListener("touchmove", e => { if(y0!==null && e.touches[0].clientY - y0 > 110) ok=true; }, {passive:true});
+  document.addEventListener("touchend", () => { if(ok && cfgGet()){ toast("Actualizando desde la nube..."); syncNow({toast:true}); } y0=null; ok=false; }, {passive:true});
+})();
 document.addEventListener("click", e => { const b = e.target.closest("#syncBtn"); if(b){ if(SY.state==="err") toast("Nube: " + SY.err); syncNow({toast:true}); } });
 
 /* ========================= Inicio ========================= */
