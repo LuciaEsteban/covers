@@ -240,6 +240,18 @@ nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-
 .sugg .new{color:var(--accent);font-weight:600}
 
 /* estrellas y me gusta */
+#setup{position:fixed;inset:0;z-index:95;background:var(--bg);background-image:var(--page);overflow-y:auto;display:flex;justify-content:center;padding:calc(env(safe-area-inset-top) + 24px) 20px 40px}
+#setup .box{max-width:460px;width:100%}
+#setup h1{margin:0 0 10px;font-size:26px;background:linear-gradient(90deg,#4f9cf0,#8a63e0);-webkit-background-clip:text;background-clip:text;color:transparent}
+#setup ol{padding-left:20px;line-height:1.45}#setup li{margin:6px 0}
+#setup a{color:var(--accent);font-weight:600}
+#setup .err{color:var(--danger);min-height:20px;margin-top:8px;font-size:14px}
+header.top{position:sticky}
+.syncbtn{position:absolute;right:16px;top:calc(env(safe-area-inset-top) + 12px);width:44px;height:44px;border-radius:50%;border:0;background:var(--card);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;padding:0}
+.syncbtn svg{width:24px;height:24px;fill:none;stroke:var(--muted);stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.syncbtn.ok svg{stroke:var(--ok)}.syncbtn.err svg{stroke:var(--danger)}
+.syncbtn.sync svg{stroke:var(--accent);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
 .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:3px;margin:10px 0 4px}
 .seg button{flex:1;border:0;background:none;border-radius:11px;padding:9px;min-height:40px;font-weight:600;color:var(--muted)}
 .seg button.on{background:linear-gradient(135deg,#6fb3f2,#9a7ae8);color:#fff}
@@ -399,7 +411,7 @@ body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-b
 
 <div id="app" class="hidden">
   <header class="top">
-    <h1 id="title">Mis covers</h1>
+    <h1 id="title">Mis covers</h1><button id="syncBtn" class="syncbtn idle" aria-label="Nube"><svg viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-.6-8.96A6 6 0 0 1 18 9.5a4 4 0 0 1-.5 8.5z"/></svg></button>
     <div id="searchWrap">
       <div class="searchrow">
         <input class="search" id="q" type="search" placeholder="Buscar canción, artista, etiqueta..." autocomplete="off" enterkeyhint="search">
@@ -429,6 +441,7 @@ body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-b
   <button data-tab="settings"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></span>Ajustes</button>
 </div></nav>
 
+<div id="setup" class="hidden"></div>
 <div id="layer"></div>
 <div id="mini" class="hidden"><div class="mc" id="mC"></div><div class="mt" id="mT"><b></b><span></span></div><button id="mPlay" aria-label="Reproducir o pausar"></button><button id="mNext" aria-label="Siguiente"></button><div class="mbar" id="mBar"></div></div>
 <div id="player" class="hidden"></div>
@@ -545,8 +558,8 @@ async function tx(store, mode, fn){
 }
 const req = r => new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
 const dbAll = store => tx(store,"readonly", t => req(t.objectStore(store).getAll()));
-const dbPut = (store, v) => tx(store,"readwrite", t => req(t.objectStore(store).put(v)));
-const dbDel = (store, k) => tx(store,"readwrite", t => req(t.objectStore(store).delete(k)));
+const dbPut = (store, v, o) => { if((store==="songs"||store==="albums") && !(o&&o.noMod)) v.mod = Date.now(); return tx(store,"readwrite", t => req(t.objectStore(store).put(v))).then(r => { if(!(o&&o.noSync)) cloudChanged(); return r; }); };
+const dbDel = (store, k, o) => tx(store,"readwrite", t => req(t.objectStore(store).delete(k))).then(r => { if(!(o&&o.noSync)) cloudChanged(); return r; });
 const dbFilesOf = id => tx("files","readonly", t => req(t.objectStore("files").index("songId").getAll(id)));
 async function dbClear(){ await tx(["songs","files","albums"],"readwrite", t => { t.objectStore("songs").clear(); t.objectStore("files").clear(); t.objectStore("albums").clear(); }); }
 
@@ -628,6 +641,7 @@ function startApp(){
   $("#app").classList.remove("hidden"); $("#tabs").classList.remove("hidden");
   loadSongs().then(()=>{ render(); }).catch(err => { toast("No se pudo abrir el almacenamiento del dispositivo."); console.error(err); });
   if(navigator.storage && navigator.storage.persist){ navigator.storage.persist().catch(()=>{}); }
+  cloudGate();
 }
 document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => { ui.tab = b.dataset.tab; render(); $("#main").scrollTop = 0; }));
 $("#fab").addEventListener("click", () => { if(ui.tab==="albums") openAlbumEditor(null); else openEditor(null); });
@@ -1705,8 +1719,15 @@ async function renderSettings(){
   try{ if(navigator.storage && navigator.storage.estimate){ const e = await navigator.storage.estimate(); usage = `Espacio usado por la app: ${fmtSize(e.usage||0)} de ${fmtSize(e.quota||0)} disponibles.`; } }catch(e){}
   const cred = currentCred();
   $("#main").innerHTML = `
-    <div class="panel"><h4>Copia de seguridad</h4>
-      <p class="hint">Guarda todo en un archivo para no perderlo si cambias de móvil o borras los datos del navegador.</p>
+    <div class="panel blue"><h4>Nube (GitHub privado)</h4>
+      <p class="hint" id="cloudStatus"></p>
+      <p class="hint">Todo se guarda en carpetas Artista/Canción con sus fotos, mp3 y mp4 reales, para que puedas recogerlos a mano cuando quieras.</p>
+      <button class="btn" id="cSync">Sincronizar ahora</button>
+      <button class="btn soft" id="cChange" style="margin-left:6px">Cambiar token</button>
+      <button class="btn danger" id="cOff">Desconectar este dispositivo</button>
+    </div>
+    <div class="panel"><h4>Copia de seguridad manual</h4>
+      <p class="hint">Opcional: guarda todo en un archivo, además de la nube.</p>
       <label style="display:flex;gap:8px;align-items:center;font-size:14px;margin:8px 0"><input type="checkbox" id="sFiles" checked> Incluir mp3, mp4 y portadas (el archivo puede ser grande)</label>
       <button class="btn" id="sExport">Exportar copia</button>
       <button class="btn soft" id="sImport" style="margin-left:6px">Importar copia</button>
@@ -1729,8 +1750,12 @@ async function renderSettings(){
       <p class="hint" style="margin:0">En Safari pulsa Compartir y después "Añadir a pantalla de inicio". Se abrirá como una app, también sin conexión.</p>
     </div>
     <div class="panel"><h4>Zona de peligro</h4>
-      <button class="btn danger" id="sWipe" style="padding-left:0">Borrar todos los datos de la app</button>
+      <button class="btn danger" id="sWipe" style="padding-left:0">Borrar los datos de este dispositivo</button>
     </div>`;
+  renderCloudStatus();
+  $("#cSync").onclick = () => syncNow({toast:true});
+  $("#cChange").onclick = () => showSetup();
+  $("#cOff").onclick = () => { if(!confirm("Este dispositivo dejará de sincronizar y no podrás usar la app hasta volver a conectarlo. Los datos de la nube no se borran. ¿Continuar?")) return; localStorage.removeItem("covers.cloud"); localStorage.removeItem("covers.cloudstate"); setSyncUi("idle"); showSetup(); };
   $("#sStale").onchange = e => { const n = parseInt(e.target.value,10); if(n>0){ lsSet("covers.staleDays", String(n)); toast("Guardado."); } };
   $("#sLock").onclick = lockNow;
   $("#sChange").onclick = async () => {
@@ -1746,9 +1771,9 @@ async function renderSettings(){
   $("#sImport").onclick = () => $("#sImportFile").click();
   $("#sImportFile").onchange = e => { const f = e.target.files[0]; if(f) importBackup(f); e.target.value = ""; };
   $("#sWipe").onclick = async () => {
-    if(!confirm("Se borrarán todas las canciones y archivos de este dispositivo. ¿Continuar?")) return;
+    if(!confirm("Se borrarán las canciones y archivos de este dispositivo. Los de la nube se conservan y se descargarán de nuevo al sincronizar. ¿Continuar?")) return;
     if(!confirm("Última comprobación: ¿has hecho una copia de seguridad?")) return;
-    await dbClear(); await loadSongs(); render(); toast("Datos borrados.");
+    await dbClear(); localStorage.removeItem("covers.cloudstate"); await loadSongs(); render(); toast("Datos borrados de este dispositivo. Los de la nube se recuperarán al sincronizar.");
   };
 }
 const blobToDataUrl = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
@@ -1782,6 +1807,281 @@ async function importBackup(file){
     await loadSongs(); render(); toast("Copia importada.");
   }catch(err){ console.error(err); toast("No se pudo importar ese archivo."); }
 }
+
+/* ========================= Nube: repositorio privado en GitHub ========================= */
+/* Estructura en el repositorio:  Artista/Canción/{cancion.json, portada.jpg, fotos/, audio/, archivos/}  y  _albumes/Nombre/{album.json, portada.jpg, fotos/} */
+const cfgGet = () => { try{ return JSON.parse(localStorage.getItem("covers.cloud")||"null"); }catch(e){ return null; } };
+const stGet = () => { try{ const v = JSON.parse(localStorage.getItem("covers.cloudstate")||"null"); return v && v.known ? v : {known:{}, remote:{}, sha:{}, last:0}; }catch(e){ return {known:{}, remote:{}, sha:{}, last:0}; } };
+const stSet = st => { try{ localStorage.setItem("covers.cloudstate", JSON.stringify(st)); }catch(e){} };
+const SY = { busy:false, again:false, timer:null, state:"idle", msg:"", err:"" };
+
+function cleanName(x, fb){
+  let v = (x||"").normalize("NFC").replace(/[\\\/:*?"<>|\u0000-\u001f]/g," ").replace(/\s+/g," ").trim().replace(/^[._\s]+/,"").slice(0,80).trim();
+  return v || fb;
+}
+function uniqueIn(used, name){ let n = name, i = 2; const ext = (name.match(/(\.[A-Za-z0-9]{1,6})$/)||[""])[0], base = ext ? name.slice(0,-ext.length) : name; while(used.has(n.toLowerCase())){ n = base + " (" + (i++) + ")" + ext; } used.add(n.toLowerCase()); return n; }
+const textBytes = t => new TextEncoder().encode(t);
+async function gitSha(bytes){
+  const head = textBytes("blob " + bytes.length + "\0"); const all = new Uint8Array(head.length + bytes.length); all.set(head); all.set(bytes, head.length);
+  return [...new Uint8Array(await crypto.subtle.digest("SHA-1", all))].map(b => b.toString(16).padStart(2,"0")).join("");
+}
+const dataUrlToBytes = async u => new Uint8Array(await (await fetch(u)).arrayBuffer());
+const blobToB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1] || ""); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
+const extOf = (type, name) => { const m = (name||"").match(/\.([A-Za-z0-9]{1,5})$/); if(m) return "." + m[1].toLowerCase(); return type && type.startsWith("video") ? ".mp4" : ".mp3"; };
+
+async function gh(path, opt){
+  const c = cfgGet(); if(!c) throw new Error("Sin conexión con la nube.");
+  const r = await fetch("https://api.github.com/repos/" + c.repo + "/" + path, { ...(opt||{}), headers:{ Authorization:"Bearer " + c.token, Accept:"application/vnd.github+json", ...((opt&&opt.headers)||{}) } });
+  if(r.status===401 || r.status===403){ const e = new Error(r.status===401 ? "El token no es válido o ha caducado." : "GitHub rechazó la petición (permisos o límite)."); e.code = r.status; throw e; }
+  if(!r.ok){ const e = new Error("GitHub respondió " + r.status + "."); e.code = r.status; throw e; }
+  return r;
+}
+const ghJson = async (p, o) => (await gh(p, o)).json();
+const ghBlobRaw = async sha => (await gh("git/blobs/" + sha, { headers:{ Accept:"application/vnd.github.raw+json" } })).blob();
+const ghPost = (p, body, method) => ghJson(p, { method: method||"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(body) });
+
+function setSyncUi(state, msg){
+  SY.state = state; if(msg!==undefined) SY.msg = msg;
+  const b = $("#syncBtn"); if(!b) return;
+  b.className = "syncbtn " + state;
+  b.title = state==="sync" ? "Sincronizando..." : state==="err" ? "Error de sincronización: " + SY.err : state==="ok" ? "Todo guardado en la nube" : "Nube";
+  b.setAttribute("aria-label", b.title);
+  if($("#cloudStatus")) renderCloudStatus();
+}
+function scheduleSync(ms){ if(!cfgGet()) return; clearTimeout(SY.timer); SY.timer = setTimeout(() => syncNow({silent:true}), ms); }
+function cloudChanged(){ if(cfgGet() && !SY.busy) scheduleSync(2500); else if(cfgGet()) SY.again = true; }
+
+async function syncNow(opts){
+  opts = opts || {};
+  if(!cfgGet()) return;
+  if(SY.busy){ SY.again = true; return; }
+  SY.busy = true; SY.err = ""; setSyncUi("sync", "Sincronizando...");
+  try{
+    for(let attempt=0; attempt<3; attempt++){
+      try{ await syncOnce(opts); break; }
+      catch(e){ if(e && e.code===422 && attempt<2){ continue; } throw e; }
+    }
+    const st = stGet(); st.last = Date.now(); stSet(st);
+    setSyncUi("ok", "Todo guardado en la nube.");
+    if(opts.toast) toast("Sincronizado con la nube.");
+  }catch(e){
+    console.error(e); SY.err = (e && e.message) || "Error desconocido.";
+    setSyncUi("err", SY.err);
+    if(!opts.silent || (e && e.code===401)) toast("Nube: " + SY.err);
+  }finally{
+    SY.busy = false;
+    if(SY.again){ SY.again = false; scheduleSync(800); }
+  }
+}
+
+function songFolder(s, used){
+  const base = cleanName(s.artist, "Sin artista") + "/" + cleanName(s.title, "Sin título");
+  let f = base; if(used.has(f.toLowerCase())) f = base + " (" + s.id.slice(0,4) + ")"; used.add(f.toLowerCase()); return f;
+}
+function albumFolder(a, used){
+  const base = "_albumes/" + cleanName(a.name, "Álbum");
+  let f = base; if(used.has(f.toLowerCase())) f = base + " (" + a.id.slice(0,4) + ")"; used.add(f.toLowerCase()); return f;
+}
+/* Convierte una canción o álbum local en archivos reales para el repositorio */
+async function buildPack(kind, rec, files, folder){
+  const items = [];   // {path, bytes?, blob?, sha, size}
+  const meta = { ...rec }; delete meta.cover; delete meta.photos; delete meta.fileCount; delete meta.hasTrack;
+  if(rec.cover){ const b = await dataUrlToBytes(rec.cover); items.push({ path: folder + "/portada.jpg", bytes:b, sha: await gitSha(b), size:b.length }); meta.coverFile = "portada.jpg"; } else meta.coverFile = null;
+  meta.photoFiles = [];
+  let i = 1;
+  for(const u of (rec.photos||[])){ const b = await dataUrlToBytes(u); const n = "fotos/foto-" + String(i++).padStart(2,"0") + ".jpg"; items.push({ path: folder + "/" + n, bytes:b, sha: await gitSha(b), size:b.length }); meta.photoFiles.push(n); }
+  if(kind==="song"){
+    meta.files = []; const used = { audio:new Set(), archivos:new Set() }; const st = stGet();
+    for(const f of files){
+      const dir = f.role==="track" ? "audio" : "archivos";
+      const name = uniqueIn(used[dir], cleanName((f.name||"archivo").replace(/\.[^.]*$/,""), "archivo") + extOf(f.type, f.name));
+      let sha = st.sha[f.id];
+      if(!sha){ sha = await gitSha(new Uint8Array(await f.blob.arrayBuffer())); st.sha[f.id] = sha; stSet(st); }
+      items.push({ path: folder + "/" + dir + "/" + name, blob:f.blob, sha, size:f.size });
+      meta.files.push({ id:f.id, name:f.name, type:f.type, size:f.size, role:f.role||"extra", addedAt:f.addedAt, path: dir + "/" + name });
+    }
+  }
+  const jb = textBytes(JSON.stringify(meta, null, 2));
+  items.push({ path: folder + "/" + (kind==="song" ? "cancion.json" : "album.json"), bytes:jb, sha: await gitSha(jb), size:jb.length, isMeta:true });
+  return { items, meta };
+}
+
+async function syncOnce(opts){
+  const cfg = cfgGet(); const st = stGet();
+  const headRef = await ghJson("git/ref/heads/" + cfg.branch); const headSha = headRef.object.sha;
+  const commit = await ghJson("git/commits/" + headSha); const baseTree = commit.tree.sha;
+  const tree = await ghJson("git/trees/" + baseTree + "?recursive=1");
+  if(tree.truncated) throw new Error("El repositorio es demasiado grande para sincronizar de este modo.");
+  const T = new Map(); tree.tree.forEach(n => { if(n.type==="blob") T.set(n.path.normalize("NFC"), n); });
+
+  // 1) Índice remoto
+  const remote = { song:new Map(), album:new Map() };
+  const newCache = {};
+  const metaPaths = [];
+  for(const p of T.keys()){
+    let m;
+    if((m = p.match(/^([^_\/][^\/]*)\/([^\/]+)\/cancion\.json$/))) metaPaths.push({p, kind:"song", folder:m[1] + "/" + m[2]});
+    else if((m = p.match(/^(_albumes\/[^\/]+)\/album\.json$/))) metaPaths.push({p, kind:"album", folder:m[1]});
+  }
+  for(const e of metaPaths){
+    const node = T.get(e.p); let c = st.remote[e.p];
+    if(!c || c.sha!==node.sha){ setSyncUi("sync", "Leyendo la nube..."); const txt = await (await ghBlobRaw(node.sha)).text(); c = { sha:node.sha, meta: JSON.parse(txt) }; }
+    newCache[e.p] = c;
+    if(c.meta && c.meta.id) remote[e.kind].set(c.meta.id, { path:e.p, folder:e.folder, meta:c.meta, sha:node.sha });
+  }
+  st.remote = newCache;
+
+  // 2) Índice local
+  await loadSongs();
+  const allFiles = await dbAll("files");
+  const filesBySong = new Map(); allFiles.forEach(f => { if(!filesBySong.has(f.songId)) filesBySong.set(f.songId, []); filesBySong.get(f.songId).push(f); });
+  const local = { song:new Map(songs.map(s => [s.id, s])), album:new Map(albums.map(a => [a.id, a])) };
+
+  // 3) Decisiones
+  const plan = { pull:[], push:[], delLocal:[], delRemote:[] };
+  for(const kind of ["song","album"]){
+    const ids = new Set([...local[kind].keys(), ...remote[kind].keys()]);
+    for(const id of ids){
+      const L = local[kind].get(id), R = remote[kind].get(id), k = st.known[id];
+      if(L && R){ const rm = R.meta.mod||0, lm = L.mod||0; if(rm>lm) plan.pull.push({kind,id}); else if(lm>rm) plan.push.push({kind,id}); }
+      else if(L && !R){ if(k!==undefined && !((L.mod||0) > k)) plan.delLocal.push({kind,id}); else plan.push.push({kind,id}); }
+      else if(!L && R){ if(k!==undefined && !((R.meta.mod||0) > k)) plan.delRemote.push({kind,id}); else plan.pull.push({kind,id}); }
+    }
+  }
+  const dels = plan.delLocal.length + plan.delRemote.length;
+  if(dels > 3 && !confirm("La sincronización va a eliminar " + dels + " elementos (canciones o álbumes). ¿Es lo que esperas?\n\nSi no estás segura, pulsa Cancelar: no se borrará nada y se recuperarán desde la nube.")){
+    plan.delLocal.forEach(x => plan.pull.push(x)); plan.delRemote.forEach(x => plan.pull.push(x)); plan.delLocal = []; plan.delRemote = [];
+  }
+
+  // 4) Descargas
+  let n = 0; const pulls = plan.pull.length;
+  for(const {kind,id} of plan.pull){
+    n++; const R = remote[kind].get(id);
+    setSyncUi("sync", "Descargando " + n + " de " + pulls + "...");
+    const meta = R.meta, rec = { ...meta }; const fl = rec.files || []; delete rec.files; delete rec.coverFile; delete rec.photoFiles;
+    const get = async rel => { const node = T.get((R.folder + "/" + rel).normalize("NFC")); return node ? ghBlobRaw(node.sha) : null; };
+    rec.cover = null; rec.photos = [];
+    if(meta.coverFile){ const b = await get(meta.coverFile); if(b) rec.cover = await blobToDataUrl(b); }
+    for(const pf of (meta.photoFiles||[])){ const b = await get(pf); if(b) rec.photos.push(await blobToDataUrl(b)); }
+    if(kind==="song"){
+      const have = new Map((filesBySong.get(id)||[]).map(f => [f.id, f]));
+      const keep = new Set();
+      for(const fm of fl){
+        keep.add(fm.id);
+        if(have.has(fm.id)) continue;
+        setSyncUi("sync", "Descargando " + (fm.name||"archivo") + "...");
+        const b = await get(fm.path); if(!b) continue;
+        await dbPut("files", { id:fm.id, songId:id, role:fm.role, name:fm.name, type:fm.type, size:fm.size, addedAt:fm.addedAt, blob:new Blob([b], {type:fm.type||b.type}) }, {noMod:true, noSync:true});
+      }
+      for(const f of (filesBySong.get(id)||[])) if(!keep.has(f.id)) await dbDel("files", f.id, {noSync:true});
+      rec.hasTrack = fl.some(f => f.role==="track"); rec.fileCount = fl.length;
+      await dbPut("songs", rec, {noMod:true, noSync:true});
+    } else {
+      await dbPut("albums", rec, {noMod:true, noSync:true});
+    }
+    st.known[id] = meta.mod||0;
+  }
+  for(const {kind,id} of plan.delLocal){
+    if(kind==="song"){ for(const f of (filesBySong.get(id)||[])) await dbDel("files", f.id, {noSync:true}); await dbDel("songs", id, {noSync:true}); }
+    else await dbDel("albums", id, {noSync:true});
+    delete st.known[id];
+  }
+
+  // 5) Subidas y borrados en un único commit
+  const entries = []; const uploaded = new Map(); const known = new Set([...T.values()].map(x => x.sha));
+  const usedFolders = new Set();
+  const delFolder = folder => { const pre = folder + "/"; for(const p of T.keys()) if(p.startsWith(pre)) entries.push({ path:p, mode:"100644", type:"blob", sha:null }); };
+  for(const {kind,id} of plan.delRemote){ const R = remote[kind].get(id); delFolder(R.folder); delete st.known[id]; }
+  const pushedIds = [];
+  let pi = 0;
+  for(const {kind,id} of plan.push){
+    pi++; setSyncUi("sync", "Subiendo " + pi + " de " + plan.push.length + "...");
+    const rec = local[kind].get(id); if(!rec) continue;
+    const folder = kind==="song" ? songFolder(rec, usedFolders) : albumFolder(rec, usedFolders);
+    const pack = await buildPack(kind, rec, kind==="song" ? (filesBySong.get(id)||[]) : [], folder);
+    const R = remote[kind].get(id);
+    if(R && R.folder!==folder) delFolder(R.folder);
+    const want = new Set(pack.items.map(i => i.path.normalize("NFC")));
+    if(R && R.folder===folder){ const pre = folder + "/"; for(const p of T.keys()) if(p.startsWith(pre) && !want.has(p)) entries.push({ path:p, mode:"100644", type:"blob", sha:null }); }
+    for(const it of pack.items){
+      const path = it.path.normalize("NFC"), ex = T.get(path);
+      if(ex && ex.sha===it.sha) continue;
+      let sha = it.sha;
+      if(!known.has(sha) && !uploaded.has(sha)){
+        if(it.size > 95*1024*1024){ toast("«" + path.split("/").pop() + "» supera el límite de 100 MB de git y no se guardará en la nube."); continue; }
+        if(it.size > 3*1024*1024) setSyncUi("sync", "Subiendo " + path.split("/").pop() + "...");
+        const b64 = it.bytes ? await blobToB64(new Blob([it.bytes])) : await blobToB64(it.blob);
+        const r = await ghPost("git/blobs", { content:b64, encoding:"base64" }); sha = r.sha; uploaded.set(it.sha, sha);
+      }
+      entries.push({ path, mode:"100644", type:"blob", sha });
+    }
+    pushedIds.push({kind, id, mod:rec.mod||0, path: folder + "/" + (kind==="song" ? "cancion.json" : "album.json"), sha: pack.items[pack.items.length-1].sha, meta: pack.meta});
+  }
+  // ajustes compartidos (listas de artistas y estilos)
+  const setPath = "_ajustes.json"; let remoteSet = {artists:[], styles:[]};
+  if(T.has(setPath)){ try{ remoteSet = JSON.parse(await (await ghBlobRaw(T.get(setPath).sha)).text()); }catch(e){} }
+  const mergeList = (a,b) => { const m = new Map(); [...(a||[]), ...(b||[])].forEach(v => { const k = fold(v); if(k && !m.has(k)) m.set(k, v); }); return [...m.values()]; };
+  const merged = { artists: mergeList(remoteSet.artists, savedList("artists")), styles: mergeList(remoteSet.styles, savedList("styles")) };
+  try{ localStorage.setItem("covers.list.artists", JSON.stringify(merged.artists)); localStorage.setItem("covers.list.styles", JSON.stringify(merged.styles)); }catch(e){}
+  const setBytes = textBytes(JSON.stringify(merged, null, 2)), setSha = await gitSha(setBytes);
+  if(!T.has(setPath) || T.get(setPath).sha!==setSha){ const r = await ghPost("git/blobs", { content: await blobToB64(new Blob([setBytes])), encoding:"base64" }); entries.push({ path:setPath, mode:"100644", type:"blob", sha:r.sha }); }
+
+  if(entries.length){
+    setSyncUi("sync", "Guardando en la nube...");
+    const nt = await ghPost("git/trees", { base_tree: baseTree, tree: entries });
+    const msg = "Sincronización " + new Date().toLocaleString("es-ES");
+    const nc = await ghPost("git/commits", { message: msg, tree: nt.sha, parents:[headSha] });
+    await ghPost("git/refs/heads/" + cfg.branch, { sha: nc.sha }, "PATCH");
+  }
+  pushedIds.forEach(p => { st.known[p.id] = p.mod; st.remote[p.path] = { sha:p.sha, meta:p.meta }; });
+  stSet(st);
+  await loadSongs(); render();
+}
+
+/* Pantalla obligatoria de conexión con la nube */
+function showSetup(msg){
+  const el = $("#setup"); el.classList.remove("hidden");
+  const c = cfgGet() || {};
+  el.innerHTML = `<div class="box">
+    <h1>Conecta tu nube privada</h1>
+    <p>Para ver tus datos desde cualquier dispositivo, la app los guarda en un <b>repositorio privado de GitHub</b>: canciones, notas, fotos, mp3 y mp4, ordenados en carpetas por artista y canción.</p>
+    <ol>
+      <li>Repositorio privado (debe existir y ser privado).</li>
+      <li>Token de acceso: <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">créalo aquí</a>. Elige <b>Only select repositories</b> y marca solo ese repositorio. En <b>Permissions</b> añade <b>Contents: Read and write</b>. Copia el token y pégalo abajo.</li>
+    </ol>
+    <label class="f">Repositorio (usuario/nombre)</label><input class="in" id="suRepo" value="${esc(c.repo||"LuciaEsteban/covers-data")}" autocapitalize="none" autocomplete="off">
+    <label class="f">Token</label><input class="in" id="suTok" type="password" placeholder="github_pat_..." autocapitalize="none" autocomplete="off">
+    <div class="err" id="suErr">${esc(msg||"")}</div>
+    <button class="btn" id="suGo" style="width:100%;margin-top:12px;min-height:48px">Conectar</button>
+    <p class="hint" style="margin-top:12px">El token se guarda solo en este dispositivo y solo da acceso a ese repositorio. Tus datos actuales no se pierden: se suben a la nube al conectar.</p>
+  </div>`;
+  $("#suGo").onclick = async () => {
+    const repo = $("#suRepo").value.trim().replace(/^https:\/\/github\.com\//,"").replace(/\/$/,""), token = $("#suTok").value.trim();
+    if(!/^[\w.-]+\/[\w.-]+$/.test(repo) || !token){ $("#suErr").textContent = "Indica el repositorio (usuario/nombre) y el token."; return; }
+    $("#suGo").disabled = true; $("#suGo").textContent = "Comprobando...";
+    try{
+      const r = await fetch("https://api.github.com/repos/" + repo, { headers:{ Authorization:"Bearer " + token, Accept:"application/vnd.github+json" } });
+      if(r.status===401) throw new Error("El token no es válido.");
+      if(r.status===404) throw new Error("No encuentro ese repositorio con este token. Comprueba el nombre y que el token tenga acceso a él.");
+      if(!r.ok) throw new Error("GitHub respondió " + r.status + ".");
+      const info = await r.json();
+      if(!info.private) throw new Error("Ese repositorio es público: cualquiera podría ver tus datos. Usa uno privado.");
+      if(info.permissions && !info.permissions.push) throw new Error("El token no tiene permiso de escritura (Contents: Read and write).");
+      localStorage.setItem("covers.cloud", JSON.stringify({ repo, token, branch: info.default_branch || "main" }));
+      el.classList.add("hidden"); el.innerHTML = "";
+      setSyncUi("sync", "Conectado."); syncNow({toast:true});
+    }catch(e){ $("#suErr").textContent = e.message || "No se pudo conectar."; $("#suGo").disabled = false; $("#suGo").textContent = "Conectar"; }
+  };
+}
+function cloudGate(){ if(!cfgGet()) showSetup(); else syncNow({silent:true}); }
+function renderCloudStatus(){
+  const el = $("#cloudStatus"); if(!el) return; const st = stGet(), c = cfgGet() || {};
+  const last = st.last ? new Date(st.last).toLocaleString("es-ES") : "nunca";
+  el.innerHTML = `Repositorio privado: <b>${esc(c.repo||"-")}</b><br>Estado: <b>${SY.state==="sync" ? esc(SY.msg||"Sincronizando...") : SY.state==="err" ? "Error: " + esc(SY.err) : "Al día"}</b><br>Última sincronización: ${esc(last)}`;
+}
+document.addEventListener("visibilitychange", () => { if(document.visibilityState==="visible") scheduleSync(400); });
+window.addEventListener("online", () => scheduleSync(800));
+document.addEventListener("click", e => { const b = e.target.closest("#syncBtn"); if(b){ if(SY.state==="err") toast("Nube: " + SY.err); syncNow({toast:true}); } });
 
 /* ========================= Inicio ========================= */
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
