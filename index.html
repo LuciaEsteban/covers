@@ -556,7 +556,21 @@ let ui = { planView:"board", tab:"songs", q:"", status:"Todas", tag:"", sort: ls
 let objectUrls = [];
 
 let albums = [];
-async function loadSongs(){ songs = await dbAll("songs"); albums = await dbAll("albums"); }
+const KEYS = (() => { const n = ["Do","Do#","Re","Re#","Mi","Fa","Fa#","Sol","Sol#","La","La#","Si"]; return [...n.map(x=>x+" mayor"), ...n.map(x=>x+" menor")]; })();
+async function loadSongs(){
+  songs = await dbAll("songs"); albums = await dbAll("albums");
+  for(const s of songs){
+    let dirty = false;
+    if(s.planFormats){ s.formats = [...new Set([...(s.formats||[]), ...s.planFormats])]; delete s.planFormats; dirty = true; }
+    if(!s.keyMigrated){
+      const t = (s.tone||"").trim();
+      if(t && !KEYS.includes(t)){ s.notes = (s.notes ? s.notes + "\n" : "") + "Tono / ajustes: " + t; s.tone = ""; }
+      if(s.bpm===undefined) s.bpm = "";
+      s.keyMigrated = true; dirty = true;
+    }
+    if(dirty){ try{ await dbPut("songs", s); }catch(e){} }
+  }
+}
 const byId = id => songs.find(s => s.id===id);
 function allTags(){ const m = new Map(); songs.forEach(s => (s.tags||[]).forEach(t => m.set(t, (m.get(t)||0)+1))); return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(e=>e[0]); }
 const fold = x => (x||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim();
@@ -639,7 +653,7 @@ function filtered(){
     else if(ui.status!=="Todas" && s.status!==ui.status) return false;
     if(ui.tag && !(s.tags||[]).includes(ui.tag)) return false;
     if(q){
-      const hay = [s.title,s.artist,s.style,s.status,s.tone,s.notes,...(s.tags||[]),...(s.formats||[]),...(s.planFormats||[])].join(" ").toLowerCase();
+      const hay = [s.title,s.artist,s.style,s.status,s.tone,s.notes,...(s.tags||[]),...(s.formats||[]),s.bpm?s.bpm+" bpm":""].join(" ").toLowerCase();
       if(!q.split(/\s+/).every(w => hay.includes(w))) return false;
     }
     return true;
@@ -764,11 +778,11 @@ async function openDetail(id){
           <span>Estilo</span><span>${esc(s.style||"-")}</span>
           <span>Quiero hacerla</span><span>${esc(s.goal||"-")}</span>
           <span>Tengo</span><span>${esc(s.have||"-")}</span>
-          <span>Plataforma donde está</span><span>${(s.formats||[]).length ? (s.formats||[]).map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
-          <span>Plataforma donde la quiero hacer</span><span>${(s.planFormats||[]).length ? s.planFormats.map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
+          <span>Plataforma</span><span>${(s.formats||[]).length ? (s.formats||[]).map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
           <span>Tono</span><span>${esc(s.tone||"-")}</span>
+          <span>BPM</span><span>${s.bpm ? esc(s.bpm) : "-"}</span>
           <span>Fecha objetivo</span><span>${s.due ? esc(new Date(s.due+"T00:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"long"})) : "-"}</span>
-          <span>Plan</span><span>${s.focus ? "En foco ahora" : "-"}</span>
+          <span>Trabajando ahora</span><span>${s.focus ? "Sí" : "-"}</span>
           <span>Actualizada</span><span>${new Date(s.updatedAt).toLocaleDateString("es-ES")}</span>
         </div>
         ${(s.tags||[]).length ? `<div class="meta">${s.tags.map(t=>`<span class="pill">#${esc(t)}</span>`).join("")}</div>` : ""}
@@ -955,7 +969,7 @@ async function openEditor(id){
   const isNew = !id;
   const orig = isNew ? null : byId(id);
   const s = isNew ? { id:uid(), title:"", artist:"", style:"", status:"Idea", priority:"Media", goal:"Completa", have:"Nada todavía",
-      progress:0, rating:0, liked:false, hasTrack:false, photos:[], formats:[], planFormats:[], tags:[], links:[], tone:"", due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
+      progress:0, rating:0, liked:false, hasTrack:false, photos:[], formats:[], tags:[], links:[], tone:"", bpm:"", keyMigrated:true, due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
     : JSON.parse(JSON.stringify(orig));
   const existing = isNew ? [] : (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt);
   const pending = []; const removed = new Set();
@@ -993,16 +1007,18 @@ async function openEditor(id){
         <label class="f">Avance: <span id="eProgVal">${s.progress}%</span></label>
         <input type="range" class="rng" id="eProg" min="0" max="100" step="5" value="${s.progress}">
         <div class="quick" id="eQuick">${[0,25,50,75,100].map(n=>`<button type="button" class="chip" data-n="${n}">${n}%</button>`).join("")}</div>
-        <label class="f">Plataforma donde está</label>
+        <label class="f">Plataforma</label>
         <div class="chips" style="flex-wrap:wrap" id="eFormats">${FORMATS.map(f=>`<button type="button" class="chip ${s.formats.includes(f)?"on":""}" data-f="${esc(f)}">${esc(f)}</button>`).join("")}</div>
-        <label class="f">Plataforma donde la quiero hacer</label>
-        <div class="chips" style="flex-wrap:wrap" id="ePlanFormats">${FORMATS.map(f=>`<button type="button" class="chip ${(s.planFormats||[]).includes(f)?"on":""}" data-f="${esc(f)}">${esc(f)}</button>`).join("")}</div>
         <label class="f">Etiquetas</label>
         <div class="tagbox" id="eTagBox"><input id="eTagIn" list="dlTags" placeholder="Añadir y pulsar intro" autocomplete="off" autocapitalize="none" enterkeyhint="done"></div>
         <datalist id="dlTags">${allTags().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
-        <label class="f">Tono / ajustes</label><input class="in" id="eTone" value="${esc(s.tone)}" placeholder="Ej.: subir un tono">
+        <div class="grid2" style="gap:10px">
+          <div><label class="f">Tono</label><select class="in" id="eTone"><option value="">Sin definir</option>${s.tone && !KEYS.includes(s.tone) ? `<option selected>${esc(s.tone)}</option>` : ""}<optgroup label="Mayores">${KEYS.slice(0,12).map(k=>`<option ${k===s.tone?"selected":""}>${k}</option>`).join("")}</optgroup><optgroup label="Menores">${KEYS.slice(12).map(k=>`<option ${k===s.tone?"selected":""}>${k}</option>`).join("")}</optgroup></select></div>
+          <div><label class="f">BPM</label><input class="in" id="eBpm" type="number" inputmode="numeric" min="30" max="300" placeholder="Ej.: 96" value="${esc(s.bpm||"")}"></div>
+        </div>
         <label class="f">Fecha objetivo</label><input class="in" type="date" id="eDue" value="${esc(s.due||"")}">
-        <label class="f">Plan</label><div class="chips"><button type="button" class="chip ${s.focus?"on":""}" id="eFocus">En foco ahora</button></div>
+        <label class="f">Trabajando ahora</label><div class="chips"><button type="button" class="chip ${s.focus?"on":""}" id="eFocus">Estoy con ella ahora</button></div>
+        <div class="hint" style="margin-top:6px">Márcala si es una de las canciones en las que estás trabajando estos días. Aparecerá arriba en la pestaña Plan.</div>
       </div>
       <div class="grp violet">
         <h3 class="sec">Audio de la canción</h3>
@@ -1035,7 +1051,7 @@ async function openEditor(id){
       </div>
       <div class="grp blue">
         <h3 class="sec">Notas</h3>
-        <textarea class="in" id="eNotes">${esc(s.notes)}</textarea>
+        <textarea class="in" id="eNotes" placeholder="Ej.: subir un tono, hacerla a capela, ensayar el puente...">${esc(s.notes)}</textarea>
       </div>
       ${isNew ? "" : '<div style="margin-top:28px"><button class="btn danger" id="eDelete">Eliminar canción</button></div>'}
     </div></div>`;
@@ -1164,11 +1180,6 @@ async function openEditor(id){
     const f = b.dataset.f; s.formats = s.formats.includes(f) ? s.formats.filter(x=>x!==f) : [...s.formats, f];
     b.classList.toggle("on");
   });
-  s.planFormats = s.planFormats || [];
-  $("#ePlanFormats").querySelectorAll("button").forEach(b => b.onclick = () => {
-    const f = b.dataset.f; s.planFormats = s.planFormats.includes(f) ? s.planFormats.filter(x=>x!==f) : [...s.planFormats, f];
-    b.classList.toggle("on");
-  });
   $("#eCancel").onclick = closeLayer;
   const del = $("#eDelete");
   if(del) del.onclick = async () => {
@@ -1190,7 +1201,7 @@ async function openEditor(id){
     rememberValue("artists", artist); rememberValue("styles", style);
     s.title = title; s.artist = artist; s.style = style;
     s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
-    s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value.trim(); s.notes = $("#eNotes").value.trim();
+    s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value; s.bpm = $("#eBpm").value ? String(Math.max(30,Math.min(300,parseInt($("#eBpm").value,10)||0))) : ""; s.notes = $("#eNotes").value.trim();
     s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on");
     s.links = s.links.map(l => ({label:(l.label||"").trim()||"Enlace", url:(l.url||"").trim()})).filter(l => l.url);
     s.updatedAt = Date.now();
@@ -1275,10 +1286,10 @@ function renderPlan(){
   const dated = songs.filter(s => s.due && !DONE.includes(s.status)).sort(dueSort).slice(0,8);
   const going = songs.filter(s => ["Aprendiendo","Ensayando","Grabando"].includes(s.status)).length;
   const stale = songs.filter(isStale).length;
-  let h = `<div class="mini"><div class="kpi"><b>${focus.length}</b><span>En foco</span></div><div class="kpi"><b>${going}</b><span>En marcha</span></div><div class="kpi"><b>${stale}</b><span>Paradas</span></div></div>`;
+  let h = `<div class="mini"><div class="kpi"><b>${focus.length}</b><span>Trabajando</span></div><div class="kpi"><b>${going}</b><span>En marcha</span></div><div class="kpi"><b>${stale}</b><span>Paradas</span></div></div>`;
   h += albumProjects();
-  h += `<div class="sec-h"><h3>En foco ahora</h3><span>${focus.length}</span></div>`;
-  h += focus.length ? focus.map(s => planCard(s,true)).join("") : `<div class="panel warm hint">Marca canciones como "En foco ahora" al editarlas y aparecerán aquí, ordenadas por fecha.</div>`;
+  h += `<div class="sec-h"><h3>Trabajando ahora</h3><span>${focus.length}</span></div>`;
+  h += focus.length ? focus.map(s => planCard(s,true)).join("") : `<div class="panel warm hint">Marca una canción como "Trabajando ahora" al editarla y aparecerá aquí, ordenada por fecha.</div>`;
   h += `<div class="sec-h"><h3>Próximas fechas</h3><span>${dated.length}</span></div>`;
   h += dated.length ? dated.map(s => planCard(s,false)).join("") : `<div class="panel warm hint">Pon una fecha objetivo a una canción para verla aquí.</div>`;
   h += `<div class="sec-h"><h3>Recorrido</h3><span>desliza para ver cada fase</span></div><div class="board">`;
