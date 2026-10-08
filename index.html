@@ -239,6 +239,9 @@ nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-
 .pick{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--violet-line);border-radius:12px;padding:8px 10px;margin:6px 0;min-height:52px}
 .pick input{width:24px;height:24px;accent-color:var(--violet);flex:none}
 .pick .n{flex:1;min-width:0}.pick .n b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pick .n span{font-size:12px;color:var(--muted)}
+.pastezone{margin-top:12px;min-height:52px;border:2px dashed var(--blue-line);border-radius:14px;padding:14px;text-align:center;color:var(--blue-ink);background:rgba(255,255,255,.55);outline:none;font-size:15px;-webkit-user-select:text;user-select:text}
+.pastezone:empty:before{content:attr(data-ph);color:var(--blue-ink);opacity:.8}
+.pastezone:focus{border-color:var(--blue);background:#fff}
 .sw{display:flex;gap:10px;flex-wrap:wrap}.sw button{width:40px;height:40px;border-radius:50%;border:3px solid transparent;box-shadow:0 0 0 1px var(--line)}
 .sw button.on{border-color:var(--ink)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
@@ -552,7 +555,8 @@ function renderSummary(){
 
 /* ========================= Detalle ========================= */
 let layerOpen = false;
-function clearLayerContent(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; $("#layer").innerHTML = ""; }
+let coverSetter = null;
+function clearLayerContent(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; coverSetter = null; $("#layer").innerHTML = ""; }
 function pushLayer(){ if(!layerOpen){ try{ history.pushState({layer:1}, ""); }catch(e){} layerOpen = true; } }
 function closeLayer(fromPop){
   clearLayerContent();
@@ -571,7 +575,7 @@ async function openDetail(id){
         ${coverHtml(s,true)}
         <div style="min-width:0"><div style="font-size:21px;font-weight:700">${esc(s.title)}</div>
         <div style="color:var(--muted)">${esc(s.artist||"Sin artista")}</div>
-        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${s.priority?`<span class="pill pr-${esc(s.priority)}">${esc(s.priority)}</span>`:""}</div></div>
+        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${s.priority?`<span class="pill pr-${esc(s.priority)}">${esc(s.priority)}</span>`:""}</div><button class="btn soft sm" id="dPaste" style="margin-top:8px">Pegar portada</button></div>
       </div>
       <div class="grp warm" style="margin-top:18px">
         <h3 class="sec">Organización</h3>
@@ -599,6 +603,11 @@ async function openDetail(id){
     </div></div>`;
   $("#dBack").onclick = closeLayer;
   $("#dEdit").onclick = () => { clearLayerContent(); openEditor(id); };
+  $("#dPaste").onclick = async () => {
+    const b = await readClipboardImage(); if(!b) return;
+    try{ s.cover = await resizeImage(b); await dbPut("songs", s); await loadSongs(); toast("Portada guardada en la app."); render(); openDetail(id); }
+    catch(err){ toast("No se pudo guardar esa imagen."); }
+  };
   const box = $("#dFiles");
   files.forEach(f => {
     const row = document.createElement("div");
@@ -616,19 +625,64 @@ async function openDetail(id){
 }
 
 /* ========================= Editor ========================= */
-function resizeImage(file, max=360){
+function resizeImage(file, size=360){
   return new Promise((res, rej) => {
     const img = new Image(); const url = URL.createObjectURL(file);
     img.onload = () => {
-      const k = Math.min(1, max/Math.max(img.width,img.height));
-      const c = document.createElement("canvas"); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
-      c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-      URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg",.8));
+      const side = Math.min(img.width, img.height);
+      if(!side){ URL.revokeObjectURL(url); rej(new Error("imagen")); return; }
+      const sx = (img.width-side)/2, sy = (img.height-side)/2, out = Math.min(size, side);
+      const c = document.createElement("canvas"); c.width = c.height = out;
+      const g = c.getContext("2d"); g.fillStyle = "#fff"; g.fillRect(0,0,out,out);
+      g.drawImage(img, sx, sy, side, side, 0, 0, out, out);
+      URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg",.82));
     };
     img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("imagen")); };
     img.src = url;
   });
 }
+/* Imágenes copiadas de internet: se leen del portapapeles y se guardan dentro de la app */
+async function blobFromHtmlOrText(html, text){
+  let url = null;
+  if(html){ const m = html.match(/<img[^>]+src=["']([^"']+)["']/i); if(m) url = m[1].replace(/&amp;/g,"&"); }
+  if(!url && text){ const t = text.trim().split(/\s+/)[0]; if(/^(https?:\/\/|data:image\/)/i.test(t)) url = t; }
+  if(!url) return null;
+  try{ const r = await fetch(url, {mode:"cors"}); if(!r.ok) return null; const b = await r.blob(); return (b.type||"").startsWith("image/") ? b : null; }catch(e){ return null; }
+}
+async function imageFromDataTransfer(dt){
+  if(!dt) return null;
+  let file = null;
+  for(const f of (dt.files||[])) if(f.type && f.type.startsWith("image/")){ file = f; break; }
+  if(!file) for(const it of (dt.items||[])) if(it.kind==="file" && it.type.startsWith("image/")){ file = it.getAsFile(); break; }
+  const html = dt.getData ? dt.getData("text/html") : "";
+  const text = dt.getData ? (dt.getData("text/uri-list") || dt.getData("text/plain")) : "";
+  if(file) return file;
+  return blobFromHtmlOrText(html, text);
+}
+async function readClipboardImage(){
+  if(!navigator.clipboard || !navigator.clipboard.read){ toast("Este navegador no deja leer el portapapeles. Usa el cuadro de pegado."); return null; }
+  try{
+    const items = await navigator.clipboard.read();
+    for(const it of items){ const t = it.types.find(x => x.startsWith("image/")); if(t) return await it.getType(t); }
+    let html = "", text = "";
+    for(const it of items){
+      if(it.types.includes("text/html")) html = await (await it.getType("text/html")).text();
+      if(it.types.includes("text/plain")) text = await (await it.getType("text/plain")).text();
+    }
+    const b = await blobFromHtmlOrText(html, text);
+    if(b) return b;
+    toast("No hay ninguna imagen copiada. Mantén pulsada una imagen en la web y elige Copiar.");
+    return null;
+  }catch(err){ toast("No se pudo leer el portapapeles. Prueba con el cuadro de pegado."); return null; }
+}
+document.addEventListener("paste", e => {
+  if(!coverSetter) return;
+  const dt = e.clipboardData; if(!dt) return;
+  let file = null;
+  for(const f of (dt.files||[])) if(f.type && f.type.startsWith("image/")){ file = f; break; }
+  if(!file) for(const it of (dt.items||[])) if(it.kind==="file" && it.type.startsWith("image/")){ file = it.getAsFile(); break; }
+  if(file){ e.preventDefault(); coverSetter(file); }
+});
 async function openEditor(id){
   pushLayer();
   const isNew = !id;
@@ -646,9 +700,15 @@ async function openEditor(id){
         <h3 class="sec">La canción</h3>
         <div style="display:flex;gap:14px;align-items:center">
           <div id="eCover">${coverHtml(s,true)}</div>
-          <div><button class="btn soft sm" id="eCoverBtn" type="button">Elegir portada</button><br><button class="btn danger sm" id="eCoverDel" type="button" style="margin-top:4px">Quitar</button>
-          <input type="file" id="eCoverFile" accept="image/*" class="hidden"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;align-items:flex-start">
+            <button class="btn sm" id="eCoverPaste" type="button">Pegar imagen</button>
+            <button class="btn soft sm" id="eCoverBtn" type="button">Elegir foto</button>
+            <button class="btn danger sm" id="eCoverDel" type="button">Quitar</button>
+            <input type="file" id="eCoverFile" accept="image/*" class="hidden">
+          </div>
         </div>
+        <div id="ePasteZone" class="pastezone" contenteditable="true" role="textbox" aria-label="Zona para pegar una imagen" data-ph="Otra forma: mantén pulsado aquí y elige Pegar"></div>
+        <div class="hint" style="margin-top:6px">Copia una imagen en Safari (mantén pulsada y elige Copiar) y pégala aquí. Se guarda dentro de la app, no como enlace.</div>
         <label class="f">Canción *</label><input class="in" id="eTitle" value="${esc(s.title)}" autocomplete="off">
         <label class="f">Artista</label><input class="in" id="eArtist" value="${esc(s.artist)}" autocomplete="off">
         <label class="f">Estilo</label><input class="in" id="eStyle" list="dlStyles" value="${esc(s.style)}" autocomplete="off">
@@ -747,6 +807,24 @@ async function openEditor(id){
     e.target.value = ""; renderFiles();
   };
 
+  const applyCover = async blob => {
+    try{ s.cover = await resizeImage(blob); $("#eCover").innerHTML = coverHtml(s,true); toast("Portada guardada en la app."); }
+    catch(err){ toast("No se pudo leer esa imagen."); }
+  };
+  coverSetter = applyCover;
+  $("#eCoverPaste").onclick = async () => { const b = await readClipboardImage(); if(b) await applyCover(b); };
+  const zone = $("#ePasteZone");
+  zone.addEventListener("paste", async e => {
+    e.preventDefault(); e.stopPropagation();
+    const b = await imageFromDataTransfer(e.clipboardData);
+    zone.innerHTML = "";
+    if(b) await applyCover(b); else toast("No he encontrado una imagen. Copia la imagen, no el enlace de la página.");
+  });
+  zone.addEventListener("input", () => { zone.innerHTML = ""; });
+  zone.addEventListener("keydown", e => { if(!(e.metaKey || e.ctrlKey)) e.preventDefault(); });
+  const dropArea = $("#eCover").parentElement;
+  dropArea.addEventListener("dragover", e => e.preventDefault());
+  dropArea.addEventListener("drop", async e => { e.preventDefault(); const b = await imageFromDataTransfer(e.dataTransfer); if(b) await applyCover(b); });
   $("#eCoverBtn").onclick = () => $("#eCoverFile").click();
   $("#eCoverFile").onchange = async e => {
     const f = e.target.files[0]; if(!f) return;
