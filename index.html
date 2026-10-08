@@ -10,6 +10,7 @@
 <meta name="apple-mobile-web-app-title" content="Mis covers">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="robots" content="noindex,nofollow">
+<meta name="format-detection" content="telephone=no">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" href="icon-192.png">
@@ -37,7 +38,9 @@
     --shadow:0 1px 3px rgba(0,0,0,.4); }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%}
+html,body{margin:0;height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html{touch-action:manipulation}
+.card,.chip,.btn,nav.tabs button,.fab,.tagchip,a.linkbtn{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);background-image:var(--page);background-attachment:fixed;color:var(--ink);font-size:16px;line-height:1.35;overscroll-behavior-y:none}
 button,input,select,textarea{font:inherit;color:inherit}
 input,select,textarea{font-size:16px}
@@ -45,25 +48,25 @@ button{cursor:pointer}
 .hidden{display:none!important}
 
 /* layout */
-#app{display:flex;flex-direction:column;height:100%;max-width:760px;margin:0 auto}
+#app{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:760px;margin:0 auto}
 header.top{padding:calc(env(safe-area-inset-top) + 10px) 16px 8px;background:var(--bg);background-image:var(--page);background-attachment:fixed;position:sticky;top:0;z-index:5}
 header.top h1{margin:0 0 8px;font-size:26px;letter-spacing:-.3px;background:linear-gradient(90deg,#4f9cf0,#8a63e0 55%,#e58bc4);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block}
 .searchrow{display:flex;gap:8px}
-.search{flex:1;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
-.sort{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 8px;max-width:130px}
+.search{flex:1;min-width:0;min-height:46px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.sort{min-height:46px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 6px;max-width:118px}
 .chips{display:flex;gap:8px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
-.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:14px;white-space:nowrap}
+.chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;min-height:38px;font-size:14px;white-space:nowrap}
 .chip.on{background:linear-gradient(135deg,#6fb3f2,#9a7ae8);color:#fff;border-color:transparent}
 #statusChips .chip.on{background:linear-gradient(135deg,#ffd76a,#ffa86b);color:#5a2f08}
 #statusChips .chip{border-color:var(--warm-line)}
-.chip.tag{font-size:13px;padding:4px 10px;background:transparent}
+.chip.tag{font-size:13px;padding:6px 12px;min-height:34px;background:transparent}
 .chip.tag{border-color:var(--blue-line);color:var(--blue-ink)}
 .chip.tag.on{background:var(--blue-soft);color:var(--blue-ink);border-color:var(--blue)}
-main{flex:1;overflow-y:auto;padding:4px 16px calc(150px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+main{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:4px 16px calc(150px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:6}
 nav.tabs .in{display:flex;width:100%;max-width:760px}
-nav.tabs button{flex:1;border:0;background:none;padding:10px 4px 9px;color:var(--muted);font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px}
+nav.tabs button{flex:1;border:0;background:none;min-height:56px;padding:8px 2px 8px;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
 nav.tabs button .ic{font-size:20px;line-height:1}
 nav.tabs button.on{color:var(--accent);font-weight:700}
 .fab{background:linear-gradient(135deg,#6fb3f2,#9a7ae8)!important;position:fixed;right:max(18px,calc((100vw - 760px)/2 + 18px));bottom:calc(72px + env(safe-area-inset-bottom));width:58px;height:58px;border-radius:50%;border:0;background:var(--accent);color:var(--accent-ink);font-size:32px;box-shadow:0 6px 18px rgba(60,30,110,.4);z-index:7}
@@ -91,15 +94,15 @@ nav.tabs button.on{color:var(--accent);font-weight:700}
 .banner button{border:0;background:linear-gradient(135deg,#ffd76a,#ffa86b);color:#5a2f08;border-radius:8px;padding:6px 10px;font-size:13px}
 
 /* sheets */
-.overlay{position:fixed;inset:0;background:var(--bg);background-image:var(--page);z-index:20;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
+.overlay{position:fixed;inset:0;height:100dvh;background:var(--bg);background-image:var(--page);z-index:20;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
 .overlay>.bar-top{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top) + 10px) 12px 10px;border-bottom:1px solid var(--line);background:var(--glass);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
 .overlay>.bar-top h2{margin:0;font-size:17px}
-.overlay>.content{flex:1;overflow-y:auto;padding:16px 16px calc(40px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
+.overlay>.content{flex:1;overflow-y:auto;overscroll-behavior:contain;scroll-padding-bottom:140px;padding:16px 16px calc(40px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
 .btn{border:0;border-radius:12px;padding:10px 16px;background:linear-gradient(135deg,#6fb3f2,#9a7ae8);color:#fff;font-weight:600}
 .btn.ghost{background:transparent;color:var(--accent)}
 .btn.soft{background:var(--accent-soft);color:var(--accent)}
 .btn.danger{background:transparent;color:var(--danger)}
-.btn.sm{padding:6px 10px;font-size:14px;border-radius:9px}
+.btn.sm{padding:8px 12px;min-height:40px;font-size:14px;border-radius:10px}
 label.f{display:block;margin:14px 0 4px;font-size:13px;color:var(--muted);font-weight:600}
 .in,select.in,textarea.in{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
 textarea.in{min-height:88px;resize:vertical}
@@ -108,8 +111,9 @@ textarea.in{min-height:88px;resize:vertical}
 .tagbox input{flex:1;min-width:110px;border:0;background:none;outline:none;padding:4px}
 .tagchip{background:var(--blue-soft);color:var(--blue-ink);border-radius:999px;padding:3px 6px 3px 10px;font-size:14px;display:inline-flex;gap:6px;align-items:center}
 .tagchip button{border:0;background:none;color:var(--blue-ink);font-size:16px;padding:0 2px}
-.rng{width:100%;accent-color:#f59a4c}
-.linkrow{display:grid;grid-template-columns:110px 1fr 36px;gap:6px;margin-bottom:6px}
+.rng{width:100%;height:36px;accent-color:#f59a4c}
+.quick{display:flex;gap:6px;margin-top:4px}.quick .chip{flex:1;text-align:center;padding:8px 0}
+.linkrow{display:grid;grid-template-columns:100px 1fr 44px;gap:6px;margin-bottom:8px}
 .filerow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin:6px 0}
 .filerow .n{flex:1;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .filerow .s{color:var(--muted);font-size:12px}
@@ -171,7 +175,7 @@ h3.sec{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
 @keyframes lockIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
 @keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-22px)}}
-.card{transition:transform .18s ease,box-shadow .2s ease}
+.card{transition:transform .18s ease,box-shadow .2s ease;content-visibility:auto;contain-intrinsic-size:auto 96px}
 .card:active{transform:scale(.975)}
 .anim .card,.view>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
 .anim .card{animation-delay:calc(var(--i,0)*45ms)}
@@ -197,6 +201,46 @@ nav.tabs button.on .ic{animation:pop .4s cubic-bezier(.2,.9,.3,1.3)}
 .tagchip{animation:pop .3s ease both}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(123,108,240,.25);border-color:var(--accent)}
 .grp.warm input:focus,.grp.warm select:focus{box-shadow:0 0 0 3px rgba(245,163,91,.3);border-color:var(--warm)}
+
+/* ===== Plan y álbumes ===== */
+nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 8px}
+.sec-h h3{margin:0;font-size:18px}.sec-h span{color:var(--muted);font-size:13px}
+.mini{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+.mini .kpi{padding:12px}.mini .kpi b{font-size:24px}.mini .kpi span{font-size:12px}
+.pcard{flex-wrap:wrap;background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:10px;display:flex;gap:10px;align-items:center;margin:8px 0;cursor:pointer;border-left:6px solid var(--warm-line);transition:transform .18s}
+.pcard:active{transform:scale(.975)}
+.pcard .cover{width:48px;height:48px;font-size:18px;border-radius:10px}
+.pcard .body{flex:1;min-width:0}
+.pcard .t{font-weight:650;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard .a{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pcard .bar{margin-top:6px;height:6px}
+.pcard .pc{font-weight:700;color:var(--warm-ink);font-size:14px;min-width:34px;text-align:right}
+.duechip{font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;background:#fff0a8;color:#6b5400}
+.duechip.soon{background:#ffcf9e;color:#8a3f00}.duechip.over{background:#ffc9b8;color:#8a2e12}
+.board{scroll-padding-left:16px;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:2px 16px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.board::-webkit-scrollbar{display:none}
+.col{flex:none;width:min(80vw,300px);scroll-snap-align:center;background:var(--warm-soft);border:1px solid var(--warm-line);border-radius:20px;padding:10px 10px 4px}
+.col h4{margin:2px 4px 6px;display:flex;justify-content:space-between;align-items:center;font-size:14px}
+.col .cnt{border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700}
+.col .pcard{box-shadow:none;flex-wrap:wrap}
+.col .empty-col{color:var(--muted);font-size:13px;text-align:center;padding:14px 0 18px}
+.adv{flex:1 1 100%;border:0;background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:8px 10px;min-height:38px;font-size:13px;font-weight:600}
+.agrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{border-radius:20px;padding:10px;cursor:pointer;box-shadow:var(--shadow);transition:transform .18s;animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+.tile:active{transform:scale(.97)}
+.mosaic{display:grid;grid-template-columns:1fr 1fr;gap:4px;aspect-ratio:1;border-radius:14px;overflow:hidden}
+.mosaic .m{background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-weight:700;color:rgba(45,42,69,.7);font-size:22px}
+.tile .nm{font-weight:700;margin-top:8px;font-size:15px;color:#2d2a45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tile .ct{font-size:12px;color:#6b6786}
+.hscroll{scroll-padding-left:16px;display:flex;gap:12px;overflow-x:auto;margin:0 -16px;padding:2px 16px 12px;scroll-snap-type:x proximity;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.hscroll::-webkit-scrollbar{display:none}
+.hscroll .tile{flex:none;width:142px;scroll-snap-align:start}
+.pick{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--violet-line);border-radius:12px;padding:8px 10px;margin:6px 0;min-height:52px}
+.pick input{width:24px;height:24px;accent-color:var(--violet);flex:none}
+.pick .n{flex:1;min-width:0}.pick .n b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pick .n span{font-size:12px;color:var(--muted)}
+.sw{display:flex;gap:10px;flex-wrap:wrap}.sw button{width:40px;height:40px;border-radius:50%;border:3px solid transparent;box-shadow:0 0 0 1px var(--line)}
+.sw button.on{border-color:var(--ink)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -224,7 +268,7 @@ input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(1
     <h1 id="title">Mis covers</h1>
     <div id="searchWrap">
       <div class="searchrow">
-        <input class="search" id="q" type="search" placeholder="Buscar canción, artista, etiqueta..." autocomplete="off">
+        <input class="search" id="q" type="search" placeholder="Buscar canción, artista, etiqueta..." autocomplete="off" enterkeyhint="search">
         <select class="sort" id="sort" aria-label="Ordenar">
           <option value="recent">Recientes</option>
           <option value="priority">Prioridad</option>
@@ -243,9 +287,11 @@ input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(1
 
 <button class="fab hidden" id="fab" aria-label="Añadir canción">+</button>
 <nav class="tabs hidden" id="tabs"><div class="in">
-  <button data-tab="songs" class="on"><span class="ic">&#9835;</span>Canciones</button>
-  <button data-tab="summary"><span class="ic">&#9636;</span>Resumen</button>
-  <button data-tab="settings"><span class="ic">&#9881;</span>Ajustes</button>
+  <button data-tab="songs" class="on"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span>Canciones</button>
+  <button data-tab="plan"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="4.5" height="16" rx="1.5"/><rect x="9.75" y="4" width="4.5" height="10" rx="1.5"/><rect x="16" y="4" width="4.5" height="13" rx="1.5"/></svg></span>Plan</button>
+  <button data-tab="albums"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/></svg></span>Álbumes</button>
+  <button data-tab="summary"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span>Resumen</button>
+  <button data-tab="settings"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></span>Ajustes</button>
 </div></nav>
 
 <div id="layer"></div>
@@ -313,6 +359,7 @@ function currentCred(){
 }
 function isUnlocked(){ return ssGet("covers.ok")==="1" || lsGet("covers.remember","")==="1"; }
 function showLock(){
+  layerOpen = false;
   $("#app").classList.add("hidden"); $("#tabs").classList.add("hidden"); $("#fab").classList.add("hidden");
   $("#layer").innerHTML = ""; $("#lock").classList.remove("hidden");
   $("#lp").value = ""; $("#lerr").textContent = "";
@@ -336,12 +383,12 @@ $("#lockForm").addEventListener("submit", async e => {
 let _db;
 function openDB(){
   return _db || (_db = new Promise((res, rej) => {
-    const r = indexedDB.open("covers-app", 1);
+    const r = indexedDB.open("covers-app", 2);
     r.onupgradeneeded = () => {
       const d = r.result;
-      d.createObjectStore("songs", {keyPath:"id"});
-      const f = d.createObjectStore("files", {keyPath:"id"});
-      f.createIndex("songId", "songId");
+      if(!d.objectStoreNames.contains("songs")) d.createObjectStore("songs", {keyPath:"id"});
+      if(!d.objectStoreNames.contains("files")){ const f = d.createObjectStore("files", {keyPath:"id"}); f.createIndex("songId", "songId"); }
+      if(!d.objectStoreNames.contains("albums")) d.createObjectStore("albums", {keyPath:"id"});
     };
     r.onsuccess = () => res(r.result);
     r.onerror = () => rej(r.error);
@@ -363,14 +410,15 @@ const dbAll = store => tx(store,"readonly", t => req(t.objectStore(store).getAll
 const dbPut = (store, v) => tx(store,"readwrite", t => req(t.objectStore(store).put(v)));
 const dbDel = (store, k) => tx(store,"readwrite", t => req(t.objectStore(store).delete(k)));
 const dbFilesOf = id => tx("files","readonly", t => req(t.objectStore("files").index("songId").getAll(id)));
-async function dbClear(){ await tx(["songs","files"],"readwrite", t => { t.objectStore("songs").clear(); t.objectStore("files").clear(); }); }
+async function dbClear(){ await tx(["songs","files","albums"],"readwrite", t => { t.objectStore("songs").clear(); t.objectStore("files").clear(); t.objectStore("albums").clear(); }); }
 
 /* ========================= Estado ========================= */
 let songs = [];
 let ui = { tab:"songs", q:"", status:"Todas", tag:"", sort: lsGet("covers.sort","recent") };
 let objectUrls = [];
 
-async function loadSongs(){ songs = await dbAll("songs"); }
+let albums = [];
+async function loadSongs(){ songs = await dbAll("songs"); albums = await dbAll("albums"); }
 const byId = id => songs.find(s => s.id===id);
 function allTags(){ const m = new Map(); songs.forEach(s => (s.tags||[]).forEach(t => m.set(t, (m.get(t)||0)+1))); return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(e=>e[0]); }
 function allStyles(){ const set = new Set(BASE_STYLES); songs.forEach(s => s.style && set.add(s.style)); return [...set]; }
@@ -382,8 +430,8 @@ function startApp(){
   if(navigator.storage && navigator.storage.persist){ navigator.storage.persist().catch(()=>{}); }
 }
 document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => { ui.tab = b.dataset.tab; render(); $("#main").scrollTop = 0; }));
-$("#fab").addEventListener("click", () => openEditor(null));
-$("#q").addEventListener("input", e => { ui.q = e.target.value; renderList(false); });
+$("#fab").addEventListener("click", () => { if(ui.tab==="albums") openAlbumEditor(null); else openEditor(null); });
+let qTimer; $("#q").addEventListener("input", e => { ui.q = e.target.value; clearTimeout(qTimer); qTimer = setTimeout(() => renderList(false), 120); });
 $("#sort").value = ui.sort;
 $("#sort").addEventListener("change", e => { ui.sort = e.target.value; lsSet("covers.sort", ui.sort); renderList(); });
 
@@ -391,10 +439,10 @@ function render(){
   document.querySelectorAll("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab===ui.tab));
   const isSongs = ui.tab==="songs";
   $("#searchWrap").classList.toggle("hidden", !isSongs);
-  $("#fab").classList.toggle("hidden", !isSongs);
-  $("#title").textContent = ui.tab==="songs" ? "Mis covers" : ui.tab==="summary" ? "Resumen" : "Ajustes";
+  $("#fab").classList.toggle("hidden", !(isSongs || ui.tab==="albums"));
+  $("#title").textContent = {songs:"Mis covers",plan:"Plan",albums:"Álbumes",summary:"Resumen",settings:"Ajustes"}[ui.tab];
   if(isSongs){ renderChips(); renderList(); }
-  else { $("#main").className = "view"; if(ui.tab==="summary") renderSummary(); else renderSettings(); }
+  else { $("#main").className = "view"; if(ui.tab==="summary") renderSummary(); else if(ui.tab==="plan") renderPlan(); else if(ui.tab==="albums") renderAlbums(); else renderSettings(); }
 }
 
 function renderChips(){
@@ -444,6 +492,8 @@ function renderList(anim=true){
   }
   const stale = songs.filter(isStale).length;
   let html = "";
+  const standalone = (window.navigator.standalone === true) || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+  if(!standalone && lsGet("covers.tipOff","")!=="1") html += `<div class="banner" id="tipBox"><span>Para usarla como app: Compartir y "Añadir a pantalla de inicio".</span><button id="tipOk">Entendido</button></div>`;
   if(stale && ui.status!=="Paradas") html += `<div class="banner"><span>${stale} ${stale===1?"canción lleva":"canciones llevan"} más de ${staleDays()} días sin tocarse.</span><button id="seeStale">Ver</button></div>`;
   if(!list.length) html += `<div class="empty"><b>Sin resultados</b>Prueba con otra búsqueda o quita los filtros.</div>`;
   html += list.map((s,i) => {
@@ -455,7 +505,7 @@ function renderList(anim=true){
       <div class="body">
         <div class="t">${esc(s.title)}</div>
         <div class="a">${esc(s.artist||"Sin artista")}${s.style?" · "+esc(s.style):""}</div>
-        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${pr}${stl}${tags}</div>
+        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${pr}${dueChip(s)}${stl}${tags}</div>
         <div class="bar"><i style="width:${Math.min(100,s.progress||0)}%"></i></div>
       </div>
       <div style="font-weight:700;color:var(--warm-ink);min-width:38px;text-align:right">${s.progress||0}%</div>
@@ -463,6 +513,7 @@ function renderList(anim=true){
   }).join("");
   main.innerHTML = html;
   main.querySelectorAll(".card").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+  const tip = $("#tipOk"); if(tip) tip.onclick = () => { lsSet("covers.tipOff","1"); $("#tipBox").remove(); };
   const sb = $("#seeStale"); if(sb) sb.onclick = () => { ui.status = "Paradas"; renderChips(); renderList(); };
 }
 
@@ -500,9 +551,17 @@ function renderSummary(){
 }
 
 /* ========================= Detalle ========================= */
-function closeLayer(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; $("#layer").innerHTML = ""; }
+let layerOpen = false;
+function clearLayerContent(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; $("#layer").innerHTML = ""; }
+function pushLayer(){ if(!layerOpen){ try{ history.pushState({layer:1}, ""); }catch(e){} layerOpen = true; } }
+function closeLayer(fromPop){
+  clearLayerContent();
+  if(layerOpen){ layerOpen = false; if(fromPop!==true){ try{ history.back(); }catch(e){} } }
+}
+window.addEventListener("popstate", () => { if(layerOpen) closeLayer(true); });
 async function openDetail(id){
   const s = byId(id); if(!s) return;
+  pushLayer();
   const files = (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt);
   const links = (s.links||[]).map(l => ({label:l.label||"Enlace", url:normUrl(l.url)})).filter(l=>l.url);
   $("#layer").innerHTML = `<div class="overlay">
@@ -524,6 +583,8 @@ async function openDetail(id){
           <span>Tengo</span><span>${esc(s.have||"-")}</span>
           <span>Dónde está</span><span>${(s.formats||[]).length ? (s.formats||[]).map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
           <span>Tono</span><span>${esc(s.tone||"-")}</span>
+          <span>Fecha objetivo</span><span>${s.due ? esc(new Date(s.due+"T00:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"long"})) : "-"}</span>
+          <span>Plan</span><span>${s.focus ? "En foco ahora" : "-"}</span>
           <span>Actualizada</span><span>${new Date(s.updatedAt).toLocaleDateString("es-ES")}</span>
         </div>
         ${(s.tags||[]).length ? `<div class="meta">${s.tags.map(t=>`<span class="pill">#${esc(t)}</span>`).join("")}</div>` : ""}
@@ -537,7 +598,7 @@ async function openDetail(id){
       ${s.notes ? `<div class="grp blue"><h3 class="sec">Notas</h3><div class="notes">${esc(s.notes)}</div></div>` : ""}
     </div></div>`;
   $("#dBack").onclick = closeLayer;
-  $("#dEdit").onclick = () => { closeLayer(); openEditor(id); };
+  $("#dEdit").onclick = () => { clearLayerContent(); openEditor(id); };
   const box = $("#dFiles");
   files.forEach(f => {
     const row = document.createElement("div");
@@ -555,24 +616,25 @@ async function openDetail(id){
 }
 
 /* ========================= Editor ========================= */
-function resizeImage(file, max=480){
+function resizeImage(file, max=360){
   return new Promise((res, rej) => {
     const img = new Image(); const url = URL.createObjectURL(file);
     img.onload = () => {
       const k = Math.min(1, max/Math.max(img.width,img.height));
       const c = document.createElement("canvas"); c.width = Math.round(img.width*k); c.height = Math.round(img.height*k);
       c.getContext("2d").drawImage(img,0,0,c.width,c.height);
-      URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg",.82));
+      URL.revokeObjectURL(url); res(c.toDataURL("image/jpeg",.8));
     };
     img.onerror = () => { URL.revokeObjectURL(url); rej(new Error("imagen")); };
     img.src = url;
   });
 }
 async function openEditor(id){
+  pushLayer();
   const isNew = !id;
   const orig = isNew ? null : byId(id);
   const s = isNew ? { id:uid(), title:"", artist:"", style:"", status:"Idea", priority:"Media", goal:"Completa", have:"Nada todavía",
-      progress:0, formats:[], tags:[], links:[], tone:"", notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
+      progress:0, formats:[], tags:[], links:[], tone:"", due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
     : JSON.parse(JSON.stringify(orig));
   const existing = isNew ? [] : (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt);
   const pending = []; const removed = new Set();
@@ -602,12 +664,15 @@ async function openEditor(id){
         </div>
         <label class="f">Avance: <span id="eProgVal">${s.progress}%</span></label>
         <input type="range" class="rng" id="eProg" min="0" max="100" step="5" value="${s.progress}">
+        <div class="quick" id="eQuick">${[0,25,50,75,100].map(n=>`<button type="button" class="chip" data-n="${n}">${n}%</button>`).join("")}</div>
         <label class="f">Dónde está</label>
         <div class="chips" style="flex-wrap:wrap" id="eFormats">${FORMATS.map(f=>`<button type="button" class="chip ${s.formats.includes(f)?"on":""}" data-f="${esc(f)}">${esc(f)}</button>`).join("")}</div>
         <label class="f">Etiquetas</label>
-        <div class="tagbox" id="eTagBox"><input id="eTagIn" list="dlTags" placeholder="Añadir y pulsar intro" autocomplete="off" autocapitalize="none"></div>
+        <div class="tagbox" id="eTagBox"><input id="eTagIn" list="dlTags" placeholder="Añadir y pulsar intro" autocomplete="off" autocapitalize="none" enterkeyhint="done"></div>
         <datalist id="dlTags">${allTags().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
         <label class="f">Tono / ajustes</label><input class="in" id="eTone" value="${esc(s.tone)}" placeholder="Ej.: subir un tono">
+        <label class="f">Fecha objetivo</label><input class="in" type="date" id="eDue" value="${esc(s.due||"")}">
+        <label class="f">Plan</label><div class="chips"><button type="button" class="chip ${s.focus?"on":""}" id="eFocus">En foco ahora</button></div>
       </div>
       <div class="grp violet">
         <h3 class="sec">Enlaces y archivos</h3>
@@ -691,6 +756,8 @@ async function openEditor(id){
   $("#eCoverDel").onclick = () => { s.cover = null; $("#eCover").innerHTML = coverHtml(s,true); };
   $("#eTitle").addEventListener("input", () => { if(!s.cover) $("#eCover").innerHTML = coverHtml({title:$("#eTitle").value, cover:null}, true); });
   $("#eProg").oninput = e => $("#eProgVal").textContent = e.target.value+"%";
+  $("#eFocus").onclick = () => $("#eFocus").classList.toggle("on");
+  $("#eQuick").querySelectorAll("button").forEach(b => b.onclick = () => { $("#eProg").value = b.dataset.n; $("#eProgVal").textContent = b.dataset.n+"%"; });
   $("#eFormats").querySelectorAll("button").forEach(b => b.onclick = () => {
     const f = b.dataset.f; s.formats = s.formats.includes(f) ? s.formats.filter(x=>x!==f) : [...s.formats, f];
     b.classList.toggle("on");
@@ -711,6 +778,7 @@ async function openEditor(id){
     s.title = title; s.artist = $("#eArtist").value.trim(); s.style = $("#eStyle").value.trim();
     s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
     s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value.trim(); s.notes = $("#eNotes").value.trim();
+    s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on");
     s.links = s.links.map(l => ({label:(l.label||"").trim()||"Enlace", url:(l.url||"").trim()})).filter(l => l.url);
     s.updatedAt = Date.now();
     s.fileCount = existing.filter(f=>!removed.has(f.id)).length + pending.length;
@@ -720,7 +788,202 @@ async function openEditor(id){
       await dbPut("songs", s); await loadSongs(); closeLayer(); render(); toast("Guardado.");
     }catch(err){ console.error(err); toast("No se pudo guardar. Puede que no quede espacio."); }
   };
-  if(isNew) setTimeout(()=>$("#eTitle").focus(), 80);
+  if(isNew) $("#eTitle").focus();
+}
+
+
+/* ========================= Tarjetas reutilizables ========================= */
+function cardHtml(s, i){
+  const pr = s.priority ? `<span class="pill pr-${esc(s.priority)}">${esc(s.priority)}</span>` : "";
+  const stl = isStale(s) ? `<span class="stale-tag">Parada ${daysAgo(s.updatedAt)} d</span>` : "";
+  return `<div class="card ${isStale(s)?"stale":""}" data-id="${s.id}" style="border-left-color:${STATUS_COLORS[stIdx(s.status)]};--i:${Math.min(i||0,12)}">
+    ${coverHtml(s)}
+    <div class="body">
+      <div class="t">${esc(s.title)}</div>
+      <div class="a">${esc(s.artist||"Sin artista")}${s.style?" · "+esc(s.style):""}</div>
+      <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${pr}${dueChip(s)}${stl}</div>
+      <div class="bar"><i style="width:${Math.min(100,s.progress||0)}%"></i></div>
+    </div>
+    <div style="font-weight:700;color:var(--warm-ink);min-width:38px;text-align:right">${s.progress||0}%</div>
+  </div>`;
+}
+
+/* ========================= Plan ========================= */
+function dueInfo(s){
+  if(!s.due) return null;
+  const d = new Date(s.due+"T00:00:00"); if(isNaN(d)) return null;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const days = Math.round((d - today)/DAY);
+  const label = d.toLocaleDateString("es-ES",{day:"numeric",month:"short"});
+  const over = days < 0 && !DONE.includes(s.status);
+  return { days, over, soon: days>=0 && days<=7, text: over ? "Venció "+label : days===0 ? "Hoy" : days===1 ? "Mañana" : label };
+}
+function dueChip(s){ const i = dueInfo(s); return i ? `<span class="duechip ${i.over?"over":i.soon?"soon":""}">${esc(i.text)}</span>` : ""; }
+const dueSort = (a,b) => (a.due||"9999").localeCompare(b.due||"9999") || b.updatedAt-a.updatedAt;
+function planCard(s, withAdv){
+  const next = STATUSES[stIdx(s.status)+1];
+  const canAdv = withAdv && ["Idea","Aprendiendo","Ensayando","Grabando","Grabada"].includes(s.status) && next;
+  return `<div class="pcard" data-id="${s.id}" style="border-left-color:${STATUS_COLORS[stIdx(s.status)]}">
+    ${coverHtml(s)}
+    <div class="body">
+      <div class="t">${esc(s.title)}</div>
+      <div class="a">${esc(s.artist||"Sin artista")}</div>
+      <div class="bar"><i style="width:${Math.min(100,s.progress||0)}%"></i></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px"><span class="pc">${s.progress||0}%</span>${dueChip(s)}</div>
+    ${canAdv ? `<button class="adv" data-adv="${s.id}">Pasar a ${esc(next)} &rsaquo;</button>` : ""}
+  </div>`;
+}
+function renderPlan(){
+  if(!songs.length){ $("#main").innerHTML = `<div class="empty"><b>Tu plan está vacío</b>Añade canciones y verás aquí tu foco, tus fechas y el recorrido de cada una.</div>`; return; }
+  const focus = songs.filter(s => s.focus && !DONE.includes(s.status)).sort(dueSort);
+  const dated = songs.filter(s => s.due && !DONE.includes(s.status)).sort(dueSort).slice(0,8);
+  const going = songs.filter(s => ["Aprendiendo","Ensayando","Grabando"].includes(s.status)).length;
+  const stale = songs.filter(isStale).length;
+  let h = `<div class="mini"><div class="kpi"><b>${focus.length}</b><span>En foco</span></div><div class="kpi"><b>${going}</b><span>En marcha</span></div><div class="kpi"><b>${stale}</b><span>Paradas</span></div></div>`;
+  h += `<div class="sec-h"><h3>En foco ahora</h3><span>${focus.length}</span></div>`;
+  h += focus.length ? focus.map(s => planCard(s,true)).join("") : `<div class="panel warm hint">Marca canciones como "En foco ahora" al editarlas y aparecerán aquí, ordenadas por fecha.</div>`;
+  h += `<div class="sec-h"><h3>Próximas fechas</h3><span>${dated.length}</span></div>`;
+  h += dated.length ? dated.map(s => planCard(s,false)).join("") : `<div class="panel warm hint">Pon una fecha objetivo a una canción para verla aquí.</div>`;
+  h += `<div class="sec-h"><h3>Recorrido</h3><span>desliza para ver cada fase</span></div><div class="board">`;
+  const colColors = ["#ffe27a","#ffcf70","#ffb878","#ff9f85","#8fd9a8","#5cc487","#c9c7e6"];
+  STATUSES.forEach((st,i) => {
+    const list = songs.filter(s => s.status===st).sort((a,b)=>PRIORITIES.indexOf(a.priority)-PRIORITIES.indexOf(b.priority) || b.updatedAt-a.updatedAt);
+    h += `<div class="col"><h4><span>${esc(st)}</span><span class="cnt" style="background:${colColors[i]};color:#4a3200">${list.length}</span></h4>${list.length ? list.map(s=>planCard(s,true)).join("") : '<div class="empty-col">Nada por aquí</div>'}</div>`;
+  });
+  h += `</div>`;
+  $("#main").innerHTML = h;
+  $("#main").querySelectorAll(".pcard").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+  $("#main").querySelectorAll("[data-adv]").forEach(b => b.onclick = async e => {
+    e.stopPropagation();
+    const s = byId(b.dataset.adv); if(!s) return;
+    s.status = STATUSES[stIdx(s.status)+1]; s.updatedAt = Date.now();
+    try{ await dbPut("songs", s); await loadSongs(); renderPlan(); toast(`"${s.title}" pasa a ${s.status}.`); }catch(err){ toast("No se pudo actualizar."); }
+  });
+}
+
+/* ========================= Álbumes ========================= */
+const ALBUM_COLORS = ["#e3f1ff","#f1e9ff","#fff4de","#ffe6dc","#dff5e8","#ffe3f0"];
+const norm = x => (x||"").trim().toLowerCase();
+function albumSongs(a){
+  if(a.kind==="manual"){ const set = new Set(a.songIds||[]); return songs.filter(s => set.has(s.id)); }
+  if(a.kind==="artist") return songs.filter(s => norm(s.artist)===norm(a.value));
+  if(a.kind==="style") return songs.filter(s => norm(s.style)===norm(a.value));
+  if(a.kind==="tag") return songs.filter(s => (s.tags||[]).includes(a.value));
+  return [];
+}
+function virtualAlbums(kind){
+  const m = new Map();
+  songs.forEach(s => {
+    const vals = kind==="tag" ? (s.tags||[]) : [kind==="artist" ? s.artist : s.style];
+    vals.forEach(v => { const k = norm(v); if(!k) return; const e = m.get(k) || {name:v.trim(), n:0}; e.n++; m.set(k,e); });
+  });
+  return [...m.values()].sort((a,b)=>b.n-a.n || a.name.localeCompare(b.name,"es")).map((e,i) => ({ id:"v:"+kind+":"+e.name, virtual:true, kind, value:e.name, name:e.name, color:i%ALBUM_COLORS.length }));
+}
+function albumById(id){
+  if(id.startsWith("v:")){ const parts = id.split(":"); const kind = parts[1]; const value = parts.slice(2).join(":"); return {id, virtual:true, kind, value, name:value, color:0}; }
+  return albums.find(a => a.id===id);
+}
+function tileHtml(a){
+  const list = albumSongs(a);
+  const avg = list.length ? Math.round(list.reduce((x,s)=>x+(s.progress||0),0)/list.length) : 0;
+  const cells = [0,1,2,3].map(i => {
+    const s = list[i];
+    if(!s) return `<div class="m" style="background:rgba(255,255,255,.5)"></div>`;
+    return s.cover ? `<div class="m" style="background-image:url('${s.cover}')"></div>` : `<div class="m" style="background:${colorFor(s.title)}">${esc((s.title||"?").charAt(0).toUpperCase())}</div>`;
+  }).join("");
+  return `<div class="tile" data-aid="${esc(a.id)}" style="background:${ALBUM_COLORS[(a.color||0)%ALBUM_COLORS.length]}"><div class="mosaic">${cells}</div><div class="nm">${esc(a.name)}</div><div class="ct">${list.length} ${list.length===1?"canción":"canciones"} · ${avg}%</div></div>`;
+}
+function renderAlbums(){
+  if(!songs.length && !albums.length){ $("#main").innerHTML = `<div class="empty"><b>Aún no hay álbumes</b>Añade canciones y se agruparán solas por artista, estilo y etiqueta. También puedes crear los tuyos con el botón +.</div>`; return; }
+  let h = `<div class="sec-h"><h3>Mis álbumes</h3><span>${albums.length}</span></div>`;
+  h += albums.length ? `<div class="agrid">${albums.slice().sort((a,b)=>a.name.localeCompare(b.name,"es")).map(tileHtml).join("")}</div>` : `<div class="panel blue hint">Crea álbumes con el botón + para agrupar canciones a mano o de forma automática por artista, estilo o etiqueta.</div>`;
+  [["artist","Por artista"],["style","Por estilo"],["tag","Por etiqueta"]].forEach(([k,t]) => {
+    const v = virtualAlbums(k); if(!v.length) return;
+    h += `<div class="sec-h"><h3>${t}</h3><span>${v.length}</span></div><div class="hscroll">${v.map(tileHtml).join("")}</div>`;
+  });
+  $("#main").innerHTML = h;
+  $("#main").querySelectorAll(".tile").forEach(t => t.onclick = () => openAlbum(t.dataset.aid));
+}
+function openAlbum(id){
+  const a = albumById(id); if(!a) return;
+  pushLayer();
+  const list = albumSongs(a).sort((x,y)=>x.title.localeCompare(y.title,"es"));
+  const avg = list.length ? Math.round(list.reduce((n,s)=>n+(s.progress||0),0)/list.length) : 0;
+  const done = list.filter(s => DONE.includes(s.status)).length;
+  const rule = a.kind==="manual" ? "Álbum manual" : a.kind==="artist" ? "Automático: artista "+a.value : a.kind==="style" ? "Automático: estilo "+a.value : "Automático: etiqueta #"+a.value;
+  $("#layer").innerHTML = `<div class="overlay">
+    <div class="bar-top"><button class="btn ghost" id="aBack">Cerrar</button><h2>Álbum</h2>${a.virtual ? '<span style="width:64px"></span>' : '<button class="btn soft sm" id="aEdit">Editar</button>'}</div>
+    <div class="content">
+      <div class="grp blue" style="margin-top:4px"><h3 class="sec">${esc(a.name)}</h3><div class="hint" style="margin-bottom:10px">${esc(rule)}</div>
+        <div class="bar" style="height:12px"><i style="width:${avg}%"></i></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:14px"><span>${list.length} ${list.length===1?"canción":"canciones"} · ${done} terminadas</span><b style="color:var(--warm-ink)">${avg}%</b></div></div>
+      ${list.length ? list.map((s,i)=>cardHtml(s,i)).join("") : '<div class="empty">Este álbum está vacío.</div>'}
+    </div></div>`;
+  $("#aBack").onclick = () => closeLayer();
+  const ed = $("#aEdit"); if(ed) ed.onclick = () => { clearLayerContent(); openAlbumEditor(a.id); };
+  $("#layer").querySelectorAll(".card").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+}
+function openAlbumEditor(id){
+  pushLayer();
+  const isNew = !id;
+  const a = isNew ? {id:uid(), name:"", kind:"manual", value:"", songIds:[], color:0, createdAt:Date.now()} : JSON.parse(JSON.stringify(albums.find(x => x.id===id)));
+  const sel = new Set(a.songIds||[]);
+  $("#layer").innerHTML = `<div class="overlay">
+    <div class="bar-top"><button class="btn ghost" id="alCancel">Cancelar</button><h2>${isNew?"Nuevo álbum":"Editar álbum"}</h2><button class="btn sm" id="alSave">Guardar</button></div>
+    <div class="content">
+      <div class="grp blue"><h3 class="sec">El álbum</h3>
+        <label class="f">Nombre *</label><input class="in" id="alName" value="${esc(a.name)}" autocomplete="off" enterkeyhint="done">
+        <label class="f">Tipo</label>
+        <select class="in" id="alKind">
+          <option value="manual">Manual (elijo las canciones)</option>
+          <option value="artist">Automático por artista</option>
+          <option value="style">Automático por estilo</option>
+          <option value="tag">Automático por etiqueta</option>
+        </select>
+        <div id="alRule"></div>
+        <label class="f">Color</label><div class="sw" id="alSw">${ALBUM_COLORS.map((c,i)=>`<button type="button" data-c="${i}" class="${(a.color||0)===i?"on":""}" style="background:${c}" aria-label="Color ${i+1}"></button>`).join("")}</div>
+      </div>
+      <div class="grp violet" id="alPickBox"><h3 class="sec">Canciones del álbum</h3>
+        <input class="in" id="alFind" placeholder="Filtrar canciones..." autocomplete="off">
+        <div id="alPick" style="margin-top:6px"></div>
+      </div>
+      ${isNew ? "" : '<div style="margin-top:20px"><button class="btn danger" id="alDel">Eliminar álbum</button></div>'}
+    </div></div>`;
+  $("#alKind").value = a.kind;
+  const renderRule = () => {
+    const kind = $("#alKind").value; a.kind = kind;
+    $("#alPickBox").classList.toggle("hidden", kind!=="manual");
+    if(kind==="manual"){ $("#alRule").innerHTML = ""; return; }
+    const opts = virtualAlbums(kind).map(v => v.value);
+    if(!opts.length){ $("#alRule").innerHTML = `<div class="hint" style="margin-top:8px">Todavía no hay datos de este tipo en tus canciones.</div>`; a.value = ""; return; }
+    if(!opts.includes(a.value)) a.value = opts[0];
+    $("#alRule").innerHTML = `<label class="f">${kind==="artist"?"Artista":kind==="style"?"Estilo":"Etiqueta"}</label><select class="in" id="alVal">${opts.map(o=>`<option ${o===a.value?"selected":""}>${esc(o)}</option>`).join("")}</select>`;
+    $("#alVal").onchange = e => { a.value = e.target.value; };
+  };
+  const renderPick = () => {
+    const q = norm($("#alFind").value);
+    const list = songs.filter(s => !q || norm(s.title+" "+s.artist).includes(q)).sort((x,y)=>x.title.localeCompare(y.title,"es"));
+    $("#alPick").innerHTML = list.length ? list.map(s => `<label class="pick"><input type="checkbox" data-s="${s.id}" ${sel.has(s.id)?"checked":""}><span class="n"><b>${esc(s.title)}</b><span>${esc(s.artist||"Sin artista")}</span></span></label>`).join("") : '<div class="hint">No hay canciones.</div>';
+    $("#alPick").querySelectorAll("input").forEach(i => i.onchange = () => { if(i.checked) sel.add(i.dataset.s); else sel.delete(i.dataset.s); });
+  };
+  $("#alKind").onchange = renderRule; $("#alFind").oninput = renderPick;
+  $("#alSw").querySelectorAll("button").forEach(b => b.onclick = () => { a.color = parseInt(b.dataset.c,10); $("#alSw").querySelectorAll("button").forEach(x => x.classList.toggle("on", x===b)); });
+  renderRule(); renderPick();
+  $("#alCancel").onclick = () => closeLayer();
+  const del = $("#alDel");
+  if(del) del.onclick = async () => {
+    if(!confirm("¿Eliminar este álbum? Las canciones no se borran.")) return;
+    try{ await dbDel("albums", a.id); await loadSongs(); closeLayer(); render(); toast("Álbum eliminado."); }catch(err){ toast("No se pudo eliminar."); }
+  };
+  $("#alSave").onclick = async () => {
+    let name = $("#alName").value.trim();
+    if(a.kind!=="manual"){ if(!a.value){ toast("Elige un valor para el álbum automático."); return; } if(!name) name = a.value; }
+    if(!name){ toast("Escribe el nombre del álbum."); $("#alName").focus(); return; }
+    a.name = name; a.songIds = a.kind==="manual" ? [...sel] : [];
+    try{ await dbPut("albums", a); await loadSongs(); closeLayer(); render(); toast("Álbum guardado."); }catch(err){ toast("No se pudo guardar."); }
+  };
+  if(isNew) $("#alName").focus();
 }
 
 /* ========================= Ajustes y copias ========================= */
@@ -779,7 +1042,7 @@ const blobToDataUrl = b => new Promise((res, rej) => { const r = new FileReader(
 async function exportBackup(withFiles){
   try{
     toast("Preparando copia...");
-    const out = { app:"mis-covers", version:1, exportedAt:new Date().toISOString(), songs, files:[] };
+    const out = { app:"mis-covers", version:2, exportedAt:new Date().toISOString(), songs, albums, files:[] };
     if(withFiles){
       for(const f of await dbAll("files")) out.files.push({ id:f.id, songId:f.songId, name:f.name, type:f.type, size:f.size, addedAt:f.addedAt, data: await blobToDataUrl(f.blob) });
     } else { out.songs = songs.map(s => ({...s, fileCount:0})); }
@@ -796,6 +1059,7 @@ async function importBackup(file){
     if(data.app!=="mis-covers" || !Array.isArray(data.songs)) throw new Error("formato");
     if(!confirm(`Se importarán ${data.songs.length} canciones. Las que tengan el mismo identificador se sobrescribirán. ¿Continuar?`)) return;
     for(const s of data.songs) await dbPut("songs", s);
+    for(const al of (data.albums||[])) await dbPut("albums", al);
     for(const f of (data.files||[])){
       const blob = await (await fetch(f.data)).blob();
       await dbPut("files", { id:f.id, songId:f.songId, name:f.name, type:f.type, size:f.size, addedAt:f.addedAt, blob });
