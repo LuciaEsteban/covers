@@ -19,7 +19,7 @@
   --bg:#eef1ff; --card:#ffffff; --ink:#2d2a45; --muted:#7a7899; --line:#e3e0f6;
   --accent:#7b6cf0; --accent-ink:#ffffff; --accent-soft:#ebe8ff;
   --blue:#5fa8f0; --blue-ink:#2f6fb0; --blue-soft:#e3f1ff; --blue-line:#cfe6fb;
-  --warm:#f5a35b; --warm-ink:#b85a1a; --warm-soft:#fff4de; --warm-line:#ffe2b0;
+  --warm:#f7c948; --warm-ink:#8f6a00; --warm-soft:#fff8d9; --warm-line:#ffeaa0;
   --violet:#9060d8; --violet-soft:#f1e9ff; --violet-line:#e0d0fa;
   --danger:#c0392b; --ok:#2e8b57;
   --page:linear-gradient(180deg,#e6efff 0%,#f1eaff 55%,#fff1ee 100%);
@@ -30,7 +30,7 @@
   :root{ --bg:#17152b; --card:#232042; --ink:#f0eefb; --muted:#a9a6c9; --line:#37336a;
     --accent:#a79bff; --accent-ink:#17152b; --accent-soft:#322e63;
     --blue:#7fbcf5; --blue-ink:#a9d3fa; --blue-soft:#1f3350; --blue-line:#2c4a73;
-    --warm:#ffb677; --warm-ink:#ffc999; --warm-soft:#3b2d27; --warm-line:#5a4333;
+    --warm:#ffd966; --warm-ink:#ffe48f; --warm-soft:#38331d; --warm-line:#5a5028;
     --violet:#c0a0f5; --violet-soft:#2e2552; --violet-line:#463a7a;
     --danger:#ff9a8f; --ok:#7bd88f;
     --page:linear-gradient(180deg,#15152b 0%,#1c1840 60%,#251a33 100%);
@@ -58,7 +58,7 @@ header.top h1{margin:0 0 8px;font-size:26px;letter-spacing:-.3px;background:line
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;min-height:38px;font-size:14px;white-space:nowrap}
 .chip.on{background:linear-gradient(135deg,#6fb3f2,#9a7ae8);color:#fff;border-color:transparent}
-#statusChips .chip.on{background:linear-gradient(135deg,#ffd76a,#ffa86b);color:#5a2f08}
+#statusChips .chip.on{background:linear-gradient(135deg,#ffeb85,#ffd24d);color:#5a4300}
 #statusChips .chip{border-color:var(--warm-line)}
 .chip.tag{font-size:13px;padding:6px 12px;min-height:34px;background:transparent}
 .chip.tag{border-color:var(--blue-line);color:var(--blue-ink)}
@@ -85,13 +85,13 @@ nav.tabs button.on{color:var(--accent);font-weight:700}
 .st0{background:#fff0a8;color:#6b5400}.st1{background:#ffe0a3;color:#7a4a00}.st2{background:#ffcf9e;color:#8a3f00}
 .st3{background:#ffbfa6;color:#8a2b10}.st4{background:#d0f0d8;color:#1d6b3a}.st5{background:#a8e6bd;color:#0f5128}.st6{background:#e4e3f1;color:#5b5a78}
 .bar{height:8px;border-radius:5px;background:var(--warm-soft);box-shadow:inset 0 0 0 1px var(--warm-line);overflow:hidden;margin-top:8px}
-.bar>i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#ffd76a,#ff9f6b)}
+.bar>i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#ffe97a,#ffc93c)}
 .stale{outline:2px solid #ff9f8f;outline-offset:-2px}
 .stale-tag{font-size:12px;color:var(--danger);font-weight:600}
 .empty{text-align:center;color:var(--muted);padding:48px 16px}
 .empty b{display:block;color:var(--ink);font-size:18px;margin-bottom:6px}
 .banner{background:var(--warm-soft);color:var(--warm-ink);border:1px solid var(--warm-line);border-radius:12px;padding:10px 12px;margin:10px 0;font-size:14px;display:flex;justify-content:space-between;gap:8px;align-items:center}
-.banner button{border:0;background:linear-gradient(135deg,#ffd76a,#ffa86b);color:#5a2f08;border-radius:8px;padding:6px 10px;font-size:13px}
+.banner button{border:0;background:linear-gradient(135deg,#ffeb85,#ffd24d);color:#5a4300;border-radius:8px;padding:6px 10px;font-size:13px}
 
 /* sheets */
 .overlay{position:fixed;inset:0;height:100dvh;background:var(--bg);background-image:var(--page);z-index:20;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
@@ -133,7 +133,7 @@ h3.sec{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing
 .grp.violet{background:var(--violet-soft);border:1px solid var(--violet-line)}.grp.violet>h3.sec{color:var(--violet)}
 .grp.warm .in{border-color:var(--warm-line)}.grp.blue .in{border-color:var(--blue-line)}.grp.violet .in{border-color:var(--violet-line)}
 .grp.warm label.f{color:var(--warm-ink)}.grp.blue label.f{color:var(--blue-ink)}.grp.violet label.f{color:var(--violet)}
-.grp.warm .chip{border-color:var(--warm-line)}.grp.warm .chip.on{background:linear-gradient(135deg,#ffd76a,#ffa86b);color:#5a2f08}
+.grp.warm .chip{border-color:var(--warm-line)}.grp.warm .chip.on{background:linear-gradient(135deg,#ffeb85,#ffd24d);color:#5a4300}
 .grp.warm .kv span:nth-child(odd){color:var(--warm-ink)}
 .grp.violet .btn.soft{background:#fff;color:var(--violet)}.grp.violet .filerow{border-color:var(--violet-line)}
 .grp.violet .btn{background:linear-gradient(135deg,#a98af0,#8a63e0)}.grp.blue .btn.soft{background:#fff;color:var(--blue-ink)}
@@ -151,7 +151,7 @@ h3.sec{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing
 .hrow .l{width:110px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hrow .b{flex:1;height:14px;border-radius:7px;background:var(--line);overflow:hidden}
 .hrow .b i{display:block;height:100%;background:linear-gradient(90deg,#6fb3f2,#9a7ae8);border-radius:7px}
-.panel.warm .hrow .b{background:var(--warm-line)}.panel.warm .hrow .b i{background:linear-gradient(90deg,#ffd76a,#ff9f6b)}
+.panel.warm .hrow .b{background:var(--warm-line)}.panel.warm .hrow .b i{background:linear-gradient(90deg,#ffe97a,#ffc93c)}
 .panel.warm{background:var(--warm-soft)}.panel.violet{background:var(--violet-soft)}.panel.blue{background:var(--blue-soft)}
 .hrow .v{width:28px;text-align:right;font-weight:600}
 .panel{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:14px;margin:12px 0}
@@ -200,7 +200,7 @@ nav.tabs button.on .ic{animation:pop .4s cubic-bezier(.2,.9,.3,1.3)}
 #lock form{position:relative;animation:lockIn .7s cubic-bezier(.2,.8,.2,1) both}
 .tagchip{animation:pop .3s ease both}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(123,108,240,.25);border-color:var(--accent)}
-.grp.warm input:focus,.grp.warm select:focus{box-shadow:0 0 0 3px rgba(245,163,91,.3);border-color:var(--warm)}
+.grp.warm input:focus,.grp.warm select:focus{box-shadow:0 0 0 3px rgba(247,201,72,.35);border-color:var(--warm)}
 
 /* ===== Plan y álbumes ===== */
 nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -238,6 +238,122 @@ nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-
 .sugg button:active{background:var(--accent-soft)}
 .sugg small{color:var(--muted);font-size:12px;flex:none}
 .sugg .new{color:var(--accent);font-weight:600}
+
+/* estrellas y me gusta */
+.seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:3px;margin:10px 0 4px}
+.seg button{flex:1;border:0;background:none;border-radius:11px;padding:9px;min-height:40px;font-weight:600;color:var(--muted)}
+.seg button.on{background:linear-gradient(135deg,#6fb3f2,#9a7ae8);color:#fff}
+.aprj{display:flex;align-items:center;gap:12px;background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:10px;margin:8px 0;cursor:pointer;border-left:6px solid var(--warm-line)}
+.aprj .ac{width:52px;height:52px;border-radius:12px;background-size:cover;background-position:center;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:20px;color:rgba(45,42,69,.7)}
+.aprj .ab{flex:1;min-width:0}.aprj .ab b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aprj .ab span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.aprj .ap{font-weight:700;color:var(--warm-ink)}
+/* página de álbum */
+.ahero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:6px 0 4px}
+.ahero .acov{width:min(60vw,230px);aspect-ratio:1;border-radius:20px;background-size:cover;background-position:center;box-shadow:0 14px 38px rgba(80,60,160,.3);display:grid;grid-template-columns:1fr 1fr;gap:3px;overflow:hidden}
+.ahero .acov.one{display:block}
+.ahero .acov .m{background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:26px;color:rgba(45,42,69,.7)}
+.ahero h2{margin:14px 0 2px;font-size:24px}
+.ahero .sub{color:var(--muted);font-size:14px}
+.actions{display:flex;align-items:center;justify-content:center;gap:14px;margin:14px 0 6px}
+.roundplay{width:62px;height:62px;border-radius:50%;border:0;background:linear-gradient(135deg,#6fb3f2,#9a7ae8);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(100,80,200,.4);padding:0}
+.roundplay svg{width:28px;height:28px;fill:#fff}
+.roundbtn{width:48px;height:48px;border-radius:50%;border:0;background:var(--card);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;padding:0;color:var(--accent)}
+.roundbtn svg{width:22px;height:22px;fill:var(--accent)}.roundbtn.on{background:var(--accent-soft)}
+.trk{display:flex;align-items:center;gap:12px;padding:8px 4px;border-radius:12px;cursor:pointer}
+.trk:active{background:var(--accent-soft)}
+.trk .tn{width:20px;text-align:center;color:var(--muted);font-size:13px;flex:none}
+.trk .tc{width:46px;height:46px;border-radius:10px;background-size:cover;background-position:center;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;color:rgba(45,42,69,.7)}
+.trk .tt{flex:1;min-width:0}.trk .tt b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk .tt span{display:block;font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk.now .tt b{color:var(--accent)}
+.trk .dot{width:10px;height:10px;border-radius:50%;flex:none}
+.trk .cplay{width:36px;height:36px}
+.stars{display:inline-flex;gap:2px;vertical-align:middle}
+.stars button{border:0;background:none;padding:4px 3px;font-size:26px;line-height:1;color:#cfc8ea;min-width:36px;min-height:40px}
+.stars button.on{color:#f5b73b}
+.stars.sm button{font-size:15px;padding:0 1px;min-width:0;min-height:0;pointer-events:none}
+.heart{border:0;background:none;font-size:28px;line-height:1;padding:6px;min-width:44px;min-height:44px;color:#b9b2d6}
+.heart.on{color:#ee5b8b}
+.ratingrow{display:flex;align-items:center;gap:8px;margin-top:6px}
+.pill.rt{background:#fff3b8;color:#7d5c00}.pill.lk{background:#ffe3ee;color:#c23b6b}
+.cplay{flex:none;width:40px;height:40px;border-radius:50%;border:0;background:linear-gradient(135deg,#6fb3f2,#9a7ae8);color:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+.cplay svg{width:18px;height:18px;fill:#fff}
+/* secciones tipo iconos */
+.tiles3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.tilebtn{border:0;border-radius:20px;padding:14px 8px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;box-shadow:var(--shadow);position:relative;overflow:hidden;min-height:104px;justify-content:center;font-weight:700}
+.tilebtn svg{width:30px;height:30px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tilebtn small{font-weight:600;opacity:.8;font-size:12px}
+.tilebtn.tp{background:var(--blue-soft);color:var(--blue-ink)}
+.tilebtn.tl{background:var(--warm-soft);color:var(--warm-ink)}
+.tilebtn.tf{background:var(--violet-soft);color:var(--violet)}
+.tilebtn.tp.has{color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.5);background-size:cover;background-position:center}
+.tilebtn.tp.has svg{filter:drop-shadow(0 1px 3px rgba(0,0,0,.5))}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.pgrid button{aspect-ratio:1;border:0;padding:0;background-size:cover;background-position:center;background-color:var(--violet-line)}
+.viewer{position:fixed;inset:0;z-index:99;background:#0d0b1a;display:flex;flex-direction:column}
+.viewer .vtop{display:flex;justify-content:space-between;align-items:center;padding:calc(env(safe-area-inset-top) + 8px) 12px 8px;color:#fff}
+.viewer .vtop button{border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:12px;padding:8px 14px;min-height:40px}
+.viewer .vscroll{flex:1;display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.viewer .vscroll::-webkit-scrollbar{display:none}
+.viewer .vslide{flex:none;width:100%;height:100%;scroll-snap-align:center;display:flex;align-items:center;justify-content:center;padding:0 0 calc(16px + env(safe-area-inset-bottom))}
+.viewer .vslide img{max-width:100%;max-height:100%;object-fit:contain}
+/* reproductor */
+#mini{position:fixed;left:8px;right:8px;bottom:calc(60px + env(safe-area-inset-bottom));max-width:744px;margin:0 auto;z-index:25;border-radius:18px;background:linear-gradient(135deg,#6c8fe8,#8e6fdc);color:#fff;display:flex;align-items:center;gap:10px;padding:8px 10px;box-shadow:0 8px 24px rgba(60,40,130,.4);overflow:hidden}
+#layer:not(:empty)~#mini{bottom:calc(8px + env(safe-area-inset-bottom))}
+#mini .mc{width:44px;height:44px;border-radius:10px;background-size:cover;background-position:center;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700}
+#mini .mt{flex:1;min-width:0;cursor:pointer}
+#mini .mt b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mini .mt span{display:block;font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#mini button{border:0;background:rgba(255,255,255,.2);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;flex:none}
+#mini svg,#player svg{fill:#fff;width:20px;height:20px}
+#mini .mbar{position:absolute;left:0;bottom:0;height:3px;background:#fff;width:0}
+body.hasmini main{padding-bottom:calc(220px + env(safe-area-inset-bottom))}
+body.hasmini .fab{bottom:calc(136px + env(safe-area-inset-bottom))}
+body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+#player{position:fixed;inset:0;z-index:40;color:#fff;background:#1b1535;overflow:hidden;display:flex;flex-direction:column;animation:pup .3s ease both}
+@keyframes pup{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+#player .pbg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(38px) saturate(1.3);opacity:.75;transform:scale(1.2)}
+#player .pshade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(20,14,48,.35),rgba(20,14,48,.8))}
+#player .pin{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;max-width:560px;width:100%;margin:0 auto;padding:calc(env(safe-area-inset-top) + 10px) 22px calc(18px + env(safe-area-inset-bottom));overflow-y:auto}
+#player .ptop{display:flex;align-items:center;justify-content:space-between;font-size:13px;letter-spacing:.06em;text-transform:uppercase;opacity:.9}
+#player .ptop button,#player .pctrl button,#player .pq button{border:0;background:none;color:#fff;display:flex;align-items:center;justify-content:center;padding:0}
+#player .ptop button{width:44px;height:44px}
+#player .pcover{width:100%;max-width:340px;aspect-ratio:1;margin:18px auto 22px;border-radius:22px;background-size:cover;background-position:center;box-shadow:0 18px 50px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:90px;font-weight:700;flex:none}
+#player .ptitle{display:flex;align-items:center;justify-content:space-between;gap:10px}
+#player .ptitle b{display:block;font-size:22px;line-height:1.2}
+#player .ptitle span{display:block;opacity:.8;margin-top:2px}
+#player .heart{color:#fff;opacity:.85}#player .heart.on{color:#ff7aa5;opacity:1}
+#player .pstars{margin:6px 0 2px;display:flex;justify-content:flex-start}
+#player .stars button{color:rgba(255,255,255,.35)}#player .stars button.on{color:#ffcf5c}
+#pSeek{width:100%;margin:12px 0 0;height:30px;-webkit-appearance:none;appearance:none;background:transparent}
+#pSeek::-webkit-slider-runnable-track{height:5px;border-radius:5px;background:linear-gradient(90deg,#fff var(--p,0%),rgba(255,255,255,.28) var(--p,0%))}
+#pSeek::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:#fff;margin-top:-6.5px;box-shadow:0 2px 6px rgba(0,0,0,.4)}
+#pSeek::-moz-range-track{height:5px;border-radius:5px;background:rgba(255,255,255,.28)}
+#pSeek::-moz-range-progress{height:5px;border-radius:5px;background:#fff}
+#pSeek::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:#fff}
+#player .ptimes{display:flex;justify-content:space-between;font-size:13px;opacity:.85;margin-top:-2px}
+#player .pctrl{display:flex;align-items:center;justify-content:space-between;margin:14px 0 6px}
+#player .pctrl button{width:52px;height:52px;border-radius:50%;opacity:.9}
+#player .pctrl button.on{color:#ffcf5c;background:rgba(255,255,255,.14)}
+#player .pctrl button.on svg{fill:#ffcf5c}
+#player .pctrl button svg{width:26px;height:26px}
+#player .pctrl .pplay{width:72px;height:72px;background:#fff;opacity:1}
+#player .pctrl .pplay svg{fill:#5b3fc4;width:34px;height:34px}
+#player .pq{position:absolute;z-index:3;left:0;right:0;bottom:0;top:18%;background:rgba(24,18,52,.97);border-radius:24px 24px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom));overflow-y:auto;animation:pup .25s ease both}
+#player .pq h4{margin:0 0 8px;font-size:16px}
+#player .pq .qrow{width:100%;justify-content:flex-start;gap:12px;text-align:left;padding:8px 6px;border-radius:12px;min-height:56px}
+#player .pq .qrow.on{background:rgba(255,255,255,.14)}
+#player .pq .qc{width:42px;height:42px;border-radius:9px;background-size:cover;background-position:center;flex:none;display:flex;align-items:center;justify-content:center;font-weight:700;color:rgba(45,42,69,.8)}
+#player .pq .qt{flex:1;min-width:0}#player .pq .qt b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px}#player .pq .qt span{display:block;font-size:12px;opacity:.75}
+.trackrow{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--violet-line);border-radius:14px;padding:10px 12px;margin:8px 0}
+.trackrow .n{flex:1;min-width:0;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trackrow .s{color:var(--muted);font-size:12px}
+.bigplay{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:0;border-radius:16px;padding:13px;margin-top:14px;background:linear-gradient(135deg,#6fb3f2,#9a7ae8);color:#fff;font-weight:700;font-size:16px;box-shadow:var(--shadow)}
+.bigplay svg{width:20px;height:20px;fill:#fff}
+.bigplay.alt{background:var(--accent-soft);color:var(--accent)}.bigplay.alt svg{fill:var(--accent)}
+.prow{display:flex;gap:10px}
+.prow .bigplay{flex:1;margin-top:12px}
 .mosaic.one{display:block;background-size:cover;background-position:center}
 .gal{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .gal .ph{position:relative;aspect-ratio:1;border-radius:12px;background-size:cover;background-position:center;background-color:var(--violet-line);border:0;padding:0;overflow:hidden}
@@ -293,6 +409,8 @@ nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-
           <option value="progress">% avance</option>
           <option value="title">Título</option>
           <option value="artist">Artista</option>
+          <option value="rating">Mejor nota</option>
+          <option value="liked">Favoritas</option>
           <option value="stale">Más paradas</option>
         </select>
       </div>
@@ -306,13 +424,15 @@ nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-
 <button class="fab hidden" id="fab" aria-label="Añadir canción">+</button>
 <nav class="tabs hidden" id="tabs"><div class="in">
   <button data-tab="songs" class="on"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span>Canciones</button>
-  <button data-tab="plan"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="4.5" height="16" rx="1.5"/><rect x="9.75" y="4" width="4.5" height="10" rx="1.5"/><rect x="16" y="4" width="4.5" height="13" rx="1.5"/></svg></span>Plan</button>
   <button data-tab="albums"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/></svg></span>Álbumes</button>
-  <button data-tab="summary"><span class="ic"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/></svg></span>Resumen</button>
+  <button data-tab="plan"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="4.5" height="16" rx="1.5"/><rect x="9.75" y="4" width="4.5" height="10" rx="1.5"/><rect x="16" y="4" width="4.5" height="13" rx="1.5"/></svg></span>Plan</button>
   <button data-tab="settings"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></span>Ajustes</button>
 </div></nav>
 
 <div id="layer"></div>
+<div id="mini" class="hidden"><div class="mc" id="mC"></div><div class="mt" id="mT"><b></b><span></span></div><button id="mPlay" aria-label="Reproducir o pausar"></button><button id="mNext" aria-label="Siguiente"></button><div class="mbar" id="mBar"></div></div>
+<div id="player" class="hidden"></div>
+<audio id="aud" playsinline preload="auto"></audio>
 
 <script>
 "use strict";
@@ -329,7 +449,7 @@ const FORMATS = ["BandLab","Instagram","YouTube","TikTok","Vídeo","Audio","Otro
 const BASE_STYLES = ["Pop","Pop rock","Rock","Balada","Indie","Soul / R&B","Latino","Musical / BSO","Jazz","Folk / Acústico","Electrónica"];
 const LINK_LABELS = ["BandLab","Instagram","YouTube","Drive","Spotify","Letra","Otro"];
 const DAY = 86400000;
-const STATUS_COLORS = ["#ffe27a","#ffcf70","#ffb878","#ff9f85","#8fd9a8","#5cc487","#c9c7e6"];
+const STATUS_COLORS = ["#fff0a0","#ffe270","#ffd24d","#ffc23d","#8fd9a8","#5cc487","#c9c7e6"];
 
 /* ========================= Utilidades ========================= */
 const $ = (s, r=document) => r.querySelector(s);
@@ -432,7 +552,7 @@ async function dbClear(){ await tx(["songs","files","albums"],"readwrite", t => 
 
 /* ========================= Estado ========================= */
 let songs = [];
-let ui = { tab:"songs", q:"", status:"Todas", tag:"", sort: lsGet("covers.sort","recent") };
+let ui = { planView:"board", tab:"songs", q:"", status:"Todas", tag:"", sort: lsGet("covers.sort","recent") };
 let objectUrls = [];
 
 let albums = [];
@@ -492,9 +612,9 @@ function render(){
   const isSongs = ui.tab==="songs";
   $("#searchWrap").classList.toggle("hidden", !isSongs);
   $("#fab").classList.toggle("hidden", !(isSongs || ui.tab==="albums"));
-  $("#title").textContent = {songs:"Mis covers",plan:"Plan",albums:"Álbumes",summary:"Resumen",settings:"Ajustes"}[ui.tab];
+  $("#title").textContent = {songs:"Mis covers",plan:"Plan",albums:"Álbumes",settings:"Ajustes"}[ui.tab];
   if(isSongs){ renderChips(); renderList(); }
-  else { $("#main").className = "view"; if(ui.tab==="summary") renderSummary(); else if(ui.tab==="plan") renderPlan(); else if(ui.tab==="albums") renderAlbums(); else renderSettings(); }
+  else { $("#main").className = "view"; if(ui.tab==="plan") renderPlan(); else if(ui.tab==="albums") renderAlbums(); else renderSettings(); }
 }
 
 function renderChips(){
@@ -530,7 +650,9 @@ function filtered(){
     progress:(a,b)=>(b.progress||0)-(a.progress||0),
     title:(a,b)=>a.title.localeCompare(b.title,"es"),
     artist:(a,b)=>(a.artist||"").localeCompare(b.artist||"","es"),
-    stale:(a,b)=>a.updatedAt-b.updatedAt
+    stale:(a,b)=>a.updatedAt-b.updatedAt,
+    rating:(a,b)=>(b.rating||0)-(a.rating||0) || (!!b.liked-!!a.liked) || a.title.localeCompare(b.title,"es"),
+    liked:(a,b)=>(!!b.liked-!!a.liked) || (b.rating||0)-(a.rating||0) || a.title.localeCompare(b.title,"es")
   }[ui.sort] || ((a,b)=>b.updatedAt-a.updatedAt);
   return list.sort(cmp);
 }
@@ -557,14 +679,16 @@ function renderList(anim=true){
       <div class="body">
         <div class="t">${esc(s.title)}</div>
         <div class="a">${esc(s.artist||"Sin artista")}${s.style?" · "+esc(s.style):""}</div>
-        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${pr}${dueChip(s)}${stl}${tags}</div>
+        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${pr}${ratingPills(s)}${dueChip(s)}${stl}${tags}</div>
         <div class="bar"><i style="width:${Math.min(100,s.progress||0)}%"></i></div>
       </div>
+      ${playBtn(s)}
       <div style="font-weight:700;color:var(--warm-ink);min-width:38px;text-align:right">${s.progress||0}%</div>
     </div>`;
   }).join("");
   main.innerHTML = html;
   main.querySelectorAll(".card").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+  bindPlayButtons(main, list);
   const tip = $("#tipOk"); if(tip) tip.onclick = () => { lsSet("covers.tipOff","1"); $("#tipBox").remove(); };
   const sb = $("#seeStale"); if(sb) sb.onclick = () => { ui.status = "Paradas"; renderChips(); renderList(); };
 }
@@ -616,6 +740,9 @@ async function openDetail(id){
   const s = byId(id); if(!s) return;
   pushLayer();
   const files = (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt);
+  const track = files.find(f => f.role==="track");
+  const extras = files.filter(f => f.role!=="track");
+  const photos = s.photos || [];
   const links = (s.links||[]).map(l => ({label:l.label||"Enlace", url:normUrl(l.url)})).filter(l=>l.url);
   $("#layer").innerHTML = `<div class="overlay">
     <div class="bar-top"><button class="btn ghost" id="dBack">Cerrar</button><h2>Canción</h2><button class="btn soft sm" id="dEdit">Editar</button></div>
@@ -624,8 +751,11 @@ async function openDetail(id){
         ${coverHtml(s,true)}
         <div style="min-width:0"><div style="font-size:21px;font-weight:700">${esc(s.title)}</div>
         <div style="color:var(--muted)">${esc(s.artist||"Sin artista")}</div>
-        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${s.priority?`<span class="pill pr-${esc(s.priority)}">${esc(s.priority)}</span>`:""}</div><button class="btn soft sm" id="dPaste" style="margin-top:8px">Pegar portada</button></div>
+        <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${s.priority?`<span class="pill pr-${esc(s.priority)}">${esc(s.priority)}</span>`:""}</div>
+        <div class="ratingrow"><span id="dStars">${starRowHtml(s.rating||0)}</span><button class="heart ${s.liked?"on":""}" id="dLike" aria-label="Me gusta">${s.liked?"♥":"♡"}</button></div>
+        <button class="btn soft sm" id="dPaste" style="margin-top:2px">Pegar portada</button></div>
       </div>
+      ${track ? `<button class="bigplay" id="dPlay">${IC.play} Reproducir canción</button>` : ""}
       <div class="grp warm" style="margin-top:18px">
         <h3 class="sec">Organización</h3>
         <div class="bar" style="height:12px;margin-top:6px"><i style="width:${s.progress||0}%"></i></div>
@@ -643,11 +773,10 @@ async function openDetail(id){
         </div>
         ${(s.tags||[]).length ? `<div class="meta">${s.tags.map(t=>`<span class="pill">#${esc(t)}</span>`).join("")}</div>` : ""}
       </div>
-      <div class="grp violet">
-        <h3 class="sec">Enlaces</h3>
-        ${links.length ? links.map(l=>`<a class="linkbtn" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">&#8599; ${esc(l.label)}</a>`).join("") : '<div class="hint">Sin enlaces.</div>'}
-        <h3 class="sec">Archivos (${files.length})</h3>
-        <div id="dFiles">${files.length ? "" : '<div class="hint">Sin archivos guardados.</div>'}</div>
+      <div class="tiles3">
+        <button class="tilebtn tp ${photos[0]?"has":""}" id="tPhotos" style="${photos[0]?`background-image:linear-gradient(rgba(0,0,0,.28),rgba(0,0,0,.28)),url('${photos[0]}')`:""}">${IC_PHOTO}<b>Fotos</b><small>${photos.length}</small></button>
+        <button class="tilebtn tl" id="tLinks">${IC_LINK}<b>Enlaces</b><small>${links.length}</small></button>
+        <button class="tilebtn tf" id="tFiles">${IC_FILE}<b>Archivos</b><small>${files.length}</small></button>
       </div>
       ${s.notes ? `<div class="grp blue"><h3 class="sec">Notas</h3><div class="notes">${esc(s.notes)}</div></div>` : ""}
     </div></div>`;
@@ -658,13 +787,45 @@ async function openDetail(id){
     try{ s.cover = await resizeImage(b); await dbPut("songs", s); await loadSongs(); toast("Portada guardada en la app."); render(); openDetail(id); }
     catch(err){ toast("No se pudo guardar esa imagen."); }
   };
+  bindStars($("#dStars"), () => s.rating||0, async r => { await setRating(id, r); openDetail(id); });
+  $("#dLike").onclick = async () => { await toggleLike(id); openDetail(id); };
+  const dp = $("#dPlay"); if(dp) dp.onclick = () => { const vis = filtered().map(x=>x.id); playList(vis.includes(id) ? vis : [id], id, null); };
+  $("#tPhotos").onclick = () => openGallery(s.title, s.photos = s.photos || [], async () => { await dbPut("songs", s); await loadSongs(); }, () => openDetail(id));
+  $("#tLinks").onclick = () => openSongLinks(id);
+  $("#tFiles").onclick = () => openSongFiles(id);
+}
+async function openSongLinks(id){
+  const s = byId(id); if(!s) return; pushLayer(); clearLayerContent();
+  const links = (s.links||[]).map(l => ({label:l.label||"Enlace", url:normUrl(l.url)})).filter(l=>l.url);
+  $("#layer").innerHTML = `<div class="overlay">
+    <div class="bar-top"><button class="btn ghost" id="lBack">Volver</button><h2>Enlaces</h2><button class="btn soft sm" id="lEdit">Editar</button></div>
+    <div class="content"><div class="grp warm" style="margin-top:4px"><h3 class="sec">${esc(s.title)}</h3>
+      ${links.length ? links.map(l=>`<a class="linkbtn" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">&#8599; ${esc(l.label)}</a>`).join("") : '<div class="hint">Sin enlaces. Añádelos desde Editar (BandLab, Instagram...).</div>'}
+    </div></div></div>`;
+  $("#lBack").onclick = () => openDetail(id); $("#lEdit").onclick = () => { clearLayerContent(); openEditor(id); };
+}
+async function openSongFiles(id){
+  const s = byId(id); if(!s) return; pushLayer();
+  const files = (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt); clearLayerContent();
+  const track = files.find(f => f.role==="track"), extras = files.filter(f => f.role!=="track");
+  $("#layer").innerHTML = `<div class="overlay">
+    <div class="bar-top"><button class="btn ghost" id="fBack">Volver</button><h2>Archivos</h2><button class="btn soft sm" id="fEdit">Editar</button></div>
+    <div class="content">
+      <div class="grp violet" style="margin-top:4px"><h3 class="sec">Canción (audio)</h3>
+        ${track ? `<div class="trackrow"><div class="n">${esc(track.name)}<div class="s">${fmtSize(track.size)}</div></div></div><button class="bigplay" id="fPlay" style="margin-top:6px">${IC.play} Reproducir en el reproductor</button>` : '<div class="hint">Todavía no hay mp3 de la canción. Súbelo desde Editar para poder reproducirla aquí.</div>'}
+      </div>
+      <div class="grp violet"><h3 class="sec">Otros archivos (${extras.length})</h3><div id="dFiles">${extras.length ? "" : '<div class="hint">Sin otros archivos.</div>'}</div></div>
+    </div></div>`;
+  $("#fBack").onclick = () => openDetail(id); $("#fEdit").onclick = () => { clearLayerContent(); openEditor(id); };
+  const fp = $("#fPlay"); if(fp) fp.onclick = () => { const vis = filtered().map(x=>x.id); playList(vis.includes(id) ? vis : [id], id, null); };
   const box = $("#dFiles");
-  files.forEach(f => {
+  extras.forEach(f => {
     const row = document.createElement("div");
     row.innerHTML = `<div class="filerow"><span>${f.type.startsWith("video")?"&#127916;":"&#127925;"}</span><div class="n">${esc(f.name)}<div class="s">${fmtSize(f.size)}</div></div><button class="btn soft sm">Reproducir</button></div><div class="player"></div>`;
     const btn = row.querySelector("button"), pl = row.querySelector(".player");
     btn.onclick = () => {
       if(pl.firstChild){ pl.innerHTML = ""; btn.textContent = "Reproducir"; return; }
+      if(!AUD.paused) AUD.pause();
       const url = URL.createObjectURL(f.blob); objectUrls.push(url);
       const el = document.createElement(f.type.startsWith("video") ? "video" : "audio");
       el.controls = true; el.src = url; el.setAttribute("playsinline",""); el.preload = "metadata";
@@ -706,9 +867,46 @@ function resizeFit(file, max=1100){
   });
 }
 const dataUrlToBlob = u => fetch(u).then(r => r.blob());
-function showLightbox(src){
-  const d = document.createElement("div"); d.className = "lightbox"; d.innerHTML = `<img src="${src}" alt="">`;
-  d.onclick = () => d.remove(); document.body.appendChild(d);
+function showViewer(photos, start, onDelete){
+  const d = document.createElement("div"); d.className = "viewer";
+  d.innerHTML = `<div class="vtop"><button class="vx">Cerrar</button><span class="vc"></span>${onDelete?'<button class="vdel">Eliminar</button>':'<span style="width:72px"></span>'}</div><div class="vscroll">${photos.map(u=>`<div class="vslide"><img src="${u}" alt=""></div>`).join("")}</div>`;
+  document.body.appendChild(d);
+  const sc = d.querySelector(".vscroll"), vc = d.querySelector(".vc");
+  const cur = () => Math.max(0, Math.min(photos.length-1, Math.round(sc.scrollLeft/Math.max(1,sc.clientWidth))));
+  const upd = () => { vc.textContent = (cur()+1) + " / " + photos.length; };
+  sc.scrollLeft = start*sc.clientWidth; upd(); sc.addEventListener("scroll", upd);
+  d.querySelector(".vx").onclick = () => d.remove();
+  const del = d.querySelector(".vdel");
+  if(del) del.onclick = async () => {
+    if(!confirm("¿Eliminar esta foto?")) return;
+    photos.splice(cur(),1); try{ await onDelete(); }catch(e){}
+    d.remove(); if(typeof onDelete.after==="function") onDelete.after();
+  };
+}
+const showLightbox = src => showViewer([src], 0);
+/* Galería tipo app de fotos para una canción o un álbum */
+function openGallery(title, photos, save, back){
+  pushLayer(); clearLayerContent();
+  $("#layer").innerHTML = `<div class="overlay">
+    <div class="bar-top"><button class="btn ghost" id="gBack">Volver</button><h2>${esc(title)}</h2><span style="width:64px"></span></div>
+    <div class="content">
+      <div class="prow" style="margin-top:0"><button class="bigplay alt" id="gPaste" style="margin-top:0">Pegar foto</button><button class="bigplay alt" id="gAdd" style="margin-top:0">Añadir fotos</button></div>
+      <div class="hint" style="margin:8px 0 12px">${photos.length} ${photos.length===1?"foto":"fotos"}. Toca una para verla grande y desliza para pasar a la siguiente.</div>
+      <div class="pgrid" id="gGrid"></div>
+      <input type="file" id="gFile" accept="image/*" multiple class="hidden">
+    </div></div>`;
+  const draw = () => {
+    const g = $("#gGrid"); g.innerHTML = photos.map((u,i)=>`<button data-i="${i}" style="background-image:url('${u}')" aria-label="Foto ${i+1}"></button>`).join("");
+    if(!photos.length) g.innerHTML = '<div class="empty" style="grid-column:1/-1"><b>Sin fotos</b>Pega o añade la primera.</div>';
+    g.querySelectorAll("button").forEach(b => { const fn = async () => {}; fn.after = draw; b.onclick = () => showViewer(photos, +b.dataset.i, Object.assign(async () => { await save(); }, {after:draw})); });
+  };
+  const add = async blob => { try{ photos.push(await resizeFit(blob)); await save(); draw(); toast("Foto guardada en la app."); }catch(e){ toast("No se pudo guardar esa imagen."); } };
+  coverSetter = add;
+  $("#gBack").onclick = back;
+  $("#gPaste").onclick = async () => { const b = await readClipboardImage(); if(b) await add(b); };
+  $("#gAdd").onclick = () => $("#gFile").click();
+  $("#gFile").onchange = async e => { const fs = [...e.target.files]; e.target.value = ""; for(const f of fs) await add(f); };
+  draw();
 }
 /* Imágenes copiadas de internet: se leen del portapapeles y se guardan dentro de la app */
 async function blobFromHtmlOrText(html, text){
@@ -757,7 +955,7 @@ async function openEditor(id){
   const isNew = !id;
   const orig = isNew ? null : byId(id);
   const s = isNew ? { id:uid(), title:"", artist:"", style:"", status:"Idea", priority:"Media", goal:"Completa", have:"Nada todavía",
-      progress:0, formats:[], planFormats:[], tags:[], links:[], tone:"", due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
+      progress:0, rating:0, liked:false, hasTrack:false, photos:[], formats:[], planFormats:[], tags:[], links:[], tone:"", due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
     : JSON.parse(JSON.stringify(orig));
   const existing = isNew ? [] : (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt);
   const pending = []; const removed = new Set();
@@ -781,6 +979,8 @@ async function openEditor(id){
         <label class="f">Canción *</label><input class="in" id="eTitle" value="${esc(s.title)}" autocomplete="off">
         <label class="f">Artista</label><div><input class="in" id="eArtist" value="${esc(s.artist)}" autocomplete="off" autocapitalize="words"></div>
         <label class="f">Estilo</label><div><input class="in" id="eStyle" value="${esc(s.style)}" autocomplete="off"></div>
+        <label class="f">Nota y me gusta</label>
+        <div class="ratingrow" style="margin-top:0"><span id="eStars">${starRowHtml(s.rating||0)}</span><button type="button" class="heart ${s.liked?"on":""}" id="eLike" aria-label="Me gusta">${s.liked?"♥":"♡"}</button></div>
       </div>
       <div class="grp warm">
         <h3 class="sec">Organización</h3>
@@ -805,11 +1005,29 @@ async function openEditor(id){
         <label class="f">Plan</label><div class="chips"><button type="button" class="chip ${s.focus?"on":""}" id="eFocus">En foco ahora</button></div>
       </div>
       <div class="grp violet">
-        <h3 class="sec">Enlaces y archivos</h3>
-        <label class="f" style="margin-top:4px">Enlaces</label>
+        <h3 class="sec">Audio de la canción</h3>
+        <div id="eTrack"></div>
+        <button type="button" class="btn soft sm" id="eTrackBtn">Elegir mp3</button>
+        <input type="file" id="eTrackIn" class="hidden" accept="audio/*,video/mp4,.mp3,.m4a,.wav,.mp4,.aac">
+        <div class="hint" style="margin-top:6px">Es el archivo que suena en el reproductor. Si subes otro, sustituye al anterior.</div>
+      </div>
+      <div class="grp blue">
+        <h3 class="sec">Fotos</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn sm" id="ePhPaste" type="button">Pegar foto</button>
+          <button class="btn soft sm" id="ePhPick" type="button">Añadir fotos</button>
+        </div>
+        <div id="ePhZone" class="pastezone" contenteditable="true" role="textbox" aria-label="Zona para pegar una imagen" data-ph="Otra forma: mantén pulsado aquí y elige Pegar"></div>
+        <div class="gal" id="ePhGal"></div>
+        <input type="file" id="ePhFile" accept="image/*" multiple class="hidden">
+      </div>
+      <div class="grp warm">
+        <h3 class="sec">Enlaces</h3>
         <div id="eLinks"></div><button type="button" class="btn soft sm" id="eAddLink">+ Añadir enlace</button>
         <datalist id="dlLinks">${LINK_LABELS.map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
-        <label class="f">Archivos mp3 / mp4</label>
+      </div>
+      <div class="grp violet">
+        <h3 class="sec">Otros archivos (mp3 / mp4)</h3>
         <div id="eFiles"></div>
         <button type="button" class="btn soft sm" id="eAddFile">+ Añadir archivos</button>
         <input type="file" id="eFileIn" class="hidden" multiple accept="audio/*,video/*,.mp3,.mp4,.m4a,.mov,.wav">
@@ -855,8 +1073,8 @@ async function openEditor(id){
 
   const renderFiles = () => {
     const box = $("#eFiles"); box.innerHTML = "";
-    const all = [...existing.filter(f=>!removed.has(f.id)), ...pending];
-    if(!all.length) box.innerHTML = '<div class="hint">Sin archivos.</div>';
+    const all = [...existing.filter(f=>!removed.has(f.id)), ...pending].filter(f => f.role!=="track");
+    if(!all.length) box.innerHTML = '<div class="hint">Sin otros archivos.</div>';
     all.forEach(f => {
       const row = document.createElement("div"); row.className = "filerow";
       row.innerHTML = `<span>${f.type.startsWith("video")?"&#127916;":"&#127925;"}</span><div class="n">${esc(f.name)}<div class="s">${fmtSize(f.size)}${pending.includes(f)?" · nuevo":""}</div></div><button type="button" class="btn danger sm">Quitar</button>`;
@@ -872,10 +1090,46 @@ async function openEditor(id){
   $("#eFileIn").onchange = e => {
     [...e.target.files].forEach(file => {
       const type = file.type || (/\.(mp4|mov)$/i.test(file.name) ? "video/mp4" : "audio/mpeg");
-      pending.push({ id:uid(), songId:s.id, name:file.name, type, size:file.size, blob:file, addedAt:Date.now() });
+      pending.push({ id:uid(), songId:s.id, role:"extra", name:file.name, type, size:file.size, blob:file, addedAt:Date.now() });
     });
     e.target.value = ""; renderFiles();
   };
+  const curTrack = () => pending.find(f => f.role==="track") || existing.find(f => f.role==="track" && !removed.has(f.id));
+  const renderTrack = () => {
+    const t = curTrack(), box = $("#eTrack");
+    box.innerHTML = t ? `<div class="trackrow"><span>${IC_FILE.replace("<svg","<svg style='width:22px;height:22px;stroke:var(--violet);fill:none;stroke-width:1.8'")}</span><div class="n">${esc(t.name)}<div class="s">${fmtSize(t.size)}${pending.includes(t)?" · nuevo":""}</div></div><button type="button" class="btn danger sm" id="eTrackDel">Quitar</button></div>` : '<div class="hint">Sin audio todavía.</div>';
+    $("#eTrackBtn").textContent = t ? "Cambiar mp3" : "Elegir mp3";
+    const d = $("#eTrackDel"); if(d) d.onclick = () => { for(let i=pending.length-1;i>=0;i--) if(pending[i].role==="track") pending.splice(i,1); existing.forEach(f => { if(f.role==="track") removed.add(f.id); }); renderTrack(); };
+  };
+  $("#eTrackBtn").onclick = () => $("#eTrackIn").click();
+  $("#eTrackIn").onchange = e => {
+    const file = e.target.files[0]; e.target.value = ""; if(!file) return;
+    for(let i=pending.length-1;i>=0;i--) if(pending[i].role==="track") pending.splice(i,1);
+    existing.forEach(f => { if(f.role==="track") removed.add(f.id); });
+    const type = file.type || (/\.(mp4|mov)$/i.test(file.name) ? "video/mp4" : "audio/mpeg");
+    pending.push({ id:uid(), songId:s.id, role:"track", name:file.name, type, size:file.size, blob:file, addedAt:Date.now() });
+    renderTrack();
+  };
+  renderTrack();
+  s.photos = s.photos || [];
+  const drawPh = () => {
+    $("#ePhGal").innerHTML = s.photos.map((u,i)=>`<div class="ph" style="background-image:url('${u}')"><button class="st" data-i="${i}" type="button" aria-label="Usar como portada">★</button><button class="x" data-i="${i}" type="button" aria-label="Quitar foto">✕</button></div>`).join("");
+    $("#ePhGal").querySelectorAll(".st").forEach(b => b.onclick = async () => { try{ s.cover = await resizeImage(await dataUrlToBlob(s.photos[+b.dataset.i])); $("#eCover").innerHTML = coverHtml(s,true); toast("Portada actualizada."); }catch(e){ toast("No se pudo usar esa foto."); } });
+    $("#ePhGal").querySelectorAll(".x").forEach(b => b.onclick = () => { s.photos.splice(+b.dataset.i,1); drawPh(); });
+  };
+  const addPh = async blob => { try{ s.photos.push(await resizeFit(blob)); drawPh(); toast("Foto guardada en la app."); }catch(e){ toast("No se pudo leer esa imagen."); } };
+  drawPh();
+  $("#ePhPaste").onclick = async () => { const b = await readClipboardImage(); if(b) await addPh(b); };
+  $("#ePhPick").onclick = () => $("#ePhFile").click();
+  $("#ePhFile").onchange = async e => { const fs = [...e.target.files]; e.target.value = ""; for(const f of fs) await addPh(f); };
+  const phz = $("#ePhZone");
+  phz.addEventListener("paste", async e => { e.preventDefault(); e.stopPropagation(); const b = await imageFromDataTransfer(e.clipboardData); phz.innerHTML = ""; if(b) await addPh(b); else toast("No he encontrado una imagen. Copia la imagen, no el enlace de la página."); });
+  phz.addEventListener("input", () => { phz.innerHTML = ""; });
+  phz.addEventListener("keydown", e => { if(!(e.metaKey || e.ctrlKey)) e.preventDefault(); });
+  s.rating = s.rating || 0; s.liked = !!s.liked;
+  const bindEditStars = () => bindStars($("#eStars"), () => s.rating, r => { s.rating = r; $("#eStars").innerHTML = starRowHtml(r); bindEditStars(); });
+  bindEditStars();
+  $("#eLike").onclick = () => { s.liked = !s.liked; $("#eLike").classList.toggle("on", s.liked); $("#eLike").textContent = s.liked ? "♥" : "♡"; };
 
   const applyCover = async blob => {
     try{ s.cover = await resizeImage(blob); $("#eCover").innerHTML = coverHtml(s,true); toast("Portada guardada en la app."); }
@@ -941,6 +1195,7 @@ async function openEditor(id){
     s.links = s.links.map(l => ({label:(l.label||"").trim()||"Enlace", url:(l.url||"").trim()})).filter(l => l.url);
     s.updatedAt = Date.now();
     s.fileCount = existing.filter(f=>!removed.has(f.id)).length + pending.length;
+    s.hasTrack = !!curTrack();
     try{
       for(const f of pending) await dbPut("files", f);
       for(const fid of removed) await dbDel("files", fid);
@@ -960,9 +1215,10 @@ function cardHtml(s, i){
     <div class="body">
       <div class="t">${esc(s.title)}</div>
       <div class="a">${esc(s.artist||"Sin artista")}${s.style?" · "+esc(s.style):""}</div>
-      <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${pr}${dueChip(s)}${stl}</div>
+      <div class="meta"><span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>${pr}${ratingPills(s)}${dueChip(s)}${stl}</div>
       <div class="bar"><i style="width:${Math.min(100,s.progress||0)}%"></i></div>
     </div>
+    ${playBtn(s)}
     <div style="font-weight:700;color:var(--warm-ink);min-width:38px;text-align:right">${s.progress||0}%</div>
   </div>`;
 }
@@ -993,26 +1249,49 @@ function planCard(s, withAdv){
     ${canAdv ? `<button class="adv" data-adv="${s.id}">Pasar a ${esc(next)} &rsaquo;</button>` : ""}
   </div>`;
 }
+function addPlanSeg(){
+  const seg = `<div class="seg" id="planSeg"><button data-v="board" class="${ui.planView!=="summary"?"on":""}">Tablero</button><button data-v="summary" class="${ui.planView==="summary"?"on":""}">Resumen</button></div>`;
+  $("#main").insertAdjacentHTML("afterbegin", seg);
+  $("#planSeg").querySelectorAll("button").forEach(b => b.onclick = () => { ui.planView = b.dataset.v; renderPlan(); $("#main").scrollTop = 0; });
+}
+function albumProjects(){
+  if(!albums.length) return "";
+  const rows = albums.slice().sort((a,b)=>a.name.localeCompare(b.name,"es")).map(a => {
+    const list = albumSongs(a); const n = list.length;
+    const avg = n ? Math.round(list.reduce((x,t)=>x+(t.progress||0),0)/n) : 0;
+    const done = list.filter(t => DONE.includes(t.status)).length;
+    const idea = list.filter(t => t.status==="Idea").length;
+    const next = list.filter(t => t.due && !DONE.includes(t.status)).sort((x,y)=>x.due.localeCompare(y.due))[0];
+    const sub = n ? `${done} de ${n} terminadas` + (idea ? ` · ${idea} ${idea===1?"idea":"ideas"}` : "") + (next ? ` · próxima ${new Date(next.due+"T00:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"short"})}` : "") : "Sin canciones todavía";
+    const cv = a.cover ? `background-image:url('${a.cover}')` : `background:${ALBUM_COLORS[(a.color||0)%ALBUM_COLORS.length]}`;
+    return `<div class="aprj" data-aprj="${esc(a.id)}"><div class="ac" style="${cv}">${a.cover?"":esc((a.name||"?").charAt(0).toUpperCase())}</div><div class="ab"><b>${esc(a.name)}</b><span>${esc(sub)}</span><div class="bar"><i style="width:${avg}%"></i></div></div><div class="ap">${avg}%</div></div>`;
+  }).join("");
+  return `<div class="sec-h"><h3>Álbumes en proyecto</h3><span>${albums.length}</span></div>${rows}`;
+}
 function renderPlan(){
+  if(ui.planView==="summary"){ renderSummary(); addPlanSeg(); return; }
   if(!songs.length){ $("#main").innerHTML = `<div class="empty"><b>Tu plan está vacío</b>Añade canciones y verás aquí tu foco, tus fechas y el recorrido de cada una.</div>`; return; }
   const focus = songs.filter(s => s.focus && !DONE.includes(s.status)).sort(dueSort);
   const dated = songs.filter(s => s.due && !DONE.includes(s.status)).sort(dueSort).slice(0,8);
   const going = songs.filter(s => ["Aprendiendo","Ensayando","Grabando"].includes(s.status)).length;
   const stale = songs.filter(isStale).length;
   let h = `<div class="mini"><div class="kpi"><b>${focus.length}</b><span>En foco</span></div><div class="kpi"><b>${going}</b><span>En marcha</span></div><div class="kpi"><b>${stale}</b><span>Paradas</span></div></div>`;
+  h += albumProjects();
   h += `<div class="sec-h"><h3>En foco ahora</h3><span>${focus.length}</span></div>`;
   h += focus.length ? focus.map(s => planCard(s,true)).join("") : `<div class="panel warm hint">Marca canciones como "En foco ahora" al editarlas y aparecerán aquí, ordenadas por fecha.</div>`;
   h += `<div class="sec-h"><h3>Próximas fechas</h3><span>${dated.length}</span></div>`;
   h += dated.length ? dated.map(s => planCard(s,false)).join("") : `<div class="panel warm hint">Pon una fecha objetivo a una canción para verla aquí.</div>`;
   h += `<div class="sec-h"><h3>Recorrido</h3><span>desliza para ver cada fase</span></div><div class="board">`;
-  const colColors = ["#ffe27a","#ffcf70","#ffb878","#ff9f85","#8fd9a8","#5cc487","#c9c7e6"];
+  const colColors = ["#fff0a0","#ffe270","#ffd24d","#ffc23d","#8fd9a8","#5cc487","#c9c7e6"];
   STATUSES.forEach((st,i) => {
     const list = songs.filter(s => s.status===st).sort((a,b)=>PRIORITIES.indexOf(a.priority)-PRIORITIES.indexOf(b.priority) || b.updatedAt-a.updatedAt);
     h += `<div class="col"><h4><span>${esc(st)}</span><span class="cnt" style="background:${colColors[i]};color:#4a3200">${list.length}</span></h4>${list.length ? list.map(s=>planCard(s,true)).join("") : '<div class="empty-col">Nada por aquí</div>'}</div>`;
   });
   h += `</div>`;
   $("#main").innerHTML = h;
+  addPlanSeg();
   $("#main").querySelectorAll(".pcard").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+  $("#main").querySelectorAll("[data-aprj]").forEach(c => c.onclick = () => openAlbum(c.dataset.aprj));
   $("#main").querySelectorAll("[data-adv]").forEach(b => b.onclick = async e => {
     e.stopPropagation();
     const s = byId(b.dataset.adv); if(!s) return;
@@ -1020,6 +1299,182 @@ function renderPlan(){
     try{ await dbPut("songs", s); await loadSongs(); renderPlan(); toast(`"${s.title}" pasa a ${s.status}.`); }catch(err){ toast("No se pudo actualizar."); }
   });
 }
+
+/* ========================= Notas, me gusta y reproductor ========================= */
+const IC_PHOTO = '<svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="15" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17l5-4.5 3.5 3 3-2.5L20 17"/></svg>';
+const IC_LINK = '<svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3A4 4 0 0 0 11 18.7l1-1"/></svg>';
+const IC_FILE = '<svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg>';
+const IC = {
+  play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+  pause:'<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4.5" height="14" rx="1.4"/><rect x="13.5" y="5" width="4.5" height="14" rx="1.4"/></svg>',
+  next:'<svg viewBox="0 0 24 24"><path d="M6 6.2v11.6a.9.9 0 0 0 1.4.75l8.2-5.8a.9.9 0 0 0 0-1.5L7.4 5.45A.9.9 0 0 0 6 6.2z"/><rect x="16.5" y="5" width="2.6" height="14" rx="1.2"/></svg>',
+  prev:'<svg viewBox="0 0 24 24"><path d="M18 6.2v11.6a.9.9 0 0 1-1.4.75l-8.2-5.8a.9.9 0 0 1 0-1.5l8.2-5.8A.9.9 0 0 1 18 6.2z"/><rect x="4.9" y="5" width="2.6" height="14" rx="1.2"/></svg>',
+  shuffle:'<svg viewBox="0 0 24 24"><path d="M16 4h4v4l-1.6-1.6-3.1 3.1-1.4-1.4 3.1-3.1zM4 7h3.3c1.6 0 3 .8 3.9 2.1l4.8 7.3c.4.6 1 .9 1.7.9H18l-1.6-1.6 1.4-1.4L22 18l-4.2 4.2-1.4-1.4L18 19.2h-.3c-1.4 0-2.7-.7-3.4-1.8L9.5 10.2C9.1 9.4 8.3 9 7.3 9H4zM4 17h3.3c.9 0 1.7-.4 2.2-1.1l.9-1.3 1.2 1.8-.5.7C10.2 18.2 8.8 19 7.3 19H4zM18.4 6.4 22 10l-1.4 1.4-1.6-1.6z"/></svg>',
+  repeat:'<svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2zM17 17H7v-3l-4 4 4 4v-3h12v-6h-2z"/></svg>',
+  down:'<svg viewBox="0 0 24 24"><path d="M5.3 8.3a1 1 0 0 1 1.4 0L12 13.6l5.3-5.3a1 1 0 1 1 1.4 1.4l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.4z"/></svg>',
+  list:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="12" height="2.4" rx="1.2"/><rect x="4" y="10.8" width="12" height="2.4" rx="1.2"/><rect x="4" y="16.6" width="8" height="2.4" rx="1.2"/><path d="M18 14.5v5.2l4-2.6z"/></svg>'
+};
+const starRowHtml = (r, cls="") => `<span class="stars ${cls}" role="group" aria-label="Nota">${[1,2,3,4,5].map(i=>`<button type="button" data-r="${i}" class="${i<=r?"on":""}" aria-label="${i} estrellas">★</button>`).join("")}</span>`;
+function ratingPills(s){ return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:""); }
+function playBtn(s){ return s.hasTrack ? `<button class="cplay" data-play="${s.id}" aria-label="Reproducir ${esc(s.title)}">${IC.play}</button>` : ""; }
+function bindPlayButtons(root, list){
+  root.querySelectorAll(".cplay").forEach(b => b.onclick = e => { e.stopPropagation(); playList(list.map(x=>x.id), b.dataset.play, null); });
+}
+function bindStars(el, getR, onSet){
+  el.querySelectorAll("button").forEach(b => b.onclick = e => { e.stopPropagation(); const r = +b.dataset.r; onSet(getR()===r ? 0 : r); });
+}
+async function saveSongLight(s){ await dbPut("songs", s); }   // nota y me gusta no cuentan como "tocar" la canción
+async function setRating(id, r){ const s = byId(id); if(!s) return; s.rating = r; await saveSongLight(s); refreshPlayerUi(); if(!layerOpen) render(); }
+async function toggleLike(id){ const s = byId(id); if(!s) return; s.liked = !s.liked; await saveSongLight(s); refreshPlayerUi(); if(!layerOpen) render(); return s.liked; }
+
+const AUD = $("#aud");
+const PL = { ids:[], order:[], pos:-1, shuffle:false, repeat:0, url:null, token:0, unlocked:false, seeking:false, skips:0 };
+const fmtTime = t => { if(!isFinite(t)||t<0) t = 0; t = Math.floor(t); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); };
+const curId = () => PL.order.length ? PL.ids[PL.order[PL.pos]] : null;
+function silentWavUrl(){
+  const n = 800, b = new ArrayBuffer(44+n*2), v = new DataView(b);
+  const w = (o,t) => { for(let i=0;i<t.length;i++) v.setUint8(o+i, t.charCodeAt(i)); };
+  w(0,"RIFF"); v.setUint32(4,36+n*2,true); w(8,"WAVEfmt "); v.setUint32(16,16,true); v.setUint16(20,1,true); v.setUint16(22,1,true);
+  v.setUint32(24,8000,true); v.setUint32(28,16000,true); v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,"data"); v.setUint32(40,n*2,true);
+  return URL.createObjectURL(new Blob([b],{type:"audio/wav"}));
+}
+function unlockAudio(){
+  if(PL.unlocked) return; PL.unlocked = true;
+  try{ AUD.src = silentWavUrl(); const p = AUD.play(); if(p && p.catch) p.catch(()=>{}); }catch(e){}
+}
+function buildOrder(first){
+  const idx = PL.ids.map((_,i)=>i);
+  if(PL.shuffle){
+    for(let i=idx.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [idx[i],idx[j]] = [idx[j],idx[i]]; }
+    const k = idx.indexOf(first); if(k>0){ idx.splice(k,1); idx.unshift(first); }
+  }
+  PL.order = idx; PL.pos = PL.order.indexOf(first);
+}
+function playList(ids, startId, shuffle){
+  const valid = ids.filter(i => { const s = byId(i); return s && s.hasTrack; });
+  if(!valid.length){ toast("Ninguna canción de esta lista tiene audio. Añade el mp3 en la ficha."); return; }
+  unlockAudio();
+  if(shuffle!==null && shuffle!==undefined) PL.shuffle = shuffle;
+  PL.ids = valid;
+  let first = startId ? valid.indexOf(startId) : (PL.shuffle ? Math.floor(Math.random()*valid.length) : 0);
+  if(first<0) first = 0;
+  buildOrder(first); PL.skips = 0;
+  loadCurrent(true);
+}
+async function loadCurrent(autoplay){
+  const id = curId(); if(!id) return; const s = byId(id); const token = ++PL.token;
+  showMini(); updatePlayerUi();
+  let tr = null;
+  try{ tr = (await dbFilesOf(id)).find(f => f.role==="track"); }catch(e){}
+  if(token!==PL.token) return;
+  if(!tr){
+    toast("No encuentro el audio de «" + (s?s.title:"") + "».");
+    if(++PL.skips < PL.ids.length) step(1, true); else { AUD.pause(); updatePlayerUi(); }
+    return;
+  }
+  PL.skips = 0;
+  if(PL.url) URL.revokeObjectURL(PL.url);
+  PL.url = URL.createObjectURL(tr.blob); AUD.src = PL.url;
+  if(autoplay){ const p = AUD.play(); if(p && p.catch) p.catch(() => { toast("Pulsa play para reproducir."); updatePlayerUi(); }); }
+  setMediaSession(s); updatePlayerUi();
+}
+function step(dir, auto){
+  const n = PL.order.length; if(!n) return;
+  if(auto && PL.repeat===2){ AUD.currentTime = 0; AUD.play().catch(()=>{}); return; }
+  let p = PL.pos + dir;
+  if(p>=n){ if(PL.repeat===1 || !auto) p = 0; else { AUD.pause(); AUD.currentTime = 0; updatePlayerUi(); return; } }
+  if(p<0) p = n-1;
+  PL.pos = p; loadCurrent(true);
+}
+function togglePlay(){ if(!AUD.src || !curId()) return; if(AUD.paused) AUD.play().catch(()=>{}); else AUD.pause(); }
+function prevTrack(){ if(AUD.currentTime>3){ AUD.currentTime = 0; } else step(-1,false); }
+function toggleShuffle(){
+  PL.shuffle = !PL.shuffle; const cur = PL.order.length ? PL.order[PL.pos] : 0;
+  buildOrder(cur); updatePlayerUi();
+}
+function toggleRepeat(){ PL.repeat = (PL.repeat+1)%3; updatePlayerUi(); }
+function setMediaSession(s){
+  if(!("mediaSession" in navigator) || !s) return;
+  try{
+    navigator.mediaSession.metadata = new MediaMetadata({ title:s.title, artist:s.artist||"", album:"Mis covers", artwork: s.cover ? [{src:s.cover, sizes:"360x360", type:"image/jpeg"}] : [] });
+    const h = (a,f) => { try{ navigator.mediaSession.setActionHandler(a,f); }catch(e){} };
+    h("play", () => AUD.play().catch(()=>{})); h("pause", () => AUD.pause());
+    h("previoustrack", prevTrack); h("nexttrack", () => step(1,false));
+    h("seekto", d => { if(d.seekTime!=null) AUD.currentTime = d.seekTime; });
+  }catch(e){}
+}
+function showMini(){ $("#mini").classList.remove("hidden"); document.body.classList.add("hasmini"); }
+function coverStyle(s){ return s && s.cover ? `background-image:url('${s.cover}')` : `background:${colorFor(s?s.title:"?")}`; }
+function initials(s){ return s && !s.cover ? esc((s.title||"?").trim().charAt(0).toUpperCase()) : ""; }
+function updateProgressUi(){
+  const d = AUD.duration, t = AUD.currentTime, pct = d>0 ? Math.min(100, t/d*100) : 0;
+  $("#mBar").style.width = pct+"%";
+  const seek = $("#pSeek");
+  if(seek){ if(!PL.seeking) seek.value = Math.round(pct*10); seek.style.setProperty("--p", (PL.seeking ? seek.value/10 : pct)+"%"); $("#pCur").textContent = fmtTime(PL.seeking ? seek.value/1000*d : t); $("#pDur").textContent = d>0 ? "-"+fmtTime(d-(PL.seeking ? seek.value/1000*d : t)) : "0:00"; }
+}
+function refreshPlayerUi(){ updatePlayerUi(); }
+function updatePlayerUi(){
+  const id = curId(), s = id ? byId(id) : null;
+  const mini = $("#mini");
+  $("#mC").style.cssText = coverStyle(s); $("#mC").innerHTML = initials(s);
+  mini.querySelector(".mt b").textContent = s ? s.title : ""; mini.querySelector(".mt span").textContent = s ? (s.artist||"Sin artista") : "";
+  const playing = !AUD.paused && !AUD.ended;
+  $("#mPlay").innerHTML = playing ? IC.pause : IC.play; $("#mNext").innerHTML = IC.next;
+  const pl = $("#player");
+  if(!pl.classList.contains("hidden") && s){
+    $("#pBg").style.cssText = coverStyle(s);
+    $("#pCover").style.cssText = coverStyle(s); $("#pCover").innerHTML = initials(s);
+    $("#pT").textContent = s.title; $("#pA").textContent = s.artist||"Sin artista";
+    $("#pLike").classList.toggle("on", !!s.liked); $("#pLike").textContent = s.liked ? "♥" : "♡";
+    $("#pStars").innerHTML = starRowHtml(s.rating||0);
+    bindStars($("#pStars"), () => s.rating||0, r => setRating(s.id, r));
+    $("#pPlay").innerHTML = playing ? IC.pause : IC.play;
+    $("#pShuf").classList.toggle("on", PL.shuffle); $("#pRep").classList.toggle("on", PL.repeat>0);
+    $("#pRep").innerHTML = IC.repeat + (PL.repeat===2 ? '<b style="position:absolute;font-size:11px;margin-top:1px">1</b>' : "");
+    $("#pRep").style.position = "relative";
+    if(!$("#pQ").classList.contains("hidden")) renderQueue();
+  }
+  updateProgressUi();
+}
+function renderQueue(){
+  const box = $("#pQ");
+  box.innerHTML = `<h4>Cola de reproducción</h4>` + PL.order.map((oi,p) => { const s = byId(PL.ids[oi]); if(!s) return ""; return `<button class="qrow ${p===PL.pos?"on":""}" data-p="${p}"><span class="qc" style="${coverStyle(s)}">${initials(s)}</span><span class="qt"><b>${esc(s.title)}</b><span>${esc(s.artist||"Sin artista")}</span></span></button>`; }).join("") + `<button class="btn soft" id="pQClose" style="margin-top:10px;width:100%">Cerrar</button>`;
+  box.querySelectorAll(".qrow").forEach(b => b.onclick = () => { PL.pos = +b.dataset.p; loadCurrent(true); });
+  $("#pQClose").onclick = () => box.classList.add("hidden");
+}
+function openPlayer(){
+  const pl = $("#player"); if(!curId()) return;
+  pl.classList.remove("hidden");
+  pl.innerHTML = `<div class="pbg" id="pBg"></div><div class="pshade"></div>
+    <div class="pin">
+      <div class="ptop"><button id="pClose" aria-label="Cerrar reproductor">${IC.down}</button><span>Reproduciendo</span><button id="pQBtn" aria-label="Cola">${IC.list}</button></div>
+      <div class="pcover" id="pCover"></div>
+      <div class="ptitle"><div style="min-width:0"><b id="pT"></b><span id="pA"></span></div><button class="heart" id="pLike" aria-label="Me gusta">♡</button></div>
+      <div class="pstars" id="pStars"></div>
+      <input type="range" id="pSeek" min="0" max="1000" value="0" step="1" aria-label="Posición">
+      <div class="ptimes"><span id="pCur">0:00</span><span id="pDur">0:00</span></div>
+      <div class="pctrl"><button id="pShuf" aria-label="Aleatorio">${IC.shuffle}</button><button id="pPrev" aria-label="Anterior">${IC.prev}</button><button class="pplay" id="pPlay" aria-label="Reproducir o pausar"></button><button id="pNext" aria-label="Siguiente">${IC.next}</button><button id="pRep" aria-label="Repetir"></button></div>
+    </div>
+    <div class="pq hidden" id="pQ"></div>`;
+  $("#pClose").onclick = closePlayer;
+  $("#pQBtn").onclick = () => { $("#pQ").classList.remove("hidden"); renderQueue(); };
+  $("#pLike").onclick = () => { const id = curId(); if(id) toggleLike(id); };
+  $("#pPlay").onclick = togglePlay; $("#pPrev").onclick = prevTrack; $("#pNext").onclick = () => step(1,false);
+  $("#pShuf").onclick = toggleShuffle; $("#pRep").onclick = toggleRepeat;
+  const seek = $("#pSeek");
+  seek.addEventListener("input", () => { PL.seeking = true; updateProgressUi(); });
+  seek.addEventListener("change", () => { if(AUD.duration>0) AUD.currentTime = seek.value/1000*AUD.duration; PL.seeking = false; updateProgressUi(); });
+  updatePlayerUi();
+}
+function closePlayer(){ const pl = $("#player"); pl.classList.add("hidden"); pl.innerHTML = ""; }
+AUD.addEventListener("timeupdate", updateProgressUi);
+AUD.addEventListener("loadedmetadata", updateProgressUi);
+AUD.addEventListener("play", updatePlayerUi); AUD.addEventListener("pause", updatePlayerUi);
+AUD.addEventListener("ended", () => { if(PL.order.length && PL.url && AUD.src===PL.url) step(1,true); });
+AUD.addEventListener("error", () => { if(PL.url && AUD.src===PL.url) toast("No se pudo reproducir ese archivo."); });
+$("#mPlay").onclick = e => { e.stopPropagation(); togglePlay(); };
+$("#mNext").onclick = e => { e.stopPropagation(); step(1,false); };
+$("#mT").onclick = openPlayer; $("#mC").onclick = openPlayer;
 
 /* ========================= Álbumes ========================= */
 const ALBUM_COLORS = ["#e3f1ff","#f1e9ff","#fff4de","#ffe6dc","#dff5e8","#ffe3f0"];
@@ -1065,26 +1520,56 @@ function renderAlbums(){
   $("#main").innerHTML = h;
   $("#main").querySelectorAll(".tile").forEach(t => t.onclick = () => openAlbum(t.dataset.aid));
 }
+function trackRowHtml(s, i, nowId){
+  const cov = s.cover ? `background-image:url('${s.cover}')` : `background:${colorFor(s.title)}`;
+  return `<div class="trk ${s.id===nowId?"now":""}" data-id="${s.id}"><span class="tn">${i+1}</span><span class="tc" style="${cov}">${s.cover?"":esc((s.title||"?").charAt(0).toUpperCase())}</span><span class="tt"><b>${esc(s.title)}</b><span>${esc(s.artist||"Sin artista")} · ${esc(s.status)} · ${s.progress||0}%</span></span><span class="dot" style="background:${STATUS_COLORS[stIdx(s.status)]}" title="${esc(s.status)}"></span>${ratingPills(s)}${playBtn(s)}</div>`;
+}
 function openAlbum(id){
   const a = albumById(id); if(!a) return;
   pushLayer();
   const list = albumSongs(a).sort((x,y)=>x.title.localeCompare(y.title,"es"));
-  const avg = list.length ? Math.round(list.reduce((n,s)=>n+(s.progress||0),0)/list.length) : 0;
+  const n = list.length;
+  const avg = n ? Math.round(list.reduce((x,s)=>x+(s.progress||0),0)/n) : 0;
   const done = list.filter(s => DONE.includes(s.status)).length;
-  const rule = a.kind==="manual" ? "Álbum manual" : a.kind==="artist" ? "Automático: artista "+a.value : a.kind==="style" ? "Automático: estilo "+a.value : "Automático: etiqueta #"+a.value;
+  const rule = a.kind==="manual" ? "Álbum" : a.kind==="artist" ? "Artista" : a.kind==="style" ? "Estilo" : "Etiqueta";
+  const counts = STATUSES.map(st => [st, list.filter(x => x.status===st).length]).filter(x => x[1]);
+  const next = list.filter(x => x.due && !DONE.includes(x.status)).sort((x,y)=>x.due.localeCompare(y.due))[0];
+  const playable = list.some(x => x.hasTrack);
+  const cells = [0,1,2,3].map(i => { const t = list[i]; return t ? (t.cover ? `<div class="m" style="background-image:url('${t.cover}')"></div>` : `<div class="m" style="background:${colorFor(t.title)}">${esc((t.title||"?").charAt(0).toUpperCase())}</div>`) : `<div class="m" style="background:rgba(255,255,255,.5)"></div>`; }).join("");
+  const photos = a.photos || [];
+  const nowId = (typeof curId==="function") ? curId() : null;
   $("#layer").innerHTML = `<div class="overlay">
-    <div class="bar-top"><button class="btn ghost" id="aBack">Cerrar</button><h2>Álbum</h2>${a.virtual ? '<span style="width:64px"></span>' : '<button class="btn soft sm" id="aEdit">Editar</button>'}</div>
+    <div class="bar-top"><button class="btn ghost" id="aBack">Cerrar</button><h2>${esc(rule)}</h2>${a.virtual ? '<span style="width:64px"></span>' : '<button class="btn soft sm" id="aEdit">Editar</button>'}</div>
     <div class="content">
-      <div class="grp blue" style="margin-top:4px">${a.cover ? `<div class="albcover" style="background-image:url('${a.cover}')"></div>` : ""}<h3 class="sec">${esc(a.name)}</h3><div class="hint" style="margin-bottom:10px">${esc(rule)}</div>
+      <div class="ahero">
+        ${a.cover ? `<div class="acov one" style="background-image:url('${a.cover}')"></div>` : `<div class="acov">${cells}</div>`}
+        <h2>${esc(a.name)}</h2>
+        <div class="sub">${n} ${n===1?"canción":"canciones"} · ${done} terminadas</div>
+      </div>
+      <div class="actions">
+        <button class="roundbtn" id="aShuf" aria-label="Aleatorio" ${playable?"":"disabled style='opacity:.4'"}>${IC.shuffle}</button>
+        <button class="roundplay" id="aPlay" aria-label="Reproducir álbum" ${playable?"":"disabled style='opacity:.45'"}>${IC.play}</button>
+        ${a.virtual && !photos.length ? '<span style="width:48px"></span>' : `<button class="roundbtn" id="aPhotos" aria-label="Fotos" style="stroke:var(--accent)">${IC_PHOTO.replace("<svg","<svg style='width:22px;height:22px;stroke:var(--accent);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round'")}</button>`}
+      </div>
+      ${playable ? "" : '<div class="hint" style="text-align:center">Añade el mp3 a las canciones para poder reproducir el álbum.</div>'}
+      <div class="grp warm" style="margin-top:14px">
+        <h3 class="sec">Proyecto</h3>
         <div class="bar" style="height:12px"><i style="width:${avg}%"></i></div>
-        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:14px"><span>${list.length} ${list.length===1?"canción":"canciones"} · ${done} terminadas</span><b style="color:var(--warm-ink)">${avg}%</b></div></div>
-      ${(a.photos||[]).length ? `<div class="grp violet"><h3 class="sec">Fotos</h3><div class="gal">${a.photos.map((u,i)=>`<button class="ph" data-i="${i}" style="background-image:url('${u}')" aria-label="Foto ${i+1}"></button>`).join("")}</div></div>` : ""}
-      ${list.length ? list.map((s,i)=>cardHtml(s,i)).join("") : '<div class="empty">Este álbum está vacío.</div>'}
+        <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:14px"><span>Avance medio</span><b style="color:var(--warm-ink)">${avg}%</b></div>
+        ${counts.length ? `<div class="meta" style="margin-top:8px">${counts.map(([st,c])=>`<span class="pill st${stIdx(st)}">${esc(st)} ${c}</span>`).join("")}</div>` : ""}
+        ${next ? `<div class="hint" style="margin-top:8px">Próxima fecha: ${esc(next.title)}, ${esc(new Date(next.due+"T00:00:00").toLocaleDateString("es-ES",{day:"numeric",month:"long"}))}</div>` : ""}
+      </div>
+      <div class="tracks">${n ? list.map((t,i)=>trackRowHtml(t,i,nowId)).join("") : '<div class="empty">Este álbum está vacío.</div>'}</div>
     </div></div>`;
-  $("#layer").querySelectorAll(".gal .ph").forEach(b => b.onclick = () => showLightbox(a.photos[+b.dataset.i]));
+  const ap = $("#aPhotos");
+  if(ap) ap.onclick = () => { a.photos = a.photos || []; openGallery(a.name, a.photos, async () => { if(!a.virtual){ await dbPut("albums", a); await loadSongs(); } }, () => openAlbum(id)); };
   $("#aBack").onclick = () => closeLayer();
   const ed = $("#aEdit"); if(ed) ed.onclick = () => { clearLayerContent(); openAlbumEditor(a.id); };
-  $("#layer").querySelectorAll(".card").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+  $("#layer").querySelectorAll(".trk").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+  bindPlayButtons($("#layer"), list);
+  const pa = $("#aPlay"), ps = $("#aShuf");
+  if(pa) pa.onclick = () => playList(list.map(x=>x.id), null, false);
+  if(ps) ps.onclick = () => playList(list.map(x=>x.id), null, true);
 }
 function openAlbumEditor(id){
   pushLayer();
@@ -1248,7 +1733,7 @@ async function exportBackup(withFiles){
     const out = { app:"mis-covers", version:2, exportedAt:new Date().toISOString(), songs, albums, lists:{artists:savedList("artists"), styles:savedList("styles")}, files:[] };
     if(withFiles){
       for(const f of await dbAll("files")) out.files.push({ id:f.id, songId:f.songId, name:f.name, type:f.type, size:f.size, addedAt:f.addedAt, data: await blobToDataUrl(f.blob) });
-    } else { out.songs = songs.map(s => ({...s, fileCount:0})); }
+    } else { out.songs = songs.map(s => ({...s, fileCount:0, hasTrack:false})); }
     const blob = new Blob([JSON.stringify(out)], {type:"application/json"});
     const url = URL.createObjectURL(blob); const a = document.createElement("a");
     a.href = url; a.download = `mis-covers-${new Date().toISOString().slice(0,10)}.json`;
