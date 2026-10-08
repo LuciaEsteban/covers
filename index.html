@@ -388,6 +388,30 @@ body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-b
 .sw{display:flex;gap:10px;flex-wrap:wrap}.sw button{width:40px;height:40px;border-radius:50%;border:3px solid transparent;box-shadow:0 0 0 1px var(--line)}
 .sw button.on{border-color:var(--ink)}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* Letras */
+#player .pextra{display:flex;justify-content:center;margin:2px 0 0}
+#player .pextra button{border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;border-radius:999px;padding:8px 18px;font-size:14px;font-weight:600;min-height:40px}
+#player .pextra button.on{background:#fff;color:#5b3fc4}
+#player .plyr{position:relative;flex:1;min-height:250px;max-height:48vh;overflow-y:auto;margin:12px 0 6px;padding:90px 4px;-webkit-mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
+#player .plyr .ll{font-size:24px;font-weight:700;line-height:1.28;margin:12px 0;opacity:.9;transition:opacity .35s,transform .35s;transform-origin:left center}
+#player .plyr.sy .ll{opacity:.35;cursor:pointer}
+#player .plyr.sy .ll.on{opacity:1;transform:scale(1.04)}
+#player .plyr .ll.gap{height:14px;margin:0}
+#player .plyr .lempty{text-align:center;opacity:.85;padding:30px 10px}
+#player .plyr .lempty button,#lyEd button{border:0;border-radius:14px;padding:12px 18px;font-size:15px;font-weight:600;color:#fff;background:linear-gradient(135deg,#a98af0,#8a63e0);min-height:46px}
+#lyEd{position:fixed;inset:0;z-index:60;background:#1b1535;color:#fff;display:flex;flex-direction:column;padding:calc(env(safe-area-inset-top) + 12px) 16px calc(14px + env(safe-area-inset-bottom));max-width:620px;margin:0 auto;animation:pup .25s ease both}
+#lyEd h3{margin:4px 0 8px;font-size:18px}
+#lyEd textarea{flex:1;width:100%;border-radius:16px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font:16px/1.5 inherit;padding:12px;resize:none}
+#lyEd .hint{font-size:12.5px;opacity:.75;margin:8px 0}
+#lyEd .row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+#lyEd .row button{flex:1;min-width:120px}
+#lyEd button.ghost{background:rgba(255,255,255,.14)}
+#lyEd .slines{flex:1;overflow-y:auto;border-radius:16px;background:rgba(255,255,255,.06);padding:10px 14px;scroll-behavior:smooth}
+#lyEd .sl{padding:6px 0;opacity:.5;font-size:17px;line-height:1.3}
+#lyEd .sl.done{opacity:.95;color:#bfe0ff}#lyEd .sl.cur{opacity:1;font-weight:700;font-size:21px;color:#ffe08a}
+#lyEd .sl small{opacity:.7;margin-right:8px;font-variant-numeric:tabular-nums}
+#lyEd .mark{width:100%;min-height:76px;font-size:19px;margin-top:10px}
 </style>
 </head>
 <body>
@@ -601,9 +625,10 @@ function rememberValue(k, v){
   l.push(v); try{ localStorage.setItem("covers.list."+k, JSON.stringify(l)); }catch(e){}
 }
 const allArtists = () => uniqueValues(s => [s.artist], savedList("artists"));
+const allTagItems = () => uniqueValues(s => s.tags||[], savedList("tags"));
 const allStyleItems = () => uniqueValues(s => [s.style], [...BASE_STYLES, ...savedList("styles")]);
 function canonical(items, val){ const k = fold(val); const f = items.find(i => i.key===k); return f ? f.name : val.trim(); }
-function attachSuggest(input, getItems){
+function attachSuggest(input, getItems, onPick){
   const box = document.createElement("div"); box.className = "sugg hidden";
   document.body.appendChild(box);
   const place = () => {
@@ -624,7 +649,7 @@ function attachSuggest(input, getItems){
     const q = fold(input.value); const items = getItems();
     let list = items.filter(i => !q || i.key.includes(q));
     list.sort((a,b) => (b.key.startsWith(q)-a.key.startsWith(q)) || b.n-a.n);
-    list = list.slice(0,6);
+    list = list.slice(0,60);
     const exact = items.some(i => i.key===q);
     let h = list.map(i => `<button type="button" data-v="${esc(i.name)}">${esc(i.name)}${i.n?`<small>${i.n} ${i.n===1?"canción":"canciones"}</small>`:""}</button>`).join("");
     if(q && !exact) h += `<button type="button" class="new" data-v="${esc(input.value.trim())}">Crear nuevo: ${esc(input.value.trim())}</button>`;
@@ -632,7 +657,7 @@ function attachSuggest(input, getItems){
   };
   input.addEventListener("input", show); input.addEventListener("focus", show);
   input.addEventListener("blur", () => setTimeout(() => { box.classList.add("hidden"); const v = input.value.trim(); if(v) input.value = canonical(getItems(), v); }, 150));
-  box.addEventListener("pointerdown", e => { e.preventDefault(); const b = e.target.closest("button"); if(!b) return; input.value = b.dataset.v; box.classList.add("hidden"); });
+  box.addEventListener("pointerdown", e => { e.preventDefault(); const b = e.target.closest("button"); if(!b) return; input.value = b.dataset.v; box.classList.add("hidden"); if(onPick) onPick(); });
 }
 function allStyles(){ const set = new Set(BASE_STYLES); songs.forEach(s => s.style && set.add(s.style)); return [...set]; }
 
@@ -681,7 +706,7 @@ function filtered(){
     else if(ui.status!=="Todas" && s.status!==ui.status) return false;
     if(ui.tag && !(s.tags||[]).includes(ui.tag)) return false;
     if(q){
-      const hay = [s.title,s.artist,s.style,s.status,s.tone,s.notes,...(s.tags||[]),...(s.formats||[]),s.bpm?s.bpm+" bpm":""].join(" ").toLowerCase();
+      const hay = [s.title,s.artist,s.style,s.status,s.tone,s.notes,plainLyrics(s.lyrics),...(s.tags||[]),...(s.formats||[]),s.bpm?s.bpm+" bpm":""].join(" ").toLowerCase();
       if(!q.split(/\s+/).every(w => hay.includes(w))) return false;
     }
     return true;
@@ -820,6 +845,7 @@ async function openDetail(id){
         <button class="tilebtn tl" id="tLinks">${IC_LINK}<b>Enlaces</b><small>${links.length}</small></button>
         <button class="tilebtn tf" id="tFiles">${IC_FILE}<b>Archivos</b><small>${files.length}</small></button>
       </div>
+      ${s.lyrics ? `<div class="grp violet"><h3 class="sec">Letra</h3><div class="notes">${esc(plainLyrics(s.lyrics))}</div></div>` : ""}
       ${s.notes ? `<div class="grp blue"><h3 class="sec">Notas</h3><div class="notes">${esc(s.notes)}</div></div>` : ""}
     </div></div>`;
   $("#dBack").onclick = closeLayer;
@@ -1038,8 +1064,7 @@ async function openEditor(id){
         <label class="f">Plataforma</label>
         <div class="chips" style="flex-wrap:wrap" id="eFormats">${FORMATS.map(f=>`<button type="button" class="chip ${s.formats.includes(f)?"on":""}" data-f="${esc(f)}">${esc(f)}</button>`).join("")}</div>
         <label class="f">Etiquetas</label>
-        <div class="tagbox" id="eTagBox"><input id="eTagIn" list="dlTags" placeholder="Añadir y pulsar intro" autocomplete="off" autocapitalize="none" enterkeyhint="done"></div>
-        <datalist id="dlTags">${allTags().map(x=>`<option value="${esc(x)}">`).join("")}</datalist>
+        <div class="tagbox" id="eTagBox"><input id="eTagIn" placeholder="Añadir y pulsar intro" autocomplete="off" autocapitalize="none" enterkeyhint="done"></div>
         <div class="grid2" style="gap:10px">
           <div><label class="f">Tono</label><select class="in" id="eTone"><option value="">Sin definir</option>${s.tone && !KEYS.includes(s.tone) ? `<option selected>${esc(s.tone)}</option>` : ""}<optgroup label="Mayores">${KEYS.slice(0,12).map(k=>`<option ${k===s.tone?"selected":""}>${k}</option>`).join("")}</optgroup><optgroup label="Menores">${KEYS.slice(12).map(k=>`<option ${k===s.tone?"selected":""}>${k}</option>`).join("")}</optgroup></select></div>
           <div><label class="f">BPM</label><input class="in" id="eBpm" type="number" inputmode="numeric" min="30" max="300" placeholder="Ej.: 96" value="${esc(s.bpm||"")}"></div>
@@ -1078,6 +1103,10 @@ async function openEditor(id){
         <div class="hint" style="margin-top:6px">Se guardan en este dispositivo. Haz copias de seguridad desde Ajustes.</div>
       </div>
       <div class="grp blue">
+        <h3 class="sec">Letra</h3>
+        <textarea class="in" id="eLyrics" style="min-height:140px" placeholder="Pega la letra aquí. Para que se mueva sola con la canción, sincronízala desde el reproductor (botón Letra)." spellcheck="false">${esc(s.lyrics||"")}</textarea>
+      </div>
+      <div class="grp blue">
         <h3 class="sec">Notas</h3>
         <textarea class="in" id="eNotes" placeholder="Ej.: subir un tono, hacerla a capela, ensayar el puente...">${esc(s.notes)}</textarea>
       </div>
@@ -1093,9 +1122,11 @@ async function openEditor(id){
     });
   };
   const addTag = () => {
-    const inp = $("#eTagIn"); const v = inp.value.replace(/^#/,"").trim().toLowerCase(); inp.value = "";
-    if(v && !s.tags.includes(v)){ s.tags.push(v); renderTags(); }
+    const inp = $("#eTagIn"); let v = inp.value.replace(/^#/,"").trim().toLowerCase(); inp.value = "";
+    if(v) v = canonical(allTagItems(), v);
+    if(v && !s.tags.some(x => fold(x)===fold(v))){ s.tags.push(v); rememberValue("tags", v); renderTags(); }
   };
+  attachSuggest($("#eTagIn"), allTagItems, () => { addTag(); $("#eTagIn").focus(); });
   $("#eTagIn").addEventListener("keydown", e => { if(e.key==="Enter" || e.key===","){ e.preventDefault(); addTag(); } });
   $("#eTagIn").addEventListener("change", addTag);
   $("#eTagIn").addEventListener("blur", addTag);
@@ -1226,10 +1257,10 @@ async function openEditor(id){
     const artist = canonical(allArtists(), $("#eArtist").value), style = canonical(allStyleItems(), $("#eStyle").value);
     const dup = songs.find(x => x.id!==s.id && fold(x.title)===fold(title) && fold(x.artist)===fold(artist));
     if(dup){ toast("Esa canción ya existe: " + dup.title + (dup.artist ? " de " + dup.artist : "") + "."); $("#eTitle").focus(); return; }
-    rememberValue("artists", artist); rememberValue("styles", style);
+    rememberValue("artists", artist); rememberValue("styles", style); (s.tags||[]).forEach(t => rememberValue("tags", t));
     s.title = title; s.artist = artist; s.style = style;
     s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
-    s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value; s.bpm = $("#eBpm").value ? String(Math.max(30,Math.min(300,parseInt($("#eBpm").value,10)||0))) : ""; s.notes = $("#eNotes").value.trim();
+    s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value; s.bpm = $("#eBpm").value ? String(Math.max(30,Math.min(300,parseInt($("#eBpm").value,10)||0))) : ""; s.notes = $("#eNotes").value.trim(); s.lyrics = $("#eLyrics").value.replace(/\s+$/,"");
     s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on");
     s.links = s.links.map(l => ({label:(l.label||"").trim()||"Enlace", url:(l.url||"").trim()})).filter(l => l.url);
     s.updatedAt = Date.now();
@@ -1450,6 +1481,7 @@ function updateProgressUi(){
   $("#mBar").style.width = pct+"%";
   const seek = $("#pSeek");
   if(seek){ if(!PL.seeking) seek.value = Math.round(pct*10); seek.style.setProperty("--p", (PL.seeking ? seek.value/10 : pct)+"%"); $("#pCur").textContent = fmtTime(PL.seeking ? seek.value/1000*d : t); $("#pDur").textContent = d>0 ? "-"+fmtTime(d-(PL.seeking ? seek.value/1000*d : t)) : "0:00"; }
+  if(PL.lyOn && PL.lySync) markLyricLine(t, false);
 }
 function refreshPlayerUi(){ updatePlayerUi(); }
 function updatePlayerUi(){
@@ -1472,6 +1504,7 @@ function updatePlayerUi(){
     $("#pRep").innerHTML = IC.repeat + (PL.repeat===2 ? '<b style="position:absolute;font-size:11px;margin-top:1px">1</b>' : "");
     $("#pRep").style.position = "relative";
     if(!$("#pQ").classList.contains("hidden")) renderQueue();
+    syncLyricsView(s);
   }
   updateProgressUi();
 }
@@ -1488,10 +1521,12 @@ function openPlayer(){
     <div class="pin">
       <div class="ptop"><button id="pClose" aria-label="Cerrar reproductor">${IC.down}</button><span>Reproduciendo</span><button id="pQBtn" aria-label="Cola">${IC.list}</button></div>
       <div class="pcover" id="pCover"></div>
+      <div class="plyr hidden" id="pLy"></div>
       <div class="ptitle"><div style="min-width:0"><b id="pT"></b><span id="pA"></span></div><button class="heart" id="pLike" aria-label="Me gusta">♡</button></div>
       <div class="pstars" id="pStars"></div>
       <input type="range" id="pSeek" min="0" max="1000" value="0" step="1" aria-label="Posición">
       <div class="ptimes"><span id="pCur">0:00</span><span id="pDur">0:00</span></div>
+      <div class="pextra"><button id="pLyBtn">Letra</button></div>
       <div class="pctrl"><button id="pShuf" aria-label="Aleatorio">${IC.shuffle}</button><button id="pPrev" aria-label="Anterior">${IC.prev}</button><button class="pplay" id="pPlay" aria-label="Reproducir o pausar"></button><button id="pNext" aria-label="Siguiente">${IC.next}</button><button id="pRep" aria-label="Repetir"></button></div>
     </div>
     <div class="pq hidden" id="pQ"></div>`;
@@ -1500,12 +1535,107 @@ function openPlayer(){
   $("#pLike").onclick = () => { const id = curId(); if(id) toggleLike(id); };
   $("#pPlay").onclick = togglePlay; $("#pPrev").onclick = prevTrack; $("#pNext").onclick = () => step(1,false);
   $("#pShuf").onclick = toggleShuffle; $("#pRep").onclick = toggleRepeat;
+  $("#pLyBtn").onclick = () => { PL.lyOn = !PL.lyOn; PL.lyId = null; updatePlayerUi(); };
+  $("#pLy").addEventListener("touchstart", () => { PL.lyTouch = Date.now(); }, {passive:true});
+  $("#pLy").addEventListener("wheel", () => { PL.lyTouch = Date.now(); }, {passive:true});
   const seek = $("#pSeek");
   seek.addEventListener("input", () => { PL.seeking = true; updateProgressUi(); });
   seek.addEventListener("change", () => { if(AUD.duration>0) AUD.currentTime = seek.value/1000*AUD.duration; PL.seeking = false; updateProgressUi(); });
   updatePlayerUi();
 }
-function closePlayer(){ const pl = $("#player"); pl.classList.add("hidden"); pl.innerHTML = ""; }
+
+/* ========================= Letras ========================= */
+const LRX = /^\s*\[(\d+):(\d{1,2})(?:[.:](\d{1,3}))?\]\s*/;
+function parseLyrics(text){
+  const lines = [];
+  for(const raw of String(text||"").replace(/\r/g,"").split("\n")){
+    let line = raw, t = null; const m = LRX.exec(line);
+    if(m){ t = (+m[1])*60 + (+m[2]) + (m[3] ? parseFloat("0."+m[3]) : 0); line = line.slice(m[0].length); }
+    lines.push({ t, text: line.trim() });
+  }
+  while(lines.length && !lines[lines.length-1].text) lines.pop();
+  const timed = lines.filter(l => l.t!==null && l.text).length, body = lines.filter(l => l.text).length;
+  return { lines, synced: body>0 && timed >= body*0.5 };
+}
+const lrcStamp = t => { const m = Math.floor(t/60), s = t - m*60; return "[" + String(m).padStart(2,"0") + ":" + s.toFixed(2).padStart(5,"0") + "]"; };
+const plainLyrics = text => parseLyrics(text).lines.map(l => l.text).join("\n");
+function syncLyricsView(s){
+  const box = $("#pLy"), cover = $("#pCover"), btn = $("#pLyBtn"); if(!box) return;
+  btn.classList.toggle("on", !!PL.lyOn);
+  box.classList.toggle("hidden", !PL.lyOn); cover.classList.toggle("hidden", !!PL.lyOn);
+  if(!PL.lyOn) return;
+  const key = s.id + "|" + (s.lyrics||"");
+  if(PL.lyId === key) return;
+  PL.lyId = key;
+  const P = parseLyrics(s.lyrics); PL.lyData = P; PL.lySync = P.synced; PL.lyCur = -1;
+  box.classList.toggle("sy", P.synced); box.scrollTop = 0;
+  if(!P.lines.length){ box.innerHTML = '<div class="lempty">Esta canción aún no tiene letra.<br><br><button id="lyAdd">Añadir letra</button></div>'; $("#lyAdd").onclick = () => openLyricEditor(s.id); return; }
+  box.innerHTML = P.lines.map((l,i) => l.text ? `<div class="ll" data-i="${i}">${esc(l.text)}</div>` : '<div class="ll gap"></div>').join("") + `<div class="lempty"><button id="lyEdit">Editar o sincronizar letra</button></div>`;
+  $("#lyEdit").onclick = () => openLyricEditor(s.id);
+  box.querySelectorAll(".ll[data-i]").forEach(el => el.onclick = () => { const l = P.lines[+el.dataset.i]; if(P.synced && l.t!==null){ AUD.currentTime = l.t; PL.lyTouch = 0; markLyricLine(l.t, true); } });
+  if(P.synced) markLyricLine(AUD.currentTime, true);
+}
+function markLyricLine(t, force){
+  const P = PL.lyData, box = $("#pLy"); if(!P || !box) return;
+  let cur = -1;
+  for(let i=0;i<P.lines.length;i++){ const l = P.lines[i]; if(l.t!==null && l.text){ if(l.t <= t + 0.12) cur = i; else break; } }
+  if(cur === PL.lyCur && !force) return;
+  PL.lyCur = cur;
+  box.querySelectorAll(".ll.on").forEach(e => e.classList.remove("on"));
+  const el = cur>=0 ? box.querySelector('.ll[data-i="'+cur+'"]') : null;
+  if(el){ el.classList.add("on"); if(force || Date.now() - (PL.lyTouch||0) > 3000) box.scrollTo({ top: el.offsetTop - box.clientHeight/2 + el.clientHeight/2, behavior: force ? "auto" : "smooth" }); }
+}
+function openLyricEditor(id){
+  const s = byId(id); if(!s) return;
+  document.querySelector("#lyEd")?.remove();
+  const ed = document.createElement("div"); ed.id = "lyEd";
+  ed.innerHTML = `<h3>Letra de ${esc(s.title)}</h3>
+    <textarea id="lyTxt" placeholder="Pega aquí la letra, una frase por línea. Deja una línea vacía entre estrofas." spellcheck="false">${esc(s.lyrics||"")}</textarea>
+    <div class="hint">Si pegas una letra con tiempos tipo [01:23.40] se moverá sola con la canción. Si no, pulsa Sincronizar y marca cada frase mientras suena.</div>
+    <div class="row"><button id="lyCancel" class="ghost">Cancelar</button><button id="lyTap" class="ghost">Sincronizar</button><button id="lySave">Guardar</button></div>`;
+  document.body.appendChild(ed);
+  const close = () => ed.remove();
+  const saveText = async txt => { const cur = byId(id); if(!cur) return; cur.lyrics = txt; cur.updatedAt = Date.now(); await dbPut("songs", cur); await loadSongs(); render(); PL.lyId = null; updatePlayerUi(); };
+  $("#lyCancel").onclick = close;
+  $("#lySave").onclick = async () => { await saveText($("#lyTxt").value.replace(/\s+$/,"")); close(); toast("Letra guardada."); };
+  $("#lyTap").onclick = () => {
+    const plain = plainLyrics($("#lyTxt").value);
+    if(!plain.trim()){ toast("Escribe primero la letra."); return; }
+    if(!s.hasTrack){ toast("Esta canción no tiene audio. Añade el mp3 en su ficha."); return; }
+    startTapSync(id, plain, ed, saveText, close);
+  };
+}
+function startTapSync(id, plain, ed, saveText, closeAll){
+  if(curId() !== id) playList([id], id, false);
+  const raw = plain.split("\n").map(x => x.trim());
+  let i = 0; const stamps = [];
+  const next = () => { while(i < raw.length && !raw[i]) i++; };
+  next();
+  ed.innerHTML = `<h3>Sincronizar: pulsa al empezar cada frase</h3>
+    <div class="slines" id="slL"></div>
+    <button class="mark" id="slMark">Marcar frase</button>
+    <div class="row"><button class="ghost" id="slPlay">Pausa / Play</button><button class="ghost" id="slBack">Atrás 5 s</button><button class="ghost" id="slUndo">Deshacer</button></div>
+    <div class="row"><button class="ghost" id="slCancel">Cancelar</button><button id="slSave">Guardar</button></div>`;
+  const draw = () => {
+    $("#slL").innerHTML = raw.map((l,k) => l ? `<div class="sl ${stamps[k]!==undefined?"done":""} ${k===i?"cur":""}" data-k="${k}">${stamps[k]!==undefined?`<small>${fmtTime(stamps[k])}</small>`:""}${esc(l)}</div>` : '<div style="height:10px"></div>').join("");
+    const c = $("#slL").querySelector(".cur"); if(c) $("#slL").scrollTo({ top: c.offsetTop - 80, behavior:"smooth" });
+    $("#slMark").textContent = i >= raw.length ? "Todas marcadas" : "Marcar frase";
+  };
+  const mark = () => { if(i >= raw.length) return; stamps[i] = Math.max(0, AUD.currentTime - 0.3); i++; next(); draw(); if(AUD.paused) AUD.play().catch(()=>{}); };
+  $("#slMark").onclick = mark;
+  $("#slPlay").onclick = togglePlay;
+  $("#slBack").onclick = () => { AUD.currentTime = Math.max(0, AUD.currentTime - 5); };
+  $("#slUndo").onclick = () => { let k = i - 1; while(k >= 0 && !raw[k]) k--; if(k < 0) return; i = k; delete stamps[k]; AUD.currentTime = Math.max(0, (stamps.filter(v=>v!==undefined).slice(-1)[0] || 0)); draw(); };
+  $("#slCancel").onclick = closeAll;
+  $("#slSave").onclick = async () => {
+    const out = raw.map((l,k) => !l ? "" : (stamps[k]!==undefined ? lrcStamp(stamps[k]) + " " : "") + l).join("\n");
+    await saveText(out); closeAll(); toast(stamps.filter(v=>v!==undefined).length < raw.filter(Boolean).length ? "Letra guardada, algunas frases sin marcar." : "Letra sincronizada.");
+  };
+  draw();
+  if(AUD.paused) AUD.play().catch(()=>{});
+}
+
+function closePlayer(){ const pl = $("#player"); pl.classList.add("hidden"); pl.innerHTML = ""; PL.lyId = null; }
 AUD.addEventListener("timeupdate", updateProgressUi);
 AUD.addEventListener("loadedmetadata", updateProgressUi);
 AUD.addEventListener("play", updatePlayerUi); AUD.addEventListener("pause", updatePlayerUi);
@@ -1780,7 +1910,7 @@ const blobToDataUrl = b => new Promise((res, rej) => { const r = new FileReader(
 async function exportBackup(withFiles){
   try{
     toast("Preparando copia...");
-    const out = { app:"mis-covers", version:2, exportedAt:new Date().toISOString(), songs, albums, lists:{artists:savedList("artists"), styles:savedList("styles")}, files:[] };
+    const out = { app:"mis-covers", version:2, exportedAt:new Date().toISOString(), songs, albums, lists:{artists:savedList("artists"), styles:savedList("styles"), tags:savedList("tags")}, files:[] };
     if(withFiles){
       for(const f of await dbAll("files")) out.files.push({ id:f.id, songId:f.songId, name:f.name, type:f.type, size:f.size, addedAt:f.addedAt, data: await blobToDataUrl(f.blob) });
     } else { out.songs = songs.map(s => ({...s, fileCount:0, hasTrack:false})); }
@@ -1798,7 +1928,7 @@ async function importBackup(file){
     if(!confirm(`Se importarán ${data.songs.length} canciones. Las que tengan el mismo identificador se sobrescribirán. ¿Continuar?`)) return;
     for(const s of data.songs) await dbPut("songs", s);
     for(const al of (data.albums||[])) await dbPut("albums", al);
-    if(data.lists){ (data.lists.artists||[]).forEach(v => rememberValue("artists", v)); (data.lists.styles||[]).forEach(v => rememberValue("styles", v)); }
+    if(data.lists){ (data.lists.artists||[]).forEach(v => rememberValue("artists", v)); (data.lists.styles||[]).forEach(v => rememberValue("styles", v)); (data.lists.tags||[]).forEach(v => rememberValue("tags", v)); }
     songs.forEach(()=>{}); data.songs.forEach(x => { rememberValue("artists", x.artist); rememberValue("styles", x.style); });
     for(const f of (data.files||[])){
       const blob = await (await fetch(f.data)).blob();
@@ -2020,11 +2150,11 @@ async function syncOnce(opts){
     pushedIds.push({kind, id, mod:rec.mod||0, path: folder + "/" + (kind==="song" ? "cancion.json" : "album.json"), sha: pack.items[pack.items.length-1].sha, meta: pack.meta});
   }
   // ajustes compartidos (listas de artistas y estilos)
-  const setPath = "_ajustes.json"; let remoteSet = {artists:[], styles:[]};
+  const setPath = "_ajustes.json"; let remoteSet = {artists:[], styles:[], tags:[]};
   if(T.has(setPath)){ try{ remoteSet = JSON.parse(await (await ghBlobRaw(T.get(setPath).sha)).text()); }catch(e){} }
   const mergeList = (a,b) => { const m = new Map(); [...(a||[]), ...(b||[])].forEach(v => { const k = fold(v); if(k && !m.has(k)) m.set(k, v); }); return [...m.values()]; };
-  const merged = { artists: mergeList(remoteSet.artists, savedList("artists")), styles: mergeList(remoteSet.styles, savedList("styles")) };
-  try{ localStorage.setItem("covers.list.artists", JSON.stringify(merged.artists)); localStorage.setItem("covers.list.styles", JSON.stringify(merged.styles)); }catch(e){}
+  const merged = { artists: mergeList(remoteSet.artists, savedList("artists")), styles: mergeList(remoteSet.styles, savedList("styles")), tags: mergeList(remoteSet.tags, savedList("tags")) };
+  try{ localStorage.setItem("covers.list.artists", JSON.stringify(merged.artists)); localStorage.setItem("covers.list.styles", JSON.stringify(merged.styles)); localStorage.setItem("covers.list.tags", JSON.stringify(merged.tags)); }catch(e){}
   const setBytes = textBytes(JSON.stringify(merged, null, 2)), setSha = await gitSha(setBytes);
   if(!T.has(setPath) || T.get(setPath).sha!==setSha){ const r = await ghPost("git/blobs", { content: await blobToB64(new Blob([setBytes])), encoding:"base64" }); entries.push({ path:setPath, mode:"100644", type:"blob", sha:r.sha }); }
 
