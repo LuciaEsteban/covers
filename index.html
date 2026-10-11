@@ -25,6 +25,8 @@
   --page:linear-gradient(180deg,#e6efff 0%,#f1eaff 55%,#fff1ee 100%);
   --glass:rgba(255,255,255,.80);
   --shadow:0 1px 3px rgba(80,70,160,.10),0 8px 20px rgba(80,70,160,.07);
+  --grp-blue:rgba(199,225,250,.46); --grp-warm:rgba(246,226,158,.42); --grp-violet:rgba(222,206,248,.44);
+  --grp-bd:rgba(120,105,180,.16);
 }
 @media (prefers-color-scheme:dark){
   :root{ --bg:#17152b; --card:#232042; --ink:#f0eefb; --muted:#a9a6c9; --line:#37336a;
@@ -35,7 +37,9 @@
     --danger:#ff9a8f; --ok:#7bd88f;
     --page:linear-gradient(180deg,#15152b 0%,#1c1840 60%,#251a33 100%);
     --glass:rgba(35,32,66,.78);
-    --shadow:0 1px 3px rgba(0,0,0,.4); }
+    --shadow:0 1px 3px rgba(0,0,0,.4);
+    --grp-blue:rgba(31,51,80,.62); --grp-warm:rgba(56,51,29,.62); --grp-violet:rgba(46,37,82,.62);
+    --grp-bd:rgba(255,255,255,.10); }
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
@@ -128,9 +132,9 @@ h3.sec{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing
 /* grupos por color */
 .grp{border-radius:20px;padding:2px 14px 16px;margin:16px 0}
 .grp>h3.sec{margin-top:14px}
-.grp.blue{background:var(--blue-soft);border:1px solid var(--blue-line)}.grp.blue>h3.sec{color:var(--blue-ink)}
-.grp.warm{background:var(--warm-soft);border:1px solid var(--warm-line)}.grp.warm>h3.sec{color:var(--warm-ink)}
-.grp.violet{background:var(--violet-soft);border:1px solid var(--violet-line)}.grp.violet>h3.sec{color:var(--violet)}
+.grp.blue{background:var(--grp-blue);border:1px solid var(--grp-bd)}.grp.blue>h3.sec{color:var(--blue-ink)}
+.grp.warm{background:var(--grp-warm);border:1px solid var(--grp-bd)}.grp.warm>h3.sec{color:var(--warm-ink)}
+.grp.violet{background:var(--grp-violet);border:1px solid var(--grp-bd)}.grp.violet>h3.sec{color:var(--violet)}
 .grp.warm .in{border-color:var(--warm-line)}.grp.blue .in{border-color:var(--blue-line)}.grp.violet .in{border-color:var(--violet-line)}
 .grp.warm label.f{color:var(--warm-ink)}.grp.blue label.f{color:var(--blue-ink)}.grp.violet label.f{color:var(--violet)}
 .grp.warm .chip{border-color:var(--warm-line)}.grp.warm .chip.on{background:linear-gradient(135deg,#ffeb85,#ffd24d);color:#5a4300}
@@ -152,18 +156,12 @@ h3.sec{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing
 .hrow .b{flex:1;height:14px;border-radius:7px;background:var(--line);overflow:hidden}
 .hrow .b i{display:block;height:100%;background:linear-gradient(90deg,#6fb3f2,#9a7ae8);border-radius:7px}
 .panel.warm .hrow .b{background:var(--warm-line)}.panel.warm .hrow .b i{background:linear-gradient(90deg,#ffe97a,#ffc93c)}
-.panel.warm{background:var(--warm-soft)}.panel.violet{background:var(--violet-soft)}.panel.blue{background:var(--blue-soft)}
+.panel.warm{background:var(--grp-warm)}.panel.violet{background:var(--grp-violet)}.panel.blue{background:var(--grp-blue)}
 .hrow .v{width:28px;text-align:right;font-weight:600}
 .panel{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:14px;margin:12px 0}
 .panel h4{margin:0 0 6px;font-size:15px}
 .hint{color:var(--muted);font-size:13px}
 
-/* lock */
-#lock{position:fixed;inset:0;z-index:50;background:linear-gradient(160deg,#8ec2ff,#b9a2f5 55%,#ffc6d9);display:flex;align-items:center;justify-content:center;padding:24px}
-#lock form{background:var(--card);border-radius:20px;padding:26px 22px;width:100%;max-width:340px;box-shadow:0 10px 40px rgba(0,0,0,.35)}
-#lock h1{margin:0 0 4px;font-size:28px;background:linear-gradient(90deg,#4f9cf0,#8a63e0);-webkit-background-clip:text;background-clip:text;color:transparent;display:inline-block}
-#lock p{margin:0 0 14px;color:var(--muted);font-size:14px}
-#lock .err{color:var(--danger);font-size:14px;min-height:20px;margin-top:6px}
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#2b2433;color:#fff;padding:10px 16px;border-radius:12px;z-index:60;font-size:14px;max-width:88%;text-align:center}
 
 /* ===== Animaciones ===== */
@@ -173,8 +171,6 @@ h3.sec{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing
 @keyframes pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 @keyframes fabIn{from{opacity:0;transform:scale(.4) rotate(-60deg)}to{opacity:1;transform:none}}
 @keyframes toastIn{from{opacity:0;transform:translate(-50%,12px)}to{opacity:1;transform:translate(-50%,0)}}
-@keyframes lockIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:none}}
-@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(18px,-22px)}}
 .card{transition:transform .18s ease,box-shadow .2s ease;content-visibility:auto;contain-intrinsic-size:auto 96px}
 .card:active{transform:scale(.975)}
 .anim .card,.view>*{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
@@ -194,10 +190,6 @@ h3.sec{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing
 nav.tabs button{transition:color .2s ease}
 nav.tabs button.on .ic{animation:pop .4s cubic-bezier(.2,.9,.3,1.3)}
 .toast{animation:toastIn .3s cubic-bezier(.2,.8,.2,1)}
-#lock::before,#lock::after{content:"";position:absolute;border-radius:50%;filter:blur(40px);opacity:.55;animation:drift 12s ease-in-out infinite;pointer-events:none}
-#lock::before{width:240px;height:240px;background:#ffd9a8;top:8%;left:-60px}
-#lock::after{width:280px;height:280px;background:#a8d4ff;bottom:6%;right:-80px;animation-delay:-6s}
-#lock form{position:relative;animation:lockIn .7s cubic-bezier(.2,.8,.2,1) both}
 .tagchip{animation:pop .3s ease both}
 input:focus,select:focus,textarea:focus{outline:none;box-shadow:0 0 0 3px rgba(123,108,240,.25);border-color:var(--accent)}
 .grp.warm input:focus,.grp.warm select:focus{box-shadow:0 0 0 3px rgba(247,201,72,.35);border-color:var(--warm)}
@@ -220,7 +212,7 @@ nav.tabs button svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-
 .duechip.soon{background:#ffcf9e;color:#8a3f00}.duechip.over{background:#ffc9b8;color:#8a2e12}
 .board{scroll-padding-left:16px;display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 -16px;padding:2px 16px 12px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
 .board::-webkit-scrollbar{display:none}
-.col{flex:none;width:min(80vw,300px);scroll-snap-align:center;background:var(--warm-soft);border:1px solid var(--warm-line);border-radius:20px;padding:10px 10px 4px}
+.col{flex:none;width:min(80vw,300px);scroll-snap-align:center;background:var(--grp-warm);border:1px solid var(--grp-bd);border-radius:20px;padding:10px 10px 4px}
 .col h4{margin:2px 4px 6px;display:flex;justify-content:space-between;align-items:center;font-size:14px}
 .col .cnt{border-radius:999px;padding:1px 9px;font-size:12px;font-weight:700}
 .col .pcard{box-shadow:none;flex-wrap:wrap}
@@ -418,26 +410,95 @@ body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-b
 #lyEd .sl.done{opacity:.95;color:#bfe0ff}#lyEd .sl.cur{opacity:1;font-weight:700;font-size:21px;color:#ffe08a}
 #lyEd .sl small{opacity:.7;margin-right:8px;font-variant-numeric:tabular-nums}
 #lyEd .mark{width:100%;min-height:76px;font-size:19px;margin-top:10px}
+
+/* ===== Interruptores on/off ===== */
+.tgl{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:var(--card);color:var(--muted);border-radius:999px;padding:5px 13px 5px 6px;font-size:13px;font-weight:600;min-height:38px;white-space:nowrap}
+.tgl i{flex:none;width:38px;height:22px;border-radius:999px;background:var(--line);position:relative;transition:background .22s}
+.tgl i:after{content:"";position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.28);transition:transform .22s}
+.tgl.on{color:var(--ink);border-color:transparent;box-shadow:0 2px 8px rgba(122,108,240,.18)}
+.tgl.on i{background:linear-gradient(135deg,#6fb3f2,#9a7ae8)}
+.tgl.on i:after{transform:translateX(16px)}
+.tgl.cr.on i{background:linear-gradient(135deg,#ff9ec4,#e8619a)}
+.tgl.cr2.on i{background:linear-gradient(135deg,#f079ab,#c42a6b)}
+.tgl.pt.on i{background:linear-gradient(135deg,#a98af0,#8a63e0)}
+.tglrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* ===== Barra de reproducción de la pantalla de canciones ===== */
+.nowbar{background:var(--glass);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--grp-bd);border-radius:20px;padding:12px;margin:10px 0 2px;box-shadow:var(--shadow)}
+.nowbar .nbtop{display:flex;align-items:center;gap:10px}
+.nowbar .nbinfo{flex:1;min-width:0}
+.nowbar .nbinfo b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nowbar .nbinfo span{display:block;font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nowbar .roundplay{width:54px;height:54px;flex:none}
+.nowbar .roundplay svg{width:24px;height:24px}
+.nowbar .roundbtn{width:46px;height:46px;flex:none}
+.nbchip{flex:none;border:1px solid var(--violet-line);background:var(--card);color:var(--violet);border-radius:999px;padding:8px 13px;font-size:13px;font-weight:700;min-height:40px}
+.nowbar .tglrow{margin-top:10px}
+
+/* ===== Caja de álbum ===== */
+.case{position:relative;overflow:hidden;border-radius:3px 12px 12px 3px;box-shadow:0 6px 16px rgba(60,40,120,.26),inset 0 0 0 1px rgba(255,255,255,.22)}
+.case:before{content:"";position:absolute;z-index:2;left:0;top:0;bottom:0;width:11px;background:linear-gradient(90deg,rgba(0,0,0,.34),rgba(0,0,0,.12) 45%,rgba(255,255,255,.2) 86%,rgba(255,255,255,.04));pointer-events:none}
+.case:after{content:"";position:absolute;z-index:2;inset:0;background:linear-gradient(116deg,rgba(255,255,255,.22) 0 16%,rgba(255,255,255,0) 30%);pointer-events:none}
+.tile{border:1px solid var(--grp-bd)}
+@media (prefers-color-scheme:dark){ .tile .nm{color:var(--ink)} .tile .ct{color:var(--muted)} }
+.ahero .acov.case{border-radius:4px 16px 16px 4px;box-shadow:0 18px 40px rgba(60,40,120,.4),inset 0 0 0 1px rgba(255,255,255,.2)}
+.ahero .acov.case:before{width:16px}
+
+/* ===== Pastillas nuevas ===== */
+.pill.pt{background:#efe3ff;color:#6b3fb0}
+.pill.sg{background:#fff0a8;color:#6b5400}
+
+/* ===== A trozos: feed vertical ===== */
+.feedov{background:#0e0b1c!important;background-image:none!important;color:#fff}
+.feedov>.bar-top{background:rgba(14,11,28,.9);border-bottom-color:rgba(255,255,255,.12)}
+.feedov>.bar-top h2{color:#fff}
+.feedov .btn.ghost{color:#cbbcff}
+.feedov .btn.soft{background:rgba(255,255,255,.16);color:#fff}
+.feedov .fbar2{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:9px 12px;background:rgba(14,11,28,.92);border-bottom:1px solid rgba(255,255,255,.1)}
+.feedov .nbchip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.26);color:#fff}
+.askbox .col2{display:grid;gap:8px}
+.askbox .col2 button{width:100%;background:var(--accent-soft);color:var(--accent);text-align:center}
+.askbox .col2 button.on{background:linear-gradient(135deg,#a98af0,#8a63e0);color:#fff}
+.fscroll{flex:1;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
+.fscroll::-webkit-scrollbar{display:none}
+.fslide{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+.fslide .fbg{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) saturate(1.25);opacity:.8;transform:scale(1.15)}
+.fslide .fsh{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,28,.5),rgba(14,11,28,.86))}
+.fslide .fbody{position:relative;z-index:1;padding:14px 18px calc(26px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center}
+.fslide .fcov{width:min(56vw,230px);aspect-ratio:1;border-radius:18px;background-size:cover;background-position:center;box-shadow:0 16px 40px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:62px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:4px}
+.fslide .ft{font-size:21px;font-weight:700;line-height:1.2}
+.fslide .fa{opacity:.85;font-size:14px}
+.fslide .fmeta{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.fbar{width:100%;max-width:320px;height:5px;border-radius:5px;background:rgba(255,255,255,.25);overflow:hidden}
+.fbar>i{display:block;height:100%;width:0;background:#fff;border-radius:5px;animation:none}
+.frow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:2px}
+.fbtn{border:0;width:62px;height:62px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 8px 22px rgba(0,0,0,.45)}
+.fbtn svg{width:28px;height:28px;fill:#5b3fc4}
+.fsug{border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:10px 16px;font-size:14px;font-weight:600;min-height:46px}
+.fsug.on{background:#ffd966;border-color:transparent;color:#4a3200}
+.fopen{border:0;background:none;color:#cbbcff;font-size:14px;font-weight:600;padding:8px;min-height:40px}
+.fhint{opacity:.75;font-size:13px;max-width:320px}
+.fswipe{position:absolute;left:0;right:0;top:10px;text-align:center;font-size:12.5px;opacity:.55;z-index:1}
+body.feedon #mini{display:none!important}
+
+/* ===== Pantalla de sincronizar letra ===== */
+#lyEd .stop{display:flex;align-items:center;gap:10px;margin:8px 0 2px}
+#lyEd .stop button{border:0;background:rgba(255,255,255,.18);color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;flex:none}
+#lyEd .stop svg{width:20px;height:20px;fill:#fff}
+#lyEd .sseek{flex:1;min-width:0;height:26px;-webkit-appearance:none;appearance:none;background:transparent}
+#lyEd .sseek::-webkit-slider-runnable-track{height:5px;border-radius:5px;background:linear-gradient(90deg,#fff var(--p,0%),rgba(255,255,255,.3) var(--p,0%))}
+#lyEd .sseek::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#fff;margin-top:-5.5px}
+#lyEd .sseek::-moz-range-track{height:5px;border-radius:5px;background:rgba(255,255,255,.3)}
+#lyEd .sseek::-moz-range-progress{height:5px;border-radius:5px;background:#fff}
+#lyEd .sseek::-moz-range-thumb{width:16px;height:16px;border:0;border-radius:50%;background:#fff}
+#lyEd .stime{font-size:13px;opacity:.85;font-variant-numeric:tabular-nums;min-width:88px;text-align:right}
+#lyEd .sprog{font-size:13px;opacity:.85;text-align:center;margin:8px 0 0}
+#lyEd .mark{background:#fff;color:#4a2c9b;border-radius:18px;font-size:19px;font-weight:700}
+#lyEd .mark[disabled]{opacity:.55}
+#lyEd .sl.cur{color:#ffe08a}
 </style>
 </head>
 <body>
-
-<!-- Pantalla de acceso -->
-<div id="lock" class="hidden">
-  <form id="lockForm" autocomplete="on">
-    <h1>Mis covers</h1>
-    <p>Acceso privado</p>
-    <label class="f" for="lu">Usuario</label>
-    <input class="in" id="lu" name="username" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false">
-    <label class="f" for="lp">Contraseña</label>
-    <input class="in" id="lp" name="password" type="password" autocomplete="current-password">
-    <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px;color:var(--muted)">
-      <input type="checkbox" id="lremember" checked> Mantener la sesión en este dispositivo
-    </label>
-    <div class="err" id="lerr"></div>
-    <button class="btn" style="width:100%;margin-top:8px" type="submit">Entrar</button>
-  </form>
-</div>
 
 <div id="app" class="hidden">
   <header class="top">
@@ -480,9 +541,6 @@ body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-b
 <script>
 "use strict";
 /* ========================= Constantes ========================= */
-const APP_SALT = "covers-app";
-const DEFAULT_USER = "lucia";
-const DEFAULT_HASH = "b0359d2a06c2d66d8dfb96f19d7e42349f87c8c75b517ad20e1a4e69f073177c";
 const STATUSES = ["Idea","Aprendiendo","Ensayando","Grabando","Grabada","Publicada","En pausa"];
 const DONE = ["Grabada","Publicada"];
 const PRIORITIES = ["Alta","Media","Baja"];
@@ -529,36 +587,8 @@ function normUrl(u){
 function staleDays(){ const n = parseInt(lsGet("covers.staleDays","30"),10); return n>0? n : 30; }
 function isStale(s){ return !DONE.includes(s.status) && s.status!=="En pausa" && (Date.now()-s.updatedAt) > staleDays()*DAY; }
 
-/* ========================= Acceso ========================= */
-async function sha256(text){
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
-  return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
-}
-const hashCred = (u,p) => sha256(`${APP_SALT}|${u.trim().toLowerCase()}|${p}`);
-function currentCred(){
-  return { user: lsGet("covers.user", DEFAULT_USER), hash: lsGet("covers.hash", DEFAULT_HASH) };
-}
-function isUnlocked(){ return ssGet("covers.ok")==="1" || lsGet("covers.remember","")==="1"; }
-function showLock(){
-  layerOpen = false;
-  $("#app").classList.add("hidden"); $("#tabs").classList.add("hidden"); $("#fab").classList.add("hidden");
-  $("#layer").innerHTML = ""; $("#lock").classList.remove("hidden");
-  $("#lp").value = ""; $("#lerr").textContent = "";
-  setTimeout(()=>$("#lu").focus(), 50);
-}
-function lockNow(){ ssDel("covers.ok"); lsDel("covers.remember"); showLock(); }
-$("#lockForm").addEventListener("submit", async e => {
-  e.preventDefault();
-  const u = $("#lu").value, p = $("#lp").value;
-  const cred = currentCred();
-  let ok = false;
-  try{ ok = u.trim().toLowerCase()===cred.user.toLowerCase() && (await hashCred(u,p))===cred.hash; }catch(err){ ok = false; }
-  if(!ok){ $("#lerr").textContent = "Usuario o contraseña incorrectos."; return; }
-  ssSet("covers.ok","1");
-  if($("#lremember").checked) lsSet("covers.remember","1"); else lsDel("covers.remember");
-  $("#lock").classList.add("hidden");
-  startApp();
-});
+/* Limpieza de claves antiguas del dispositivo que ya no se usan. */
+["covers.user","covers.hash","covers.remember"].forEach(lsDel); ssDel("covers.ok");
 
 /* ========================= Base de datos (IndexedDB) ========================= */
 let _db;
@@ -738,7 +768,7 @@ function renderList(anim=true){
     main.innerHTML = `<div class="empty"><b>Aún no hay canciones</b>Pulsa el botón + para apuntar la primera.</div>`; return;
   }
   const stale = songs.filter(isStale).length;
-  let html = "";
+  let html = nowBarHtml(list);
   const standalone = (window.navigator.standalone === true) || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
   if(!standalone && lsGet("covers.tipOff","")!=="1") html += `<div class="banner" id="tipBox"><span>Para usarla como app: Compartir y "Añadir a pantalla de inicio".</span><button id="tipOk">Entendido</button></div>`;
   if(stale && ui.status!=="Paradas") html += `<div class="banner"><span>${stale} ${stale===1?"canción lleva":"canciones llevan"} más de ${staleDays()} días sin tocarse.</span><button id="seeStale">Ver</button></div>`;
@@ -762,8 +792,203 @@ function renderList(anim=true){
   main.innerHTML = html;
   main.querySelectorAll(".card").forEach(c => c.onclick = () => openDetail(c.dataset.id));
   bindPlayButtons(main, list);
+  bindNowBar(list);
   const tip = $("#tipOk"); if(tip) tip.onclick = () => { lsSet("covers.tipOff","1"); $("#tipBox").remove(); };
   const sb = $("#seeStale"); if(sb) sb.onclick = () => { ui.status = "Paradas"; renderChips(); renderList(); };
+}
+
+/* ===== Barra tipo reproductor de la pantalla de canciones ===== */
+function nowBarHtml(list){
+  const playable = list.filter(s => s.hasTrack && !isPartial(s));
+  const parts = partialSongs();
+  const filtering = ui.q.trim() || ui.status!=="Todas" || ui.tag;
+  return `<div class="nowbar">
+    <div class="nbtop">
+      <button class="roundplay" id="nbPlay" aria-label="Reproducir todas" ${playable.length?"":"disabled style='opacity:.45'"}>${IC.play}</button>
+      <button class="roundbtn ${PL.shuffle?"on":""}" id="nbShuf" aria-label="Reproducir en aleatorio" ${playable.length?"":"disabled style='opacity:.45'"}>${IC.shuffle}</button>
+      <div class="nbinfo">
+        <b>${filtering ? "Lo que estás viendo" : "Todas mis covers"}</b>
+        <span>${list.length} ${list.length===1?"canción":"canciones"} · ${playable.length} con audio</span>
+      </div>
+    </div>
+    <div class="tglrow">
+      <button type="button" class="tgl cr ${CR[1]?"on":""}" id="nbCr1" aria-pressed="${CR[1]?"true":"false"}"><i></i><span>Cringe permitido</span></button>
+      <button type="button" class="tgl cr2 ${CR[2]?"on":""}" id="nbCr2" aria-pressed="${CR[2]?"true":"false"}"><i></i><span>Mucho cringe permitido</span></button>
+      ${parts.length ? `<button class="nbchip" id="nbFeed">A trozos · ${parts.length}</button>` : ""}
+    </div>
+  </div>`;
+}
+function bindNowBar(list){
+  const ids = list.map(s => s.id);
+  const p = $("#nbPlay"); if(p) p.onclick = () => playList(ids, null, false);
+  const sh = $("#nbShuf"); if(sh) sh.onclick = () => playList(ids, null, true);
+  const f = $("#nbFeed"); if(f) f.onclick = () => openFeed(false);
+  const c1 = $("#nbCr1"); if(c1) c1.onclick = () => setCringeAllowed(1, !CR[1]);
+  const c2 = $("#nbCr2"); if(c2) c2.onclick = () => setCringeAllowed(2, !CR[2]);
+}
+
+/* ========================= A trozos: feed para deslizar ========================= */
+let FEED = null;
+const FEED_ORDERS = [
+  {v:"random", n:"Aleatorio"},
+  {v:"artist", n:"Por artista"},
+  {v:"style",  n:"Por estilo"},
+  {v:"tag",    n:"Por etiqueta"},
+  {v:"recent", n:"Las últimas que toqué"}
+];
+const feedOrderName = v => (FEED_ORDERS.find(o => o.v===v) || FEED_ORDERS[0]).n;
+function sortFeed(list, mode){
+  const l = list.slice();
+  const byTitle = (a,b) => a.title.localeCompare(b.title,"es");
+  if(mode==="random"){ for(let i=l.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [l[i],l[j]] = [l[j],l[i]]; } return l; }
+  if(mode==="artist") return l.sort((a,b) => (a.artist||"").localeCompare(b.artist||"","es") || byTitle(a,b));
+  if(mode==="style")  return l.sort((a,b) => (a.style||"").localeCompare(b.style||"","es") || byTitle(a,b));
+  if(mode==="tag")    return l.sort((a,b) => (((a.tags||[])[0])||"zzz").localeCompare(((b.tags||[])[0])||"zzz","es") || byTitle(a,b));
+  return l.sort((a,b) => (b.updatedAt||0)-(a.updatedAt||0));
+}
+function feedEnd(){ if(FEED){ FEED = null; document.body.classList.remove("feedon"); } }
+function feedPills(s){
+  return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:"")
+    + (cringeLvl(s)===2?`<span class="pill cr cr2">mucho cringe</span>`:(cringeLvl(s)===1?`<span class="pill cr">cringe</span>`:""))
+    + `<span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>`
+    + (s.suggestFull?`<span class="pill sg">para completar</span>`:"");
+}
+function feedSlideHtml(s, i){
+  const cov = s.cover ? `background-image:url('${s.cover}')` : `background:${colorFor(s.title)}`;
+  return `<div class="fslide" data-i="${i}" data-id="${esc(s.id)}">
+    <div class="fbg" style="${cov}"></div><div class="fsh"></div>
+    ${i===0 ? '<div class="fswipe">Desliza hacia arriba. Al acabar pasa sola, sin repetir, y vuelve a empezar</div>' : ""}
+    <div class="fbody">
+      <div class="fcov" style="${cov}">${s.cover?"":esc((s.title||"?").trim().charAt(0).toUpperCase())}</div>
+      <div class="ft">${esc(s.title)}</div>
+      <div class="fa">${esc(s.artist||"Sin artista")} · ${s.progress||0}%</div>
+      <div class="fmeta">${feedPills(s)}</div>
+      <div class="fbar"><i></i></div>
+      ${s.hasTrack ? "" : '<div class="fhint">Todavía no tiene mp3. Añádelo en su ficha para poder escucharla.</div>'}
+      <div class="frow">
+        <button class="fbtn" data-fplay="${esc(s.id)}" aria-label="Reproducir o pausar" ${s.hasTrack?"":"disabled style='opacity:.45'"}>${IC.play}</button>
+        <button class="fsug ${s.suggestFull?"on":""}" data-fsug="${esc(s.id)}">${s.suggestFull?"★ Sugerida completa":"Sugerir completa"}</button>
+      </div>
+      <button class="fopen" data-fopen="${esc(s.id)}">Abrir su ficha</button>
+    </div>
+  </div>`;
+}
+async function openFeed(onlySuggested, mode){
+  if(!mode){
+    mode = await askPick("¿Cómo quieres verlas?", "Pasan solas al acabar y no se repite ninguna hasta dar la vuelta.", FEED_ORDERS, lsGet("covers.feedOrder","random"));
+    if(!mode) return;
+    lsSet("covers.feedOrder", mode);
+  }
+  const list = sortFeed(onlySuggested ? partialSongs().filter(s => s.suggestFull) : partialSongs(), mode);
+  pushLayer(); clearLayerContent();
+  FEED = { only:!!onlySuggested, list, i:0, mode };
+  document.body.classList.add("feedon");
+  const empty = onlySuggested
+    ? "Aquí aparecen las canciones a trozos que has sugerido para hacerlas enteras."
+    : "No tienes canciones marcadas como «a trozos». Al editar una canción activa el interruptor «Está a trozos».";
+  $("#layer").innerHTML = `<div class="overlay feedov">
+    <div class="bar-top">
+      <button class="btn ghost" id="fdBack">Cerrar</button>
+      <h2>${onlySuggested?"Para completar":"A trozos"}</h2>
+      <span style="width:64px"></span>
+    </div>
+    <div class="fbar2">
+      <button class="nbchip" id="fdOrder">Orden: ${esc(feedOrderName(mode))}</button>
+      <button class="nbchip" id="fdSwap">${onlySuggested?"Ver todas":"Para completar"}</button>
+    </div>
+    <div class="fscroll" id="fdScroll">${
+      list.length ? list.map(feedSlideHtml).join("")
+      : `<div class="fslide"><div class="fbody"><div class="ft">Nada por aquí</div><div class="fhint">${esc(empty)}</div></div></div>`
+    }</div>
+  </div>`;
+  $("#fdBack").onclick = () => { AUD.pause(); feedEnd(); closeLayer(); };
+  $("#fdSwap").onclick = () => openFeed(!onlySuggested, mode);
+  $("#fdOrder").onclick = async () => {
+    const m = await askPick("¿Cómo quieres verlas?", "Cambia el orden de este apartado.", FEED_ORDERS, mode);
+    if(m){ lsSet("covers.feedOrder", m); openFeed(onlySuggested, m); }
+  };
+  const sc = $("#fdScroll");
+  let t = null;
+  sc.addEventListener("scroll", () => { clearTimeout(t); t = setTimeout(feedOnScroll, 110); }, {passive:true});
+  sc.addEventListener("click", async e => {
+    const sg = e.target.closest("[data-fsug]");
+    if(sg){
+      const on = await toggleSuggestFull(sg.dataset.fsug);
+      sg.classList.toggle("on", !!on);
+      sg.textContent = on ? "★ Sugerida completa" : "Sugerir completa";
+      const sl = sg.closest(".fslide"), s = byId(sg.dataset.fsug);
+      if(sl && s) sl.querySelector(".fmeta").innerHTML = feedPills(s);
+      return;
+    }
+    const pb = e.target.closest("[data-fplay]");
+    if(pb){ const id = pb.dataset.fplay; if(curId()===id && AUD.src) togglePlay(); else await feedPlay(id); return; }
+    const op = e.target.closest("[data-fopen]");
+    if(op){ const id = op.dataset.fopen; feedEnd(); clearLayerContent(); openDetail(id); return; }
+  });
+  const cur = byId(curId());
+  const at = cur ? list.findIndex(s => s.id===cur.id) : -1;
+  if(at>0){ FEED.i = at; sc.scrollTop = at*sc.clientHeight; }
+  else if(list[0] && list[0].hasTrack && songAllowed(list[0]) && curId()!==list[0].id) feedPlay(list[0].id);
+  feedUi();
+}
+async function feedPlay(id){
+  if(!FEED) return;
+  await playList(FEED.list.filter(s => s.hasTrack).map(s => s.id), id, false, {allowPartial:true});
+  feedUi();
+}
+function feedOnScroll(){
+  if(!FEED) return; const sc = $("#fdScroll"); if(!sc) return;
+  const i = Math.max(0, Math.min(FEED.list.length-1, Math.round(sc.scrollTop/Math.max(1, sc.clientHeight))));
+  if(i===FEED.i) return;
+  FEED.i = i;
+  const s = FEED.list[i]; if(!s) return;
+  if(curId()===s.id){ feedUi(); return; }
+  if(s.hasTrack && songAllowed(s)) feedPlay(s.id);
+  else {
+    AUD.pause();
+    if(s.hasTrack) toast("Tienes el " + crLabel(cringeLvl(s)) + " desactivado: pulsa play si quieres escucharla.");
+    feedUi();
+  }
+}
+function feedUi(){
+  if(!FEED) return; const sc = $("#fdScroll"); if(!sc) return;
+  const id = curId(), playing = !AUD.paused && !AUD.ended;
+  const d = AUD.duration, pct = (d>0) ? Math.min(100, AUD.currentTime/d*100) : 0;
+  sc.querySelectorAll(".fslide").forEach(el => {
+    const on = el.dataset.id===id;
+    const b = el.querySelector("[data-fplay]"); if(b) b.innerHTML = (on && playing) ? IC.pause : IC.play;
+    const bar = el.querySelector(".fbar>i"); if(bar) bar.style.width = (on ? pct : 0)+"%";
+  });
+}
+/* Al acabar una canción pasa sola a la siguiente y, tras la última, vuelve a la primera. */
+function feedNext(){
+  if(!FEED || !FEED.list.length) return;
+  const sc = $("#fdScroll"); if(!sc) return;
+  const n = FEED.list.length;
+  for(let k=1; k<=n; k++){
+    const raw = FEED.i + k, j = raw % n, s = FEED.list[j];
+    if(j===FEED.i && n>1) continue;              // nunca repite la que acaba de sonar
+    if(!s || !s.hasTrack || !songAllowed(s)) continue;
+    if(raw >= n && FEED.mode==="random" && n>1){ feedReshuffle(); return; }   // vuelta nueva, orden nuevo
+    FEED.i = j; sc.scrollTo({ top: j*sc.clientHeight, behavior:"smooth" }); feedPlay(s.id); return;
+  }
+  FEED.i = 0; sc.scrollTo({ top:0, behavior:"smooth" }); feedUi();
+}
+/* Al dar la vuelta en aleatorio, baraja otra vez para que el orden no se repita. */
+function feedReshuffle(){
+  const sc = $("#fdScroll"); if(!sc || !FEED) return;
+  FEED.list = sortFeed(FEED.list, "random");
+  sc.innerHTML = FEED.list.map(feedSlideHtml).join("");
+  const j = FEED.list.findIndex(s => s.hasTrack && songAllowed(s));
+  FEED.i = j < 0 ? 0 : j;
+  sc.scrollTop = FEED.i*sc.clientHeight;
+  if(j >= 0) feedPlay(FEED.list[j].id); else feedUi();
+}
+function feedSyncToCurrent(){
+  if(!FEED) return; const sc = $("#fdScroll"); if(!sc) return;
+  const i = FEED.list.findIndex(s => s.id===curId());
+  if(i>=0 && i!==FEED.i){ FEED.i = i; sc.scrollTo({ top: i*sc.clientHeight, behavior:"smooth" }); }
+  feedUi();
 }
 
 /* ========================= Resumen ========================= */
@@ -802,7 +1027,7 @@ function renderSummary(){
 /* ========================= Detalle ========================= */
 let layerOpen = false;
 let coverSetter = null;
-function clearLayerContent(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; coverSetter = null; $("#layer").innerHTML = ""; }
+function clearLayerContent(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; coverSetter = null; feedEnd(); $("#layer").innerHTML = ""; }
 function pushLayer(){ if(!layerOpen){ try{ history.pushState({layer:1}, ""); }catch(e){} layerOpen = true; } }
 function closeLayer(fromPop){
   clearLayerContent();
@@ -1054,7 +1279,16 @@ async function openEditor(id){
         <label class="f">Artista</label><div><input class="in" id="eArtist" value="${esc(s.artist)}" autocomplete="off" autocapitalize="words"></div>
         <label class="f">Estilo</label><div><input class="in" id="eStyle" value="${esc(s.style)}" autocomplete="off"></div>
         <label class="f">Nota y me gusta</label>
-        <div class="ratingrow" style="margin-top:0"><span id="eStars">${starRowHtml(s.rating||0)}</span><button type="button" class="heart ${s.liked?"on":""}" id="eLike" aria-label="Me gusta">${s.liked?"♥":"♡"}</button></div>
+        <div class="ratingrow" style="margin-top:0;flex-wrap:wrap">
+          <span id="eStars">${starRowHtml(s.rating||0)}</span>
+          <button type="button" class="heart ${s.liked?"on":""}" id="eLike" aria-label="Me gusta">${s.liked?"♥":"♡"}</button>
+          <span class="tglrow" style="margin-left:auto">
+            <button type="button" class="tgl cr ${cringeLvl(s)===1?"on":""}" id="eCringe" aria-pressed="${cringeLvl(s)===1?"true":"false"}"><i></i><span>Da cringe</span></button>
+            <button type="button" class="tgl cr2 ${cringeLvl(s)===2?"on":""}" id="eCringe2" aria-pressed="${cringeLvl(s)===2?"true":"false"}"><i></i><span>Da mucho cringe</span></button>
+            <button type="button" class="tgl pt ${isPartial(s)?"on":""}" id="ePartial" aria-pressed="${isPartial(s)?"true":"false"}"><i></i><span>Está a trozos</span></button>
+          </span>
+        </div>
+        <div class="hint" style="margin-top:8px">Las que dan cringe solo suenan si activas su interruptor en la pantalla de canciones. «Está a trozos» la saca de la escucha normal y la manda al apartado A trozos.</div>
       </div>
       <div class="grp warm">
         <h3 class="sec">Organización</h3>
@@ -1077,8 +1311,6 @@ async function openEditor(id){
         </div>
         <label class="f">Fecha objetivo</label><input class="in" type="date" id="eDue" value="${esc(s.due||"")}">
         <label class="f">Trabajando ahora</label><div class="chips"><button type="button" class="chip ${s.focus?"on":""}" id="eFocus">Estoy con ella ahora</button></div>
-        <label class="f">Marca</label><div class="chips"><button type="button" class="chip ${cringeLvl(s)===1?"on":""}" id="eCringe">Da cringe</button><button type="button" class="chip ${cringeLvl(s)===2?"on":""}" id="eCringe2">Da mucho cringe</button></div>
-        <div class="hint">Antes de escucharla te preguntará si estás segura, y en álbumes y aleatorio te preguntará si quieres incluir las que dan cringe y las que dan mucho cringe.</div>
         <div class="hint" style="margin-top:6px">Márcala si es una de las canciones en las que estás trabajando estos días. Aparecerá arriba en la pestaña Plan.</div>
       </div>
       <div class="grp violet">
@@ -1112,7 +1344,12 @@ async function openEditor(id){
       </div>
       <div class="grp blue">
         <h3 class="sec">Letra</h3>
-        <textarea class="in" id="eLyrics" style="min-height:140px" placeholder="Pega la letra aquí. Para que se mueva sola con la canción, sincronízala desde el reproductor (botón Letra)." spellcheck="false">${esc(s.lyrics||"")}</textarea>
+        <textarea class="in" id="eLyrics" style="min-height:140px" placeholder="Pega la letra aquí, una frase por línea. Deja una línea vacía entre estrofas." spellcheck="false">${esc(s.lyrics||"")}</textarea>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+          <button type="button" class="btn sm" id="eLySync">Sincronizar con la canción</button>
+          <button type="button" class="btn soft sm" id="eLyClear">Quitar los tiempos</button>
+        </div>
+        <div class="hint" id="eLyState" style="margin-top:8px"></div>
       </div>
       <div class="grp blue">
         <h3 class="sec">Notas</h3>
@@ -1242,8 +1479,27 @@ async function openEditor(id){
   $("#eTitle").addEventListener("input", () => { if(!s.cover) $("#eCover").innerHTML = coverHtml({title:$("#eTitle").value, cover:null}, true); });
   $("#eProg").oninput = e => $("#eProgVal").textContent = e.target.value+"%";
   $("#eFocus").onclick = () => $("#eFocus").classList.toggle("on");
-  $("#eCringe").onclick = () => { const on = !$("#eCringe").classList.contains("on"); $("#eCringe").classList.toggle("on", on); if(on) $("#eCringe2").classList.remove("on"); };
-  $("#eCringe2").onclick = () => { const on = !$("#eCringe2").classList.contains("on"); $("#eCringe2").classList.toggle("on", on); if(on) $("#eCringe").classList.remove("on"); };
+  const tglSet = (el, on) => { if(!el) return; el.classList.toggle("on", !!on); el.setAttribute("aria-pressed", on ? "true" : "false"); };
+  $("#eCringe").onclick = () => { const on = !$("#eCringe").classList.contains("on"); tglSet($("#eCringe"), on); if(on) tglSet($("#eCringe2"), false); };
+  $("#eCringe2").onclick = () => { const on = !$("#eCringe2").classList.contains("on"); tglSet($("#eCringe2"), on); if(on) tglSet($("#eCringe"), false); };
+  $("#ePartial").onclick = () => tglSet($("#ePartial"), !$("#ePartial").classList.contains("on"));
+  const lyState = () => {
+    const P = parseLyrics($("#eLyrics").value);
+    const body = P.lines.filter(l => l.text).length;
+    $("#eLyState").textContent = !body ? "Sin letra todavía."
+      : P.synced ? "Letra sincronizada: se mueve sola mientras suena la canción."
+      : "Letra sin sincronizar. Pulsa Sincronizar y marca cada frase mientras suena.";
+  };
+  $("#eLyrics").addEventListener("input", lyState); lyState();
+  $("#eLyClear").onclick = () => { $("#eLyrics").value = plainLyrics($("#eLyrics").value); lyState(); toast("Tiempos quitados."); };
+  $("#eLySync").onclick = () => {
+    const txt = $("#eLyrics").value;
+    if(!plainLyrics(txt).trim()){ toast("Escribe o pega primero la letra."); $("#eLyrics").focus(); return; }
+    const t = curTrack();
+    if(!t){ toast("Esta canción necesita su mp3 para sincronizar. Añádelo arriba, en Audio de la canción."); return; }
+    if(pending.includes(t)){ toast("Guarda primero la canción con su mp3 y vuelve a Editar para sincronizar."); return; }
+    openSyncScreen(s.id, txt, out => { $("#eLyrics").value = out; lyState(); toast("Letra sincronizada. Pulsa Guardar para conservarla."); });
+  };
   $("#eQuick").querySelectorAll("button").forEach(b => b.onclick = () => { $("#eProg").value = b.dataset.n; $("#eProgVal").textContent = b.dataset.n+"%"; });
   $("#eFormats").querySelectorAll("button").forEach(b => b.onclick = () => {
     const f = b.dataset.f; s.formats = s.formats.includes(f) ? s.formats.filter(x=>x!==f) : [...s.formats, f];
@@ -1272,6 +1528,8 @@ async function openEditor(id){
     s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
     s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value; s.bpm = $("#eBpm").value ? String(Math.max(30,Math.min(300,parseInt($("#eBpm").value,10)||0))) : ""; s.notes = $("#eNotes").value.trim(); s.lyrics = $("#eLyrics").value.replace(/\s+$/,"");
     s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on"); s.cringe = $("#eCringe2").classList.contains("on") ? 2 : ($("#eCringe").classList.contains("on") ? 1 : 0);
+    s.partial = $("#ePartial").classList.contains("on");
+    if(!s.partial && s.suggestFull){ s.suggestFull = false; s.suggestedAt = 0; }
     s.links = s.links.map(l => ({label:(l.label||"").trim()||"Enlace", url:(l.url||"").trim()})).filter(l => l.url);
     s.updatedAt = Date.now();
     s.fileCount = existing.filter(f=>!removed.has(f.id)).length + pending.length;
@@ -1361,6 +1619,13 @@ function renderPlan(){
   h += focus.length ? focus.map(s => planCard(s,true)).join("") : `<div class="panel warm hint">Marca una canción como "Trabajando ahora" al editarla y aparecerá aquí, ordenada por fecha.</div>`;
   h += `<div class="sec-h"><h3>Próximas fechas</h3><span>${dated.length}</span></div>`;
   h += dated.length ? dated.map(s => planCard(s,false)).join("") : `<div class="panel warm hint">Pon una fecha objetivo a una canción para verla aquí.</div>`;
+  const sug = suggestedSongs();
+  const parts = partialSongs();
+  h += `<div class="sec-h"><h3>Para completar</h3><span>${sug.length}</span></div>`;
+  h += sug.length
+    ? sug.map(s => planCard(s,false)).join("")
+    : `<div class="panel warm hint">En «A trozos» puedes sugerir que una canción se haga entera y aparecerá aquí.</div>`;
+  if(parts.length) h += `<div class="sec-h"><h3>A trozos</h3><span>${parts.length}</span></div><button class="bigplay alt" id="planFeed" style="margin-top:0">${IC.play} Escuchar las ${parts.length} canciones a trozos</button>`;
   h += `<div class="sec-h"><h3>Recorrido</h3><span>desliza para ver cada fase</span></div><div class="board">`;
   const colColors = ["#fff0a0","#ffe270","#ffd24d","#ffc23d","#8fd9a8","#5cc487","#c9c7e6"];
   STATUSES.forEach((st,i) => {
@@ -1371,6 +1636,7 @@ function renderPlan(){
   $("#main").innerHTML = h;
   addPlanSeg();
   $("#main").querySelectorAll(".pcard").forEach(c => c.onclick = () => openDetail(c.dataset.id));
+  const pf = $("#planFeed"); if(pf) pf.onclick = () => openFeed(false);
   $("#main").querySelectorAll("[data-aprj]").forEach(c => c.onclick = () => openAlbum(c.dataset.aprj));
   $("#main").querySelectorAll("[data-adv]").forEach(b => b.onclick = async e => {
     e.stopPropagation();
@@ -1395,8 +1661,49 @@ const IC = {
   list:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="12" height="2.4" rx="1.2"/><rect x="4" y="10.8" width="12" height="2.4" rx="1.2"/><rect x="4" y="16.6" width="8" height="2.4" rx="1.2"/><path d="M18 14.5v5.2l4-2.6z"/></svg>'
 };
 const starRowHtml = (r, cls="") => `<span class="stars ${cls}" role="group" aria-label="Nota">${[1,2,3,4,5].map(i=>`<button type="button" data-r="${i}" class="${i<=r?"on":""}" aria-label="${i} estrellas">★</button>`).join("")}</span>`;
-function ratingPills(s){ return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:"") + (cringeLvl(s)===2?`<span class="pill cr cr2">mucho cringe</span>`:(cringeLvl(s)===1?`<span class="pill cr">cringe</span>`:"")); }
+function ratingPills(s){ return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:"") + (cringeLvl(s)===2?`<span class="pill cr cr2">mucho cringe</span>`:(cringeLvl(s)===1?`<span class="pill cr">cringe</span>`:"")) + (isPartial(s)?`<span class="pill pt">a trozos</span>`:"") + (s.suggestFull?`<span class="pill sg">para completar</span>`:""); }
 function cringeLvl(s){ const c = s && s.cringe; return c===true ? 1 : (+c||0); }
+
+/* ===== Permisos de cringe =====
+   Son dos interruptores de la pantalla de canciones. Viven solo en memoria:
+   cada vez que se abre la app vuelven a estar desactivados. */
+const CR = { 1:false, 2:false };
+const crLabel = l => l===2 ? "mucho cringe" : "cringe";
+const crName = l => l===2 ? "Mucho cringe permitido" : "Cringe permitido";
+function cringeOk(lvl){ return !lvl || CR[lvl]===true; }
+function songAllowed(s){ return cringeOk(cringeLvl(s)); }
+async function askCringeOn(lvl){
+  if(lvl===1) return askYesNo("¿Estás segura?", "Vas a permitir las canciones marcadas como cringe.", "Sí, permitir", "No");
+  if(!(await askYesNo("¿Segura? 😭", "Vas a permitir las canciones que dan MUCHO cringe.", "Sí", "No"))) return false;
+  return askYesNo("¿Segura segura? 😭", "Última oportunidad.", "Sí, permitir", "No");
+}
+async function setCringeAllowed(lvl, on){
+  if(on === CR[lvl]) return true;
+  if(on && !(await askCringeOn(lvl))) return false;
+  CR[lvl] = !!on;
+  if(!on){
+    const s = byId(curId());
+    if(s && cringeLvl(s)===lvl){ AUD.pause(); toast("He parado «" + s.title + "»: ya no tienes permitido ese cringe."); }
+  }
+  if(ui.tab==="songs" && !layerOpen) renderList(false);
+  toast(crName(lvl) + (on ? ": activado." : ": desactivado."));
+  return true;
+}
+
+/* ===== Canciones a trozos (hechas solo parcialmente) ===== */
+function isPartial(s){
+  if(!s) return false;
+  return (s.partial===undefined || s.partial===null) ? s.have==="Fragmento" : !!s.partial;
+}
+function partialSongs(){ return songs.filter(isPartial).sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0)); }
+function suggestedSongs(){ return songs.filter(s => s.suggestFull).sort((a,b)=>(b.suggestedAt||0)-(a.suggestedAt||0)); }
+async function toggleSuggestFull(id){
+  const s = byId(id); if(!s) return false;
+  s.suggestFull = !s.suggestFull; s.suggestedAt = s.suggestFull ? Date.now() : 0;
+  try{ await saveSongLight(s); }catch(e){ toast("No se pudo guardar."); }
+  toast(s.suggestFull ? "Anotada en Para completar." : "Quitada de Para completar.");
+  return !!s.suggestFull;
+}
 function playBtn(s){ return s.hasTrack ? `<button class="cplay" data-play="${s.id}" aria-label="Reproducir ${esc(s.title)}">${IC.play}</button>` : ""; }
 function bindPlayButtons(root, list){
   root.querySelectorAll(".cplay").forEach(b => b.onclick = e => { e.stopPropagation(); playList(list.map(x=>x.id), b.dataset.play, null); });
@@ -1441,24 +1748,44 @@ function askYesNo(title, text, yes, no){
     bg.addEventListener("click", e => { if(e.target===bg) done(false); });
   });
 }
-async function playList(ids, startId, shuffle){
+function askPick(title, text, options, current){
+  return new Promise(res => {
+    const bg = document.createElement("div"); bg.className = "askbg";
+    bg.innerHTML = `<div class="askbox" role="dialog" aria-modal="true"><h4>${esc(title)}</h4><p>${esc(text||"")}</p>
+      <div class="col2">${options.map(o=>`<button class="opt ${o.v===current?"on":""}" data-v="${esc(o.v)}">${esc(o.n)}</button>`).join("")}</div>
+      <div class="row" style="margin-top:10px"><button class="no">Cancelar</button></div></div>`;
+    document.body.appendChild(bg);
+    const done = v => { bg.remove(); res(v); };
+    bg.querySelectorAll(".opt").forEach(b => b.onclick = () => done(b.dataset.v));
+    bg.querySelector(".no").onclick = () => done(null);
+    bg.addEventListener("click", e => { if(e.target===bg) done(null); });
+  });
+}
+
+async function playList(ids, startId, shuffle, opts){
+  opts = opts || {};
   let valid = ids.filter(i => { const s = byId(i); return s && s.hasTrack; });
   if(!valid.length){ toast("Ninguna canción de esta lista tiene audio. Añade el mp3 en la ficha."); return; }
   unlockAudio();
   const lv = i => cringeLvl(byId(i));
-  if(startId && lv(startId)===1){
-    if(!(await askYesNo("¿Estás segura?", "Esta canción está marcada como cringe.", "Sí, escucharla", "No"))) return;
-  } else if(startId && lv(startId)===2){
-    if(!(await askYesNo("¿Segura? 😭", "Esta canción da MUCHO cringe.", "Sí", "No"))) return;
-    if(!(await askYesNo("¿Segura segura? 😭", "Última oportunidad.", "Sí, escucharla", "No"))) return;
+  // La canción que se pulsa a propósito: si su cringe está desactivado, avisa y no suena.
+  if(startId){
+    const l = lv(startId);
+    if(l && !cringeOk(l)){
+      const go = await askYesNo(
+        "Tienes el " + crLabel(l) + " desactivado",
+        "Esta canción contiene " + crLabel(l) + ". Puedes activarlo aquí o con el interruptor «" + crName(l) + "» de la pantalla de canciones.",
+        "Activar y escucharla", "No escucharla");
+      if(!go) return;
+      if(!(await setCringeAllowed(l, true))) return;
+    }
   }
-  for(const [L, q] of [[1, "¿Quieres escuchar también las que dan cringe?"], [2, "¿Y las que dan mucho cringe?"]]){
-    const others = valid.filter(i => i!==startId && lv(i)===L);
-    if(!others.length) continue;
-    const txt = others.length + (others.length===1 ? " canción de esta lista " : " canciones de esta lista ") + (L===1 ? (others.length===1 ? "da cringe." : "dan cringe.") : (others.length===1 ? "da mucho cringe." : "dan mucho cringe."));
-    if(!(await askYesNo(q, txt, "Sí, incluirlas", "No, sin ellas"))) valid = valid.filter(i => lv(i)!==L || i===startId);
-    if(!valid.length) return;
-  }
+  // El resto de la lista: fuera lo que no esté permitido, sin preguntar nada.
+  valid = valid.filter(i => i===startId || cringeOk(lv(i)));
+  // Las canciones a trozos tienen su propio apartado y no se cuelan en la escucha normal.
+  if(!opts.allowPartial) valid = valid.filter(i => i===startId || !isPartial(byId(i)));
+  if(!valid.length){ toast("No hay canciones que puedas escuchar con los permisos de ahora."); return; }
+  if(shuffle===true || shuffle===false) PL.shuffle = shuffle;
   PL.ids = valid;
   let first = startId ? valid.indexOf(startId) : (PL.shuffle ? Math.floor(Math.random()*valid.length) : 0);
   if(first<0) first = 0;
@@ -1481,6 +1808,7 @@ async function loadCurrent(autoplay){
   PL.url = URL.createObjectURL(tr.blob); AUD.src = PL.url;
   if(autoplay){ const p = AUD.play(); if(p && p.catch) p.catch(() => { toast("Pulsa play para reproducir."); updatePlayerUi(); }); }
   setMediaSession(s); updatePlayerUi();
+  if(FEED) feedSyncToCurrent();
 }
 function step(dir, auto){
   const n = PL.order.length; if(!n) return;
@@ -1516,6 +1844,7 @@ function updateProgressUi(){
   const seek = $("#pSeek");
   if(seek){ if(!PL.seeking) seek.value = Math.round(pct*10); seek.style.setProperty("--p", (PL.seeking ? seek.value/10 : pct)+"%"); $("#pCur").textContent = fmtTime(PL.seeking ? seek.value/1000*d : t); $("#pDur").textContent = d>0 ? "-"+fmtTime(d-(PL.seeking ? seek.value/1000*d : t)) : "0:00"; }
   if(PL.lyOn && PL.lySync) markLyricLine(t, false);
+  if(FEED) feedUi();
 }
 function refreshPlayerUi(){ updatePlayerUi(); }
 function updatePlayerUi(){
@@ -1619,6 +1948,94 @@ function markLyricLine(t, force){
   const el = cur>=0 ? box.querySelector('.ll[data-i="'+cur+'"]') : null;
   if(el){ el.classList.add("on"); if(force || Date.now() - (PL.lyTouch||0) > 3000) box.scrollTo({ top: el.offsetTop - box.clientHeight/2 + el.clientHeight/2, behavior: force ? "auto" : "smooth" }); }
 }
+/* Pantalla para sincronizar la letra: suena la canción y se marca cada frase. */
+function openSyncScreen(id, text, onSave){
+  const s = byId(id); if(!s) return;
+  const prev = document.querySelector("#lyEd"); if(prev) prev.remove();
+  const raw = plainLyrics(text).split("\n").map(x => x.trim());
+  const old = parseLyrics(text).lines;
+  const stamps = [];
+  if(old.length===raw.length) old.forEach((l,k) => { if(l.t!==null && raw[k]) stamps[k] = l.t; });
+  const total = raw.filter(Boolean).length;
+  let i = 0;
+  const skipEmpty = () => { while(i < raw.length && !raw[i]) i++; };
+  skipEmpty();
+
+  const ed = document.createElement("div"); ed.id = "lyEd";
+  ed.innerHTML = `<h3>Sincronizar «${esc(s.title)}»</h3>
+    <div class="hint">Dale al play y pulsa el botón grande justo cuando empieza cada frase. Puedes pausar, volver atrás y deshacer sin perder lo marcado.</div>
+    <div class="stop">
+      <button id="syPlay" aria-label="Reproducir o pausar">${IC.play}</button>
+      <input class="sseek" id="sySeek" type="range" min="0" max="1000" value="0" step="1" aria-label="Posición de la canción">
+      <span class="stime" id="syTime">0:00</span>
+    </div>
+    <div class="slines" id="syL"></div>
+    <div class="sprog" id="syProg"></div>
+    <button class="mark" id="syMark">Marcar esta frase</button>
+    <div class="row"><button class="ghost" id="syBack">&#9666; 5 s</button><button class="ghost" id="syUndo">Deshacer</button><button class="ghost" id="syReset">Empezar de nuevo</button></div>
+    <div class="row"><button class="ghost" id="syCancel">Cancelar</button><button id="sySave">Guardar la letra sincronizada</button></div>`;
+  document.body.appendChild(ed);
+
+  const done = () => stamps.filter(v => v!==undefined).length;
+  const draw = () => {
+    $("#syL").innerHTML = raw.map((l,k) => l
+      ? `<div class="sl ${stamps[k]!==undefined?"done":""} ${k===i?"cur":""}" data-k="${k}">${stamps[k]!==undefined?`<small>${fmtTime(stamps[k])}</small>`:""}${esc(l)}</div>`
+      : '<div style="height:10px"></div>').join("");
+    const c = $("#syL").querySelector(".cur");
+    if(c) $("#syL").scrollTo({ top: Math.max(0, c.offsetTop - 90), behavior:"smooth" });
+    $("#syProg").textContent = i >= raw.length ? "Todas las frases marcadas (" + done() + " de " + total + ")" : "Marcadas " + done() + " de " + total;
+    $("#syMark").textContent = i >= raw.length ? "Todas marcadas" : "Marcar esta frase";
+    $("#syMark").disabled = i >= raw.length;
+    $("#syL").querySelectorAll(".sl").forEach(el => el.onclick = () => {
+      const k = +el.dataset.k;
+      i = k; draw();
+      const back = stamps.slice(0,k).filter(v => v!==undefined).pop();
+      if(back!==undefined) AUD.currentTime = Math.max(0, back);
+    });
+  };
+  const paint = () => {
+    const d = AUD.duration || 0, t = AUD.currentTime || 0, pct = d>0 ? Math.min(100, t/d*100) : 0;
+    const sk = $("#sySeek"); if(!sk) return;
+    sk.value = Math.round(pct*10); sk.style.setProperty("--p", pct+"%");
+    $("#syTime").textContent = fmtTime(t) + (d>0 ? " / " + fmtTime(d) : "");
+    $("#syPlay").innerHTML = (!AUD.paused && !AUD.ended) ? IC.pause : IC.play;
+  };
+  AUD.addEventListener("timeupdate", paint); AUD.addEventListener("play", paint);
+  AUD.addEventListener("pause", paint); AUD.addEventListener("loadedmetadata", paint);
+  const close = () => {
+    AUD.removeEventListener("timeupdate", paint); AUD.removeEventListener("play", paint);
+    AUD.removeEventListener("pause", paint); AUD.removeEventListener("loadedmetadata", paint);
+    AUD.pause(); ed.remove();
+  };
+
+  $("#syMark").onclick = () => {
+    if(i >= raw.length) return;
+    stamps[i] = Math.max(0, (AUD.currentTime || 0) - 0.25);
+    i++; skipEmpty(); draw();
+    if(AUD.paused) AUD.play().catch(()=>{});
+  };
+  $("#syPlay").onclick = () => { if(AUD.paused) AUD.play().catch(()=>{}); else AUD.pause(); };
+  $("#syBack").onclick = () => { AUD.currentTime = Math.max(0, (AUD.currentTime||0) - 5); };
+  $("#syUndo").onclick = () => {
+    let k = i - 1; while(k >= 0 && !raw[k]) k--;
+    if(k < 0) return;
+    delete stamps[k]; i = k; draw();
+    const back = stamps.slice(0,k).filter(v => v!==undefined).pop();
+    AUD.currentTime = Math.max(0, back!==undefined ? back : 0);
+  };
+  $("#syReset").onclick = () => { stamps.length = 0; i = 0; skipEmpty(); AUD.currentTime = 0; draw(); };
+  $("#syCancel").onclick = close;
+  $("#sySave").onclick = () => {
+    const out = raw.map((l,k) => !l ? "" : (stamps[k]!==undefined ? lrcStamp(stamps[k]) + " " : "") + l).join("\n");
+    close();
+    onSave(out);
+  };
+  const sk = $("#sySeek");
+  sk.addEventListener("input", () => { if(AUD.duration>0) AUD.currentTime = sk.value/1000*AUD.duration; });
+  draw(); paint();
+  if(curId() !== id) playList([id], id, false, {allowPartial:true}).then(paint);
+  else if(AUD.paused) AUD.play().catch(()=>{});
+}
 function openLyricEditor(id){
   const s = byId(id); if(!s) return;
   document.querySelector("#lyEd")?.remove();
@@ -1633,54 +2050,29 @@ function openLyricEditor(id){
   $("#lyCancel").onclick = close;
   $("#lySave").onclick = async () => { await saveText($("#lyTxt").value.replace(/\s+$/,"")); close(); toast("Letra guardada."); };
   $("#lyTap").onclick = () => {
-    const plain = plainLyrics($("#lyTxt").value);
-    if(!plain.trim()){ toast("Escribe primero la letra."); return; }
+    const txt = $("#lyTxt").value;
+    if(!plainLyrics(txt).trim()){ toast("Escribe primero la letra."); return; }
     if(!s.hasTrack){ toast("Esta canción no tiene audio. Añade el mp3 en su ficha."); return; }
-    startTapSync(id, plain, ed, saveText, close);
+    close();
+    openSyncScreen(id, txt, async out => { await saveText(out); toast("Letra sincronizada."); });
   };
 }
-function startTapSync(id, plain, ed, saveText, closeAll){
-  if(curId() !== id) playList([id], id, false);
-  const raw = plain.split("\n").map(x => x.trim());
-  let i = 0; const stamps = [];
-  const next = () => { while(i < raw.length && !raw[i]) i++; };
-  next();
-  ed.innerHTML = `<h3>Sincronizar: pulsa al empezar cada frase</h3>
-    <div class="slines" id="slL"></div>
-    <button class="mark" id="slMark">Marcar frase</button>
-    <div class="row"><button class="ghost" id="slPlay">Pausa / Play</button><button class="ghost" id="slBack">Atrás 5 s</button><button class="ghost" id="slUndo">Deshacer</button></div>
-    <div class="row"><button class="ghost" id="slCancel">Cancelar</button><button id="slSave">Guardar</button></div>`;
-  const draw = () => {
-    $("#slL").innerHTML = raw.map((l,k) => l ? `<div class="sl ${stamps[k]!==undefined?"done":""} ${k===i?"cur":""}" data-k="${k}">${stamps[k]!==undefined?`<small>${fmtTime(stamps[k])}</small>`:""}${esc(l)}</div>` : '<div style="height:10px"></div>').join("");
-    const c = $("#slL").querySelector(".cur"); if(c) $("#slL").scrollTo({ top: c.offsetTop - 80, behavior:"smooth" });
-    $("#slMark").textContent = i >= raw.length ? "Todas marcadas" : "Marcar frase";
-  };
-  const mark = () => { if(i >= raw.length) return; stamps[i] = Math.max(0, AUD.currentTime - 0.3); i++; next(); draw(); if(AUD.paused) AUD.play().catch(()=>{}); };
-  $("#slMark").onclick = mark;
-  $("#slPlay").onclick = togglePlay;
-  $("#slBack").onclick = () => { AUD.currentTime = Math.max(0, AUD.currentTime - 5); };
-  $("#slUndo").onclick = () => { let k = i - 1; while(k >= 0 && !raw[k]) k--; if(k < 0) return; i = k; delete stamps[k]; AUD.currentTime = Math.max(0, (stamps.filter(v=>v!==undefined).slice(-1)[0] || 0)); draw(); };
-  $("#slCancel").onclick = closeAll;
-  $("#slSave").onclick = async () => {
-    const out = raw.map((l,k) => !l ? "" : (stamps[k]!==undefined ? lrcStamp(stamps[k]) + " " : "") + l).join("\n");
-    await saveText(out); closeAll(); toast(stamps.filter(v=>v!==undefined).length < raw.filter(Boolean).length ? "Letra guardada, algunas frases sin marcar." : "Letra sincronizada.");
-  };
-  draw();
-  if(AUD.paused) AUD.play().catch(()=>{});
-}
-
 function closePlayer(){ const pl = $("#player"); pl.classList.add("hidden"); pl.innerHTML = ""; PL.lyId = null; }
 AUD.addEventListener("timeupdate", updateProgressUi);
 AUD.addEventListener("loadedmetadata", updateProgressUi);
 AUD.addEventListener("play", updatePlayerUi); AUD.addEventListener("pause", updatePlayerUi);
-AUD.addEventListener("ended", () => { if(PL.order.length && PL.url && AUD.src===PL.url) step(1,true); });
+AUD.addEventListener("ended", () => {
+  if(!(PL.order.length && PL.url && AUD.src===PL.url)) return;
+  if(FEED){ feedNext(); return; }
+  step(1,true);
+});
 AUD.addEventListener("error", () => { if(PL.url && AUD.src===PL.url) toast("No se pudo reproducir ese archivo."); });
 $("#mPlay").onclick = e => { e.stopPropagation(); togglePlay(); };
 $("#mNext").onclick = e => { e.stopPropagation(); step(1,false); };
 $("#mT").onclick = openPlayer; $("#mC").onclick = openPlayer;
 
 /* ========================= Álbumes ========================= */
-const ALBUM_COLORS = ["#e3f1ff","#f1e9ff","#fff4de","#ffe6dc","#dff5e8","#ffe3f0"];
+const ALBUM_COLORS = ["rgba(193,221,248,.5)","rgba(217,203,246,.5)","rgba(246,228,182,.46)","rgba(246,210,195,.46)","rgba(196,234,211,.46)","rgba(246,203,224,.46)"];
 const norm = x => (x||"").trim().toLowerCase();
 function albumSongs(a){
   if(a.kind==="manual"){ const set = new Set(a.songIds||[]); return songs.filter(s => set.has(s.id)); }
@@ -1709,7 +2101,7 @@ function tileHtml(a){
     if(!s) return `<div class="m" style="background:rgba(255,255,255,.5)"></div>`;
     return s.cover ? `<div class="m" style="background-image:url('${s.cover}')"></div>` : `<div class="m" style="background:${colorFor(s.title)}">${esc((s.title||"?").charAt(0).toUpperCase())}</div>`;
   }).join("");
-  const mos = a.cover ? `<div class="mosaic one" style="background-image:url('${a.cover}')"></div>` : `<div class="mosaic">${cells}</div>`;
+  const mos = a.cover ? `<div class="mosaic one case" style="background-image:url('${a.cover}')"></div>` : `<div class="mosaic case">${cells}</div>`;
   return `<div class="tile" data-aid="${esc(a.id)}" style="background:${ALBUM_COLORS[(a.color||0)%ALBUM_COLORS.length]}">${mos}<div class="nm">${esc(a.name)}</div><div class="ct">${list.length} ${list.length===1?"canción":"canciones"} · ${avg}%</div></div>`;
 }
 function renderAlbums(){
@@ -1745,7 +2137,7 @@ function openAlbum(id){
     <div class="bar-top"><button class="btn ghost" id="aBack">Cerrar</button><h2>${esc(rule)}</h2>${a.virtual ? '<span style="width:64px"></span>' : '<button class="btn soft sm" id="aEdit">Editar</button>'}</div>
     <div class="content">
       <div class="ahero">
-        ${a.cover ? `<div class="acov one" style="background-image:url('${a.cover}')"></div>` : `<div class="acov">${cells}</div>`}
+        ${a.cover ? `<div class="acov one case" style="background-image:url('${a.cover}')"></div>` : `<div class="acov case">${cells}</div>`}
         <h2>${esc(a.name)}</h2>
         <div class="sub">${n} ${n===1?"canción":"canciones"} · ${done} terminadas</div>
       </div>
@@ -1881,7 +2273,6 @@ function openAlbumEditor(id){
 async function renderSettings(){
   let usage = "";
   try{ if(navigator.storage && navigator.storage.estimate){ const e = await navigator.storage.estimate(); usage = `Espacio usado por la app: ${fmtSize(e.usage||0)} de ${fmtSize(e.quota||0)} disponibles.`; } }catch(e){}
-  const cred = currentCred();
   $("#main").innerHTML = `
     <div class="panel blue"><h4>Nube (GitHub privado)</h4>
       <p class="hint" id="cloudStatus"></p>
@@ -1902,14 +2293,6 @@ async function renderSettings(){
       <p class="hint">Días sin tocar una canción antes de avisarte.</p>
       <input class="in" type="number" min="1" max="365" id="sStale" value="${staleDays()}" style="max-width:120px">
     </div>
-    <div class="panel"><h4>Acceso</h4>
-      <p class="hint">Usuario actual: <b>${esc(cred.user)}</b>. Es un bloqueo de pantalla para esta app en este dispositivo.</p>
-      <label class="f">Nuevo usuario</label><input class="in" id="sNewUser" value="${esc(cred.user)}" autocapitalize="none" autocomplete="off">
-      <label class="f">Contraseña actual</label><input class="in" type="password" id="sOldPass" autocomplete="off">
-      <label class="f">Nueva contraseña</label><input class="in" type="password" id="sNewPass" autocomplete="new-password">
-      <div style="margin-top:12px"><button class="btn" id="sChange">Cambiar acceso</button>
-      <button class="btn soft" id="sLock" style="margin-left:6px">Bloquear ahora</button></div>
-    </div>
     <div class="panel"><h4>Instalar en el iPhone</h4>
       <p class="hint" style="margin:0">En Safari pulsa Compartir y después "Añadir a pantalla de inicio". Se abrirá como una app, también sin conexión.</p>
     </div>
@@ -1921,16 +2304,6 @@ async function renderSettings(){
   $("#cChange").onclick = () => showSetup();
   $("#cOff").onclick = () => { if(!confirm("Este dispositivo dejará de sincronizar y no podrás usar la app hasta volver a conectarlo. Los datos de la nube no se borran. ¿Continuar?")) return; localStorage.removeItem("covers.cloud"); localStorage.removeItem("covers.cloudstate"); setSyncUi("idle"); showSetup(); };
   $("#sStale").onchange = e => { const n = parseInt(e.target.value,10); if(n>0){ lsSet("covers.staleDays", String(n)); toast("Guardado."); } };
-  $("#sLock").onclick = lockNow;
-  $("#sChange").onclick = async () => {
-    const nu = $("#sNewUser").value.trim(), op = $("#sOldPass").value, np = $("#sNewPass").value;
-    const cur = currentCred();
-    if(!nu || !np){ toast("Indica usuario y nueva contraseña."); return; }
-    if(np.length < 4){ toast("La contraseña debe tener al menos 4 caracteres."); return; }
-    if((await hashCred(cur.user, op)) !== cur.hash){ toast("La contraseña actual no es correcta."); return; }
-    lsSet("covers.user", nu); lsSet("covers.hash", await hashCred(nu, np));
-    toast("Acceso actualizado."); renderSettings();
-  };
   $("#sExport").onclick = () => exportBackup($("#sFiles").checked);
   $("#sImport").onclick = () => $("#sImportFile").click();
   $("#sImportFile").onchange = e => { const f = e.target.files[0]; if(f) importBackup(f); e.target.value = ""; };
@@ -2262,7 +2635,7 @@ document.addEventListener("click", e => { const b = e.target.closest("#syncBtn")
 if("serviceWorker" in navigator && (location.protocol==="https:" || location.hostname==="localhost")){
   window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
 }
-if(isUnlocked()) { $("#lock").classList.add("hidden"); startApp(); } else { showLock(); }
+startApp();
 </script>
 </body>
 </html>
