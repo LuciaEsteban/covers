@@ -881,6 +881,7 @@ function nowBarHtml(list){
     <div class="tglrow">
       <button type="button" class="tgl cr ${CR[1]?"on":""}" id="nbCr1" aria-pressed="${CR[1]?"true":"false"}"><i></i><span>Cringe permitido</span></button>
       <button type="button" class="tgl cr2 ${CR[2]?"on":""}" id="nbCr2" aria-pressed="${CR[2]?"true":"false"}"><i></i><span>Mucho cringe permitido</span></button>
+      <button type="button" class="tgl pt ${SHOK?"on":""}" id="nbSh" aria-pressed="${SHOK?"true":"false"}"><i></i><span>Shorts permitidos</span></button>
     </div>
   </div>`;
 }
@@ -890,6 +891,7 @@ function bindNowBar(list){
   const sh = $("#nbShuf"); if(sh) sh.onclick = () => toggleShuffle();
   const c1 = $("#nbCr1"); if(c1) c1.onclick = () => setCringeAllowed(1, !CR[1]);
   const c2 = $("#nbCr2"); if(c2) c2.onclick = () => setCringeAllowed(2, !CR[2]);
+  const sh2 = $("#nbSh"); if(sh2) sh2.onclick = () => setShortsAllowed(!SHOK);
 }
 
 /* ========================= Menú de la canción =========================
@@ -1852,6 +1854,13 @@ function cringeLvl(s){ const c = s && s.cringe; return c===true ? 1 : (+c||0); }
    Son dos interruptores de la pantalla de canciones. Viven solo en memoria:
    cada vez que se abre la app vuelven a estar desactivados. */
 const CR = { 1:false, 2:false };
+/* Mismo criterio para los shorts: apagado cada vez que se abre la app. */
+let SHOK = false;
+function setShortsAllowed(on){
+  SHOK = !!on;
+  if(ui.tab==="songs" && !layerOpen) renderList(false);
+  toast(SHOK ? "Los shorts también suenan en las listas." : "Los shorts se quedan en su pestaña.");
+}
 const crLabel = l => l===2 ? "mucho cringe" : "cringe";
 const crName = l => l===2 ? "Mucho cringe permitido" : "Cringe permitido";
 function cringeOk(lvl){ return !lvl || CR[lvl]===true; }
@@ -2073,17 +2082,8 @@ async function playList(ids, startId, shuffle, opts){
   }
   // El resto de la lista: fuera lo que no esté permitido, sin preguntar nada.
   valid = valid.filter(i => i===startId || cringeOk(lv(i)));
-  // Los shorts tienen su propio apartado: si hay alguno en la lista, pregunta antes de colarlo.
-  if(!opts.allowPartial){
-    const parts = valid.filter(i => i!==startId && isPartial(byId(i)));
-    if(parts.length){
-      const n = parts.length;
-      const inc = await askYesNo("¿Quieres incluir los shorts?",
-        n===1 ? "1 canción de esta lista está hecha solo a trozos." : n + " canciones de esta lista están hechas solo a trozos.",
-        "Sí, incluirlos", "No, sin ellos");
-      if(!inc) valid = valid.filter(i => i===startId || !isPartial(byId(i)));
-    }
-  }
+  // Los shorts solo se cuelan en las listas si está puesto su interruptor.
+  if(!opts.allowPartial && !SHOK) valid = valid.filter(i => i===startId || !isPartial(byId(i)));
   if(!valid.length){ toast("No hay canciones que puedas escuchar con los permisos de ahora."); return; }
   if(shuffle===true || shuffle===false) PL.shuffle = shuffle;
   PL.ids = valid;
