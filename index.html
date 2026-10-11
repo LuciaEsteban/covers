@@ -1875,8 +1875,17 @@ async function playList(ids, startId, shuffle, opts){
   }
   // El resto de la lista: fuera lo que no esté permitido, sin preguntar nada.
   valid = valid.filter(i => i===startId || cringeOk(lv(i)));
-  // Las canciones a trozos tienen su propio apartado y no se cuelan en la escucha normal.
-  if(!opts.allowPartial) valid = valid.filter(i => i===startId || !isPartial(byId(i)));
+  // Los shorts tienen su propio apartado: si hay alguno en la lista, pregunta antes de colarlo.
+  if(!opts.allowPartial){
+    const parts = valid.filter(i => i!==startId && isPartial(byId(i)));
+    if(parts.length){
+      const n = parts.length;
+      const inc = await askYesNo("¿Quieres incluir los shorts?",
+        n===1 ? "1 canción de esta lista está hecha solo a trozos." : n + " canciones de esta lista están hechas solo a trozos.",
+        "Sí, incluirlos", "No, sin ellos");
+      if(!inc) valid = valid.filter(i => i===startId || !isPartial(byId(i)));
+    }
+  }
   if(!valid.length){ toast("No hay canciones que puedas escuchar con los permisos de ahora."); return; }
   if(shuffle===true || shuffle===false) PL.shuffle = shuffle;
   PL.ids = valid;
