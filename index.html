@@ -530,6 +530,7 @@ input.vol::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;ba
       <div class="searchrow">
         <input class="search" id="q" type="search" placeholder="Buscar canción, artista, etiqueta..." autocomplete="off" enterkeyhint="search">
         <select class="sort" id="sort" aria-label="Ordenar">
+          <option value="type">Por tipo</option>
           <option value="recent">Recientes</option>
           <option value="priority">Prioridad</option>
           <option value="progress">% avance</option>
@@ -648,7 +649,9 @@ async function dbClear(){ await tx(["songs","files","albums"],"readwrite", t => 
 
 /* ========================= Estado ========================= */
 let songs = [];
-let ui = { planView:"board", tab:"songs", q:"", status:"Todas", tag:"", sort: lsGet("covers.sort","recent") };
+/* Orden por defecto: primero lo que se puede escuchar. Se pone una sola vez. */
+if(lsGet("covers.sortType","")!=="1"){ lsSet("covers.sort","type"); lsSet("covers.sortType","1"); }
+let ui = { planView:"board", tab:"songs", q:"", status:"Todas", tag:"", sort: lsGet("covers.sort","type") };
 let objectUrls = [];
 
 let albums = [];
@@ -778,7 +781,9 @@ function filtered(){
     }
     return true;
   });
+  const typeRank = s => (s.hasTrack ? 0 : 2) + (isPartial(s) ? 1 : 0);
   const cmp = {
+    type:(a,b)=>typeRank(a)-typeRank(b) || b.updatedAt-a.updatedAt,
     recent:(a,b)=>b.updatedAt-a.updatedAt,
     priority:(a,b)=>PRIORITIES.indexOf(a.priority)-PRIORITIES.indexOf(b.priority) || b.updatedAt-a.updatedAt,
     progress:(a,b)=>(b.progress||0)-(a.progress||0),
