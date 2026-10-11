@@ -69,7 +69,7 @@ header.top h1{margin:0 0 8px;font-size:26px;letter-spacing:-.3px;background:line
 .chip.tag.on{background:var(--blue-soft);color:var(--blue-ink);border-color:var(--blue)}
 main{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:4px 16px calc(150px + env(safe-area-inset-bottom));-webkit-overflow-scrolling:touch}
 nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--glass);-webkit-backdrop-filter:blur(14px) saturate(1.4);backdrop-filter:blur(14px) saturate(1.4);border-top:1px solid var(--line);display:flex;justify-content:center;padding-bottom:env(safe-area-inset-bottom);z-index:6}
-nav.tabs .in{display:flex;width:100%;max-width:760px}
+nav.tabs .in{display:flex;width:100%;max-width:760px;background:none;border:0;padding:0;border-radius:0}
 nav.tabs button{flex:1;border:0;background:none;min-height:56px;padding:8px 2px 8px;color:var(--muted);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:2px}
 nav.tabs button .ic{font-size:20px;line-height:1}
 nav.tabs button.on{color:var(--accent);font-weight:700}
@@ -309,7 +309,8 @@ header.top{position:sticky}
 #mini .mt{flex:1;min-width:0;cursor:pointer}
 #mini .mt b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #mini .mt span{display:block;font-size:12px;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#mini button{border:0;background:rgba(255,255,255,.2);width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;flex:none}
+#mini button{border:0;background:rgba(255,255,255,.2);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;flex:none}
+#mini #mPlay{width:44px;height:44px}
 #mini svg,#player svg{fill:#fff;width:20px;height:20px}
 #mini .mbar{position:absolute;left:0;bottom:0;height:3px;background:#fff;width:0}
 body.hasmini main{padding-bottom:calc(220px + env(safe-area-inset-bottom))}
@@ -448,38 +449,60 @@ body.hasmini .overlay>.content{padding-bottom:calc(100px + env(safe-area-inset-b
 .pill.pt{background:#efe3ff;color:#6b3fb0}
 .pill.sg{background:#fff0a8;color:#6b5400}
 
-/* ===== A trozos: feed vertical ===== */
-.feedov{background:#0e0b1c!important;background-image:none!important;color:#fff}
-.feedov>.bar-top{background:rgba(14,11,28,.9);border-bottom-color:rgba(255,255,255,.12)}
-.feedov>.bar-top h2{color:#fff}
-.feedov .btn.ghost{color:#cbbcff}
-.feedov .btn.soft{background:rgba(255,255,255,.16);color:#fff}
-.feedov .fbar2{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:9px 12px;background:rgba(14,11,28,.92);border-bottom:1px solid rgba(255,255,255,.1)}
-.feedov .nbchip{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.26);color:#fff}
+/* ===== Shorts: pantalla deslizante a lo TikTok ===== */
+body.shortson header.top{display:none}
+body.shortson main{padding:0!important;overflow:hidden}
+body.shortson #mini{display:none!important}
+body.shortson .fab{display:none!important}
+body.shortson nav.tabs{background:rgba(11,9,24,.8);border-top-color:rgba(255,255,255,.12)}
+body.shortson nav.tabs button{color:rgba(255,255,255,.6)}
+body.shortson nav.tabs button.on{color:#fff}
+main.shorts{position:relative;background:#0b0918;color:#fff}
+.fchips{position:absolute;z-index:3;top:calc(env(safe-area-inset-top) + 10px);left:0;right:0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:0 12px;pointer-events:none}
+.fchips .nbchip{pointer-events:auto;background:rgba(0,0,0,.42);border-color:rgba(255,255,255,.28);color:#fff;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.fchips .nbchip.on{background:#ffd966;color:#4a3200;border-color:transparent}
+.fscroll{height:100%;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
+.fscroll::-webkit-scrollbar{display:none}
+.fslide{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;background:#0b0918}
+.fslide .fbg{position:absolute;inset:-40px;background-size:cover;background-position:center;filter:blur(30px) saturate(1.3);opacity:.6;transform:scale(1.2)}
+.fslide .fart{position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);width:min(76vw,310px);aspect-ratio:1;border-radius:22px;background-size:cover;background-position:center;box-shadow:0 20px 50px rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:82px;font-weight:700;color:rgba(255,255,255,.9)}
+.fslide .fsh{position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,9,24,.6) 0 16%,rgba(11,9,24,0) 40%,rgba(11,9,24,.88) 86%)}
+.ftap{position:absolute;inset:0;z-index:1;border:0;background:none;padding:0;width:100%}
+.fpause{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-58%);width:84px;height:84px;border-radius:50%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;pointer-events:none;opacity:0;transition:opacity .2s}
+.fslide.paused .fpause{opacity:1}
+.fpause svg{width:36px;height:36px;fill:#fff}
+.fovl{position:absolute;z-index:2;left:16px;right:84px;bottom:calc(112px + env(safe-area-inset-bottom));pointer-events:none}
+.fovl .ft{font-size:20px;font-weight:700;line-height:1.2}
+.fovl .fa{font-size:14px;opacity:.9;margin-top:3px}
+.fovl .fmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.fovl .fhint{font-size:12.5px;opacity:.8;margin-top:8px}
+.facts{position:absolute;z-index:2;right:10px;bottom:calc(112px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:13px}
+.facts .fact{display:flex;flex-direction:column;align-items:center;gap:4px}
+.facts button{border:0;background:rgba(255,255,255,.15);width:52px;height:52px;border-radius:50%;color:#fff;font-size:23px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.facts button:active{transform:scale(.92)}
+.facts small{font-size:11px;opacity:.85;max-width:62px;text-align:center}
+.facts .flike.on{background:#ee5b8b}
+.facts .fsug.on{background:#ffd966;color:#4a3200}
+.fprog{position:absolute;z-index:2;left:0;right:0;bottom:calc(57px + env(safe-area-inset-bottom));height:3px;background:rgba(255,255,255,.22)}
+.fprog>i{display:block;height:100%;width:0;background:#fff;animation:none}
+.fnone{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:30px}
+.fnone b{font-size:19px}
+.fnone span{opacity:.8;font-size:14px;max-width:320px}
 .askbox .col2{display:grid;gap:8px}
 .askbox .col2 button{width:100%;background:var(--accent-soft);color:var(--accent);text-align:center}
 .askbox .col2 button.on{background:linear-gradient(135deg,#a98af0,#8a63e0);color:#fff}
-.fscroll{flex:1;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;scrollbar-width:none}
-.fscroll::-webkit-scrollbar{display:none}
-.fslide{position:relative;height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
-.fslide .fbg{position:absolute;inset:-30px;background-size:cover;background-position:center;filter:blur(26px) saturate(1.25);opacity:.8;transform:scale(1.15)}
-.fslide .fsh{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,11,28,.5),rgba(14,11,28,.86))}
-.fslide .fbody{position:relative;z-index:1;padding:14px 18px calc(26px + env(safe-area-inset-bottom));display:flex;flex-direction:column;align-items:center;gap:9px;text-align:center}
-.fslide .fcov{width:min(56vw,230px);aspect-ratio:1;border-radius:18px;background-size:cover;background-position:center;box-shadow:0 16px 40px rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:62px;font-weight:700;color:rgba(255,255,255,.9);margin-bottom:4px}
-.fslide .ft{font-size:21px;font-weight:700;line-height:1.2}
-.fslide .fa{opacity:.85;font-size:14px}
-.fslide .fmeta{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
-.fbar{width:100%;max-width:320px;height:5px;border-radius:5px;background:rgba(255,255,255,.25);overflow:hidden}
-.fbar>i{display:block;height:100%;width:0;background:#fff;border-radius:5px;animation:none}
-.frow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:2px}
-.fbtn{border:0;width:62px;height:62px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 8px 22px rgba(0,0,0,.45)}
-.fbtn svg{width:28px;height:28px;fill:#5b3fc4}
-.fsug{border:1px solid rgba(255,255,255,.4);background:rgba(255,255,255,.12);color:#fff;border-radius:999px;padding:10px 16px;font-size:14px;font-weight:600;min-height:46px}
-.fsug.on{background:#ffd966;border-color:transparent;color:#4a3200}
-.fopen{border:0;background:none;color:#cbbcff;font-size:14px;font-weight:600;padding:8px;min-height:40px}
-.fhint{opacity:.75;font-size:13px;max-width:320px}
-.fswipe{position:absolute;left:0;right:0;top:10px;text-align:center;font-size:12.5px;opacity:.55;z-index:1}
-body.feedon #mini{display:none!important}
+
+/* ===== Volumen ===== */
+.volrow{display:flex;align-items:center;gap:10px}
+.volrow svg{width:20px;height:20px;fill:currentColor;opacity:.85;flex:none}
+input.vol{flex:1;min-width:0;height:26px;-webkit-appearance:none;appearance:none;background:transparent;margin:0}
+input.vol::-webkit-slider-runnable-track{height:4px;border-radius:4px;background:linear-gradient(90deg,currentColor var(--v,100%),rgba(255,255,255,.28) var(--v,100%))}
+input.vol::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:currentColor;margin-top:-5.5px;box-shadow:0 1px 4px rgba(0,0,0,.4)}
+input.vol::-moz-range-track{height:4px;border-radius:4px;background:rgba(255,255,255,.28)}
+input.vol::-moz-range-progress{height:4px;border-radius:4px;background:currentColor}
+input.vol::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;background:currentColor}
+#player .volrow{color:#fff;margin:4px 0 2px}
+.fvol{position:absolute;z-index:3;left:14px;right:14px;bottom:calc(66px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;color:#fff;background:rgba(0,0,0,.38);border-radius:999px;padding:5px 14px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 
 /* ===== Pantalla de sincronizar letra ===== */
 #lyEd .stop{display:flex;align-items:center;gap:10px;margin:8px 0 2px}
@@ -527,6 +550,7 @@ body.feedon #mini{display:none!important}
 <button class="fab hidden" id="fab" aria-label="Añadir canción">+</button>
 <nav class="tabs hidden" id="tabs"><div class="in">
   <button data-tab="songs" class="on"><span class="ic"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span>Canciones</button>
+  <button data-tab="shorts"><span class="ic"><svg viewBox="0 0 24 24"><rect x="6" y="3" width="12" height="18" rx="3.5"/><path d="M10.6 9.4l4.1 2.6-4.1 2.6z"/></svg></span>Shorts</button>
   <button data-tab="albums"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="4"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".6"/></svg></span>Álbumes</button>
   <button data-tab="plan"><span class="ic"><svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="4.5" height="16" rx="1.5"/><rect x="9.75" y="4" width="4.5" height="10" rx="1.5"/><rect x="16" y="4" width="4.5" height="13" rx="1.5"/></svg></span>Plan</button>
   <button data-tab="settings"><span class="ic"><svg viewBox="0 0 24 24"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg></span>Ajustes</button>
@@ -534,7 +558,7 @@ body.feedon #mini{display:none!important}
 
 <div id="setup" class="hidden"></div>
 <div id="layer"></div>
-<div id="mini" class="hidden"><div class="mc" id="mC"></div><div class="mt" id="mT"><b></b><span></span></div><button id="mPlay" aria-label="Reproducir o pausar"></button><button id="mNext" aria-label="Siguiente"></button><div class="mbar" id="mBar"></div></div>
+<div id="mini" class="hidden"><div class="mc" id="mC"></div><div class="mt" id="mT"><b></b><span></span></div><button id="mPrev" aria-label="Anterior"></button><button id="mPlay" aria-label="Reproducir o pausar"></button><button id="mNext" aria-label="Siguiente"></button><div class="mbar" id="mBar"></div></div>
 <div id="player" class="hidden"></div>
 <audio id="aud" playsinline preload="auto"></audio>
 
@@ -545,7 +569,6 @@ const STATUSES = ["Idea","Aprendiendo","Ensayando","Grabando","Grabada","Publica
 const DONE = ["Grabada","Publicada"];
 const PRIORITIES = ["Alta","Media","Baja"];
 const GOALS = ["Completa","Fragmento"];
-const HAVE = ["Nada todavía","Fragmento","Completa"];
 const FORMATS = ["BandLab","Instagram","YouTube","TikTok","Vídeo","Audio","Otro"];
 const BASE_STYLES = ["Pop","Pop rock","Rock","Balada","Indie","Soul / R&B","Latino","Musical / BSO","Jazz","Folk / Acústico","Electrónica"];
 const LINK_LABELS = ["BandLab","Instagram","YouTube","Drive","Spotify","Letra","Otro"];
@@ -635,6 +658,7 @@ async function loadSongs(){
   for(const s of songs){
     let dirty = false;
     if(s.planFormats){ s.formats = [...new Set([...(s.formats||[]), ...s.planFormats])]; delete s.planFormats; dirty = true; }
+    if(s.partial===undefined || s.partial===null){ s.partial = s.have==="Fragmento"; dirty = true; }
     if(!s.keyMigrated){
       const t = (s.tone||"").trim();
       if(t && !KEYS.includes(t)){ s.notes = (s.notes ? s.notes + "\n" : "") + "Tono / ajustes: " + t; s.tone = ""; }
@@ -704,7 +728,11 @@ function startApp(){
   if(navigator.storage && navigator.storage.persist){ navigator.storage.persist().catch(()=>{}); }
   cloudGate();
 }
-document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", () => { ui.tab = b.dataset.tab; render(); $("#main").scrollTop = 0; }));
+document.querySelectorAll("nav.tabs button").forEach(b => b.addEventListener("click", async () => {
+  const t = b.dataset.tab;
+  if(t==="shorts"){ if(!(await enterShorts())) return; }
+  ui.tab = t; render(); if(t!=="shorts") $("#main").scrollTop = 0;
+}));
 $("#fab").addEventListener("click", () => { if(ui.tab==="albums") openAlbumEditor(null); else openEditor(null); });
 let qTimer; $("#q").addEventListener("input", e => { ui.q = e.target.value; clearTimeout(qTimer); qTimer = setTimeout(() => renderList(false), 120); });
 $("#sort").value = ui.sort;
@@ -712,11 +740,14 @@ $("#sort").addEventListener("change", e => { ui.sort = e.target.value; lsSet("co
 
 function render(){
   document.querySelectorAll("nav.tabs button").forEach(b => b.classList.toggle("on", b.dataset.tab===ui.tab));
-  const isSongs = ui.tab==="songs";
+  const isSongs = ui.tab==="songs", isShorts = ui.tab==="shorts";
+  if(!isShorts && FEED) feedEnd();
+  document.body.classList.toggle("shortson", isShorts);
   $("#searchWrap").classList.toggle("hidden", !isSongs);
   $("#fab").classList.toggle("hidden", !(isSongs || ui.tab==="albums"));
-  $("#title").textContent = {songs:"Mis covers",plan:"Plan",albums:"Álbumes",settings:"Ajustes"}[ui.tab];
+  $("#title").textContent = {songs:"Mis covers",shorts:"Shorts",plan:"Plan",albums:"Álbumes",settings:"Ajustes"}[ui.tab];
   if(isSongs){ renderChips(); renderList(); }
+  else if(isShorts){ renderShorts(); }
   else { $("#main").className = "view"; if(ui.tab==="plan") renderPlan(); else if(ui.tab==="albums") renderAlbums(); else renderSettings(); }
 }
 
@@ -800,12 +831,11 @@ function renderList(anim=true){
 /* ===== Barra tipo reproductor de la pantalla de canciones ===== */
 function nowBarHtml(list){
   const playable = list.filter(s => s.hasTrack && !isPartial(s));
-  const parts = partialSongs();
   const filtering = ui.q.trim() || ui.status!=="Todas" || ui.tag;
   return `<div class="nowbar">
     <div class="nbtop">
       <button class="roundplay" id="nbPlay" aria-label="Reproducir todas" ${playable.length?"":"disabled style='opacity:.45'"}>${IC.play}</button>
-      <button class="roundbtn ${PL.shuffle?"on":""}" id="nbShuf" aria-label="Reproducir en aleatorio" ${playable.length?"":"disabled style='opacity:.45'"}>${IC.shuffle}</button>
+      <button class="roundbtn ${PL.shuffle?"on":""}" id="nbShuf" aria-label="Aleatorio" aria-pressed="${PL.shuffle?"true":"false"}">${IC.shuffle}</button>
       <div class="nbinfo">
         <b>${filtering ? "Lo que estás viendo" : "Todas mis covers"}</b>
         <span>${list.length} ${list.length===1?"canción":"canciones"} · ${playable.length} con audio</span>
@@ -814,27 +844,27 @@ function nowBarHtml(list){
     <div class="tglrow">
       <button type="button" class="tgl cr ${CR[1]?"on":""}" id="nbCr1" aria-pressed="${CR[1]?"true":"false"}"><i></i><span>Cringe permitido</span></button>
       <button type="button" class="tgl cr2 ${CR[2]?"on":""}" id="nbCr2" aria-pressed="${CR[2]?"true":"false"}"><i></i><span>Mucho cringe permitido</span></button>
-      ${parts.length ? `<button class="nbchip" id="nbFeed">A trozos · ${parts.length}</button>` : ""}
     </div>
   </div>`;
 }
 function bindNowBar(list){
   const ids = list.map(s => s.id);
-  const p = $("#nbPlay"); if(p) p.onclick = () => playList(ids, null, false);
-  const sh = $("#nbShuf"); if(sh) sh.onclick = () => playList(ids, null, true);
-  const f = $("#nbFeed"); if(f) f.onclick = () => openFeed(false);
+  const p = $("#nbPlay"); if(p) p.onclick = () => playList(ids, null, PL.shuffle);
+  const sh = $("#nbShuf"); if(sh) sh.onclick = () => toggleShuffle();
   const c1 = $("#nbCr1"); if(c1) c1.onclick = () => setCringeAllowed(1, !CR[1]);
   const c2 = $("#nbCr2"); if(c2) c2.onclick = () => setCringeAllowed(2, !CR[2]);
 }
 
-/* ========================= A trozos: feed para deslizar ========================= */
+/* ========================= Shorts =========================
+   Las canciones hechas solo a trozos no suenan en la escucha normal:
+   viven aquí, a pantalla completa y deslizando como en TikTok. */
 let FEED = null;
 const FEED_ORDERS = [
   {v:"random", n:"Aleatorio"},
   {v:"artist", n:"Por artista"},
   {v:"style",  n:"Por estilo"},
   {v:"tag",    n:"Por etiqueta"},
-  {v:"recent", n:"Las últimas que toqué"}
+  {v:"recent", n:"Los últimos que toqué"}
 ];
 const feedOrderName = v => (FEED_ORDERS.find(o => o.v===v) || FEED_ORDERS[0]).n;
 function sortFeed(list, mode){
@@ -846,68 +876,80 @@ function sortFeed(list, mode){
   if(mode==="tag")    return l.sort((a,b) => (((a.tags||[])[0])||"zzz").localeCompare(((b.tags||[])[0])||"zzz","es") || byTitle(a,b));
   return l.sort((a,b) => (b.updatedAt||0)-(a.updatedAt||0));
 }
-function feedEnd(){ if(FEED){ FEED = null; document.body.classList.remove("feedon"); } }
+function feedEnd(){ FEED = null; document.body.classList.remove("shortson"); }
+function feedListFor(only, mode){ return sortFeed(only ? partialSongs().filter(s => s.suggestFull) : partialSongs(), mode); }
+async function askFeedOrder(current){
+  return askPick("¿Cómo quieres ver los Shorts?", "Pasan solos al acabar y no se repite ninguno hasta dar la vuelta.", FEED_ORDERS, current || lsGet("covers.feedOrder","random"));
+}
+async function enterShorts(only){
+  const mode = await askFeedOrder();
+  if(!mode) return false;
+  lsSet("covers.feedOrder", mode);
+  FEED = { only:!!only, mode, i:0, list: feedListFor(!!only, mode) };
+  return true;
+}
+function goShorts(){ enterShorts(false).then(ok => { if(ok){ ui.tab = "shorts"; render(); } }); }
+const feedSig = () => FEED ? FEED.mode + "|" + FEED.only + "|" + FEED.list.map(s => s.id).join(",") : "";
 function feedPills(s){
-  return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:"")
+  return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"")
     + (cringeLvl(s)===2?`<span class="pill cr cr2">mucho cringe</span>`:(cringeLvl(s)===1?`<span class="pill cr">cringe</span>`:""))
     + `<span class="pill st${stIdx(s.status)}">${esc(s.status)}</span>`
+    + (s.style?`<span class="pill fmt">${esc(s.style)}</span>`:"")
     + (s.suggestFull?`<span class="pill sg">para completar</span>`:"");
 }
-function feedSlideHtml(s, i){
+function shortSlideHtml(s, i){
   const cov = s.cover ? `background-image:url('${s.cover}')` : `background:${colorFor(s.title)}`;
   return `<div class="fslide" data-i="${i}" data-id="${esc(s.id)}">
-    <div class="fbg" style="${cov}"></div><div class="fsh"></div>
-    ${i===0 ? '<div class="fswipe">Desliza hacia arriba. Al acabar pasa sola, sin repetir, y vuelve a empezar</div>' : ""}
-    <div class="fbody">
-      <div class="fcov" style="${cov}">${s.cover?"":esc((s.title||"?").trim().charAt(0).toUpperCase())}</div>
+    <div class="fbg" style="${cov}"></div>
+    <div class="fart" style="${cov}">${s.cover?"":esc((s.title||"?").trim().charAt(0).toUpperCase())}</div>
+    <div class="fsh"></div>
+    <button class="ftap" data-ftap="${esc(s.id)}" aria-label="Reproducir o pausar ${esc(s.title)}"></button>
+    <div class="fpause">${IC.play}</div>
+    <div class="fovl">
       <div class="ft">${esc(s.title)}</div>
-      <div class="fa">${esc(s.artist||"Sin artista")} · ${s.progress||0}%</div>
+      <div class="fa">${esc(s.artist||"Sin artista")} · ${s.progress||0}%${(s.tags||[]).length?" · #"+esc(s.tags[0]):""}</div>
       <div class="fmeta">${feedPills(s)}</div>
-      <div class="fbar"><i></i></div>
-      ${s.hasTrack ? "" : '<div class="fhint">Todavía no tiene mp3. Añádelo en su ficha para poder escucharla.</div>'}
-      <div class="frow">
-        <button class="fbtn" data-fplay="${esc(s.id)}" aria-label="Reproducir o pausar" ${s.hasTrack?"":"disabled style='opacity:.45'"}>${IC.play}</button>
-        <button class="fsug ${s.suggestFull?"on":""}" data-fsug="${esc(s.id)}">${s.suggestFull?"★ Sugerida completa":"Sugerir completa"}</button>
-      </div>
-      <button class="fopen" data-fopen="${esc(s.id)}">Abrir su ficha</button>
+      ${s.hasTrack?"":'<div class="fhint">Todavía no tiene mp3. Añádelo en su ficha para poder escucharlo.</div>'}
     </div>
+    <div class="facts">
+      <span class="fact"><button class="flike ${s.liked?"on":""}" data-flike="${esc(s.id)}" aria-label="Me gusta">${s.liked?"♥":"♡"}</button><small>Me gusta</small></span>
+      <span class="fact"><button class="fsug ${s.suggestFull?"on":""}" data-fsug="${esc(s.id)}" aria-label="Sugerir que se haga entera">★</button><small>Completa</small></span>
+      <span class="fact"><button data-fopen="${esc(s.id)}" aria-label="Abrir su ficha">&#8942;</button><small>Ficha</small></span>
+    </div>
+    <div class="fprog"><i></i></div>
   </div>`;
 }
-async function openFeed(onlySuggested, mode){
-  if(!mode){
-    mode = await askPick("¿Cómo quieres verlas?", "Pasan solas al acabar y no se repite ninguna hasta dar la vuelta.", FEED_ORDERS, lsGet("covers.feedOrder","random"));
-    if(!mode) return;
-    lsSet("covers.feedOrder", mode);
-  }
-  const list = sortFeed(onlySuggested ? partialSongs().filter(s => s.suggestFull) : partialSongs(), mode);
-  pushLayer(); clearLayerContent();
-  FEED = { only:!!onlySuggested, list, i:0, mode };
-  document.body.classList.add("feedon");
-  const empty = onlySuggested
-    ? "Aquí aparecen las canciones a trozos que has sugerido para hacerlas enteras."
-    : "No tienes canciones marcadas como «a trozos». Al editar una canción activa el interruptor «Está a trozos».";
-  $("#layer").innerHTML = `<div class="overlay feedov">
-    <div class="bar-top">
-      <button class="btn ghost" id="fdBack">Cerrar</button>
-      <h2>${onlySuggested?"Para completar":"A trozos"}</h2>
-      <span style="width:64px"></span>
+function renderShorts(){
+  if(!FEED) return;
+  const main = $("#main"), prev = $("#fdScroll");
+  if(prev && prev.dataset.sig===feedSig()){ feedRefresh(); return; }
+  const empty = FEED.only
+    ? "Marca con la estrella los shorts que quieras hacer enteros y aparecerán aquí."
+    : "Al editar una canción activa el interruptor «Es un short» y la verás aquí.";
+  main.className = "shorts";
+  main.innerHTML = `
+    <div class="fchips">
+      <button class="nbchip" id="fdOrder">${esc(feedOrderName(FEED.mode))}</button>
+      <button class="nbchip ${FEED.only?"on":""}" id="fdSwap">${FEED.only?"Ver todos":"Para completar"}</button>
     </div>
-    <div class="fbar2">
-      <button class="nbchip" id="fdOrder">Orden: ${esc(feedOrderName(mode))}</button>
-      <button class="nbchip" id="fdSwap">${onlySuggested?"Ver todas":"Para completar"}</button>
-    </div>
-    <div class="fscroll" id="fdScroll">${
-      list.length ? list.map(feedSlideHtml).join("")
-      : `<div class="fslide"><div class="fbody"><div class="ft">Nada por aquí</div><div class="fhint">${esc(empty)}</div></div></div>`
-    }</div>
-  </div>`;
-  $("#fdBack").onclick = () => { AUD.pause(); feedEnd(); closeLayer(); };
-  $("#fdSwap").onclick = () => openFeed(!onlySuggested, mode);
-  $("#fdOrder").onclick = async () => {
-    const m = await askPick("¿Cómo quieres verlas?", "Cambia el orden de este apartado.", FEED_ORDERS, mode);
-    if(m){ lsSet("covers.feedOrder", m); openFeed(onlySuggested, m); }
-  };
+    ${FEED.list.length ? volRowHtml("fvol") : ""}
+    <div class="fscroll" id="fdScroll" data-sig="${esc(feedSig())}">${
+      FEED.list.length ? FEED.list.map(shortSlideHtml).join("")
+      : `<div class="fslide"><div class="fnone"><b>Aún no hay shorts</b><span>${esc(empty)}</span></div></div>`
+    }</div>`;
+  bindShorts(); volSync();
   const sc = $("#fdScroll");
+  const here = FEED.list.findIndex(s => s.id===curId());
+  if(here>0){ FEED.i = here; sc.scrollTop = here*sc.clientHeight; }
+  else {
+    FEED.i = 0;
+    const first = FEED.list[0];
+    if(first && curId()!==first.id && first.hasTrack && songAllowed(first)) feedPlay(first.id);
+  }
+  feedUi();
+}
+function bindShorts(){
+  const sc = $("#fdScroll"); if(!sc) return;
   let t = null;
   sc.addEventListener("scroll", () => { clearTimeout(t); t = setTimeout(feedOnScroll, 110); }, {passive:true});
   sc.addEventListener("click", async e => {
@@ -915,21 +957,28 @@ async function openFeed(onlySuggested, mode){
     if(sg){
       const on = await toggleSuggestFull(sg.dataset.fsug);
       sg.classList.toggle("on", !!on);
-      sg.textContent = on ? "★ Sugerida completa" : "Sugerir completa";
       const sl = sg.closest(".fslide"), s = byId(sg.dataset.fsug);
       if(sl && s) sl.querySelector(".fmeta").innerHTML = feedPills(s);
       return;
     }
-    const pb = e.target.closest("[data-fplay]");
-    if(pb){ const id = pb.dataset.fplay; if(curId()===id && AUD.src) togglePlay(); else await feedPlay(id); return; }
+    const lk = e.target.closest("[data-flike]");
+    if(lk){ const on = await toggleLike(lk.dataset.flike); lk.classList.toggle("on", !!on); lk.textContent = on ? "♥" : "♡"; return; }
     const op = e.target.closest("[data-fopen]");
-    if(op){ const id = op.dataset.fopen; feedEnd(); clearLayerContent(); openDetail(id); return; }
+    if(op){ openDetail(op.dataset.fopen); return; }
+    const tp = e.target.closest("[data-ftap]");
+    if(tp){ const id = tp.dataset.ftap; if(curId()===id && AUD.src) togglePlay(); else await feedPlay(id); feedUi(); return; }
   });
-  const cur = byId(curId());
-  const at = cur ? list.findIndex(s => s.id===cur.id) : -1;
-  if(at>0){ FEED.i = at; sc.scrollTop = at*sc.clientHeight; }
-  else if(list[0] && list[0].hasTrack && songAllowed(list[0]) && curId()!==list[0].id) feedPlay(list[0].id);
-  feedUi();
+  $("#fdOrder").onclick = async () => {
+    const m = await askFeedOrder(FEED.mode);
+    if(!m) return;
+    lsSet("covers.feedOrder", m);
+    FEED.mode = m; FEED.i = 0; FEED.list = feedListFor(FEED.only, m);
+    renderShorts();
+  };
+  $("#fdSwap").onclick = () => {
+    FEED.only = !FEED.only; FEED.i = 0; FEED.list = feedListFor(FEED.only, FEED.mode);
+    renderShorts();
+  };
 }
 async function feedPlay(id){
   if(!FEED) return;
@@ -946,7 +995,7 @@ function feedOnScroll(){
   if(s.hasTrack && songAllowed(s)) feedPlay(s.id);
   else {
     AUD.pause();
-    if(s.hasTrack) toast("Tienes el " + crLabel(cringeLvl(s)) + " desactivado: pulsa play si quieres escucharla.");
+    if(s.hasTrack) toast("Tienes el " + crLabel(cringeLvl(s)) + " desactivado: toca la pantalla si quieres escucharlo.");
     feedUi();
   }
 }
@@ -956,29 +1005,39 @@ function feedUi(){
   const d = AUD.duration, pct = (d>0) ? Math.min(100, AUD.currentTime/d*100) : 0;
   sc.querySelectorAll(".fslide").forEach(el => {
     const on = el.dataset.id===id;
-    const b = el.querySelector("[data-fplay]"); if(b) b.innerHTML = (on && playing) ? IC.pause : IC.play;
-    const bar = el.querySelector(".fbar>i"); if(bar) bar.style.width = (on ? pct : 0)+"%";
+    el.classList.toggle("paused", on ? !playing : false);
+    const bar = el.querySelector(".fprog>i"); if(bar) bar.style.width = (on ? pct : 0)+"%";
   });
 }
-/* Al acabar una canción pasa sola a la siguiente y, tras la última, vuelve a la primera. */
+function feedRefresh(){
+  const sc = $("#fdScroll"); if(!sc || !FEED) return;
+  sc.querySelectorAll(".fslide").forEach(el => {
+    const s = byId(el.dataset.id); if(!s) return;
+    const m = el.querySelector(".fmeta"); if(m) m.innerHTML = feedPills(s);
+    const lk = el.querySelector("[data-flike]"); if(lk){ lk.classList.toggle("on", !!s.liked); lk.textContent = s.liked ? "♥" : "♡"; }
+    const sg = el.querySelector("[data-fsug]"); if(sg) sg.classList.toggle("on", !!s.suggestFull);
+  });
+  feedUi();
+}
+/* Al acabar uno pasa solo al siguiente y, tras el último, vuelve a empezar. */
 function feedNext(){
   if(!FEED || !FEED.list.length) return;
   const sc = $("#fdScroll"); if(!sc) return;
   const n = FEED.list.length;
   for(let k=1; k<=n; k++){
     const raw = FEED.i + k, j = raw % n, s = FEED.list[j];
-    if(j===FEED.i && n>1) continue;              // nunca repite la que acaba de sonar
+    if(j===FEED.i && n>1) continue;              // nunca repite el que acaba de sonar
     if(!s || !s.hasTrack || !songAllowed(s)) continue;
     if(raw >= n && FEED.mode==="random" && n>1){ feedReshuffle(); return; }   // vuelta nueva, orden nuevo
     FEED.i = j; sc.scrollTo({ top: j*sc.clientHeight, behavior:"smooth" }); feedPlay(s.id); return;
   }
   FEED.i = 0; sc.scrollTo({ top:0, behavior:"smooth" }); feedUi();
 }
-/* Al dar la vuelta en aleatorio, baraja otra vez para que el orden no se repita. */
 function feedReshuffle(){
   const sc = $("#fdScroll"); if(!sc || !FEED) return;
   FEED.list = sortFeed(FEED.list, "random");
-  sc.innerHTML = FEED.list.map(feedSlideHtml).join("");
+  sc.innerHTML = FEED.list.map(shortSlideHtml).join("");
+  sc.dataset.sig = feedSig();
   const j = FEED.list.findIndex(s => s.hasTrack && songAllowed(s));
   FEED.i = j < 0 ? 0 : j;
   sc.scrollTop = FEED.i*sc.clientHeight;
@@ -1027,7 +1086,7 @@ function renderSummary(){
 /* ========================= Detalle ========================= */
 let layerOpen = false;
 let coverSetter = null;
-function clearLayerContent(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; coverSetter = null; feedEnd(); $("#layer").innerHTML = ""; }
+function clearLayerContent(){ objectUrls.forEach(u => URL.revokeObjectURL(u)); objectUrls = []; coverSetter = null; $("#layer").innerHTML = ""; }
 function pushLayer(){ if(!layerOpen){ try{ history.pushState({layer:1}, ""); }catch(e){} layerOpen = true; } }
 function closeLayer(fromPop){
   clearLayerContent();
@@ -1061,7 +1120,6 @@ async function openDetail(id){
         <div class="kv">
           <span>Estilo</span><span>${esc(s.style||"-")}</span>
           <span>Quiero hacerla</span><span>${esc(s.goal||"-")}</span>
-          <span>Tengo</span><span>${esc(s.have||"-")}</span>
           <span>Plataforma</span><span>${(s.formats||[]).length ? (s.formats||[]).map(f=>`<span class="pill fmt">${esc(f)}</span>`).join(" ") : "-"}</span>
           <span>Tono</span><span>${esc(s.tone||"-")}</span>
           <span>BPM</span><span>${s.bpm ? esc(s.bpm) : "-"}</span>
@@ -1253,8 +1311,8 @@ async function openEditor(id){
   pushLayer();
   const isNew = !id;
   const orig = isNew ? null : byId(id);
-  const s = isNew ? { id:uid(), title:"", artist:"", style:"", status:"Idea", priority:"Media", goal:"Completa", have:"Nada todavía",
-      progress:0, rating:0, liked:false, hasTrack:false, photos:[], formats:[], tags:[], links:[], tone:"", bpm:"", keyMigrated:true, due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
+  const s = isNew ? { id:uid(), title:"", artist:"", style:"", status:"Idea", priority:"Media", goal:"Completa",
+      progress:0, rating:0, liked:false, partial:false, hasTrack:false, photos:[], formats:[], tags:[], links:[], tone:"", bpm:"", keyMigrated:true, due:"", focus:false, notes:"", cover:null, createdAt:Date.now(), updatedAt:Date.now(), fileCount:0 }
     : JSON.parse(JSON.stringify(orig));
   const existing = isNew ? [] : (await dbFilesOf(id)).sort((a,b)=>a.addedAt-b.addedAt);
   const pending = []; const removed = new Set();
@@ -1285,18 +1343,17 @@ async function openEditor(id){
           <span class="tglrow" style="margin-left:auto">
             <button type="button" class="tgl cr ${cringeLvl(s)===1?"on":""}" id="eCringe" aria-pressed="${cringeLvl(s)===1?"true":"false"}"><i></i><span>Da cringe</span></button>
             <button type="button" class="tgl cr2 ${cringeLvl(s)===2?"on":""}" id="eCringe2" aria-pressed="${cringeLvl(s)===2?"true":"false"}"><i></i><span>Da mucho cringe</span></button>
-            <button type="button" class="tgl pt ${isPartial(s)?"on":""}" id="ePartial" aria-pressed="${isPartial(s)?"true":"false"}"><i></i><span>Está a trozos</span></button>
+            <button type="button" class="tgl pt ${isPartial(s)?"on":""}" id="ePartial" aria-pressed="${isPartial(s)?"true":"false"}"><i></i><span>Es un short</span></button>
           </span>
         </div>
-        <div class="hint" style="margin-top:8px">Las que dan cringe solo suenan si activas su interruptor en la pantalla de canciones. «Está a trozos» la saca de la escucha normal y la manda al apartado A trozos.</div>
+        <div class="hint" style="margin-top:8px">Las que dan cringe solo suenan si activas su interruptor en la pantalla de canciones. «Es un short» la saca de la escucha normal y la manda a la pestaña Shorts, para las que están hechas solo a trozos.</div>
       </div>
       <div class="grp warm">
         <h3 class="sec">Organización</h3>
         <div class="row2">
           <div><label class="f">Estado</label><select class="in" id="eStatus">${opt(STATUSES,s.status)}</select></div>
           <div><label class="f">Prioridad</label><select class="in" id="ePrio">${opt(PRIORITIES,s.priority)}</select></div>
-          <div><label class="f">Quiero hacerla</label><select class="in" id="eGoal">${opt(GOALS,s.goal)}</select></div>
-          <div><label class="f">Tengo</label><select class="in" id="eHave">${opt(HAVE,s.have)}</select></div>
+          <div style="grid-column:1/-1"><label class="f">Quiero hacerla</label><select class="in" id="eGoal">${opt(GOALS,s.goal)}</select></div>
         </div>
         <label class="f">Avance: <span id="eProgVal">${s.progress}%</span></label>
         <input type="range" class="rng" id="eProg" min="0" max="100" step="5" value="${s.progress}">
@@ -1477,7 +1534,11 @@ async function openEditor(id){
   };
   $("#eCoverDel").onclick = () => { s.cover = null; $("#eCover").innerHTML = coverHtml(s,true); };
   $("#eTitle").addEventListener("input", () => { if(!s.cover) $("#eCover").innerHTML = coverHtml({title:$("#eTitle").value, cover:null}, true); });
-  $("#eProg").oninput = e => $("#eProgVal").textContent = e.target.value+"%";
+  const setProg = v => {
+    v = Math.max(0, Math.min(100, parseInt(v,10)||0));
+    $("#eProg").value = v; $("#eProgVal").textContent = v+"%";
+  };
+  $("#eProg").oninput = e => setProg(e.target.value);
   $("#eFocus").onclick = () => $("#eFocus").classList.toggle("on");
   const tglSet = (el, on) => { if(!el) return; el.classList.toggle("on", !!on); el.setAttribute("aria-pressed", on ? "true" : "false"); };
   $("#eCringe").onclick = () => { const on = !$("#eCringe").classList.contains("on"); tglSet($("#eCringe"), on); if(on) tglSet($("#eCringe2"), false); };
@@ -1500,7 +1561,7 @@ async function openEditor(id){
     if(pending.includes(t)){ toast("Guarda primero la canción con su mp3 y vuelve a Editar para sincronizar."); return; }
     openSyncScreen(s.id, txt, out => { $("#eLyrics").value = out; lyState(); toast("Letra sincronizada. Pulsa Guardar para conservarla."); });
   };
-  $("#eQuick").querySelectorAll("button").forEach(b => b.onclick = () => { $("#eProg").value = b.dataset.n; $("#eProgVal").textContent = b.dataset.n+"%"; });
+  $("#eQuick").querySelectorAll("button").forEach(b => b.onclick = () => setProg(b.dataset.n));
   $("#eFormats").querySelectorAll("button").forEach(b => b.onclick = () => {
     const f = b.dataset.f; s.formats = s.formats.includes(f) ? s.formats.filter(x=>x!==f) : [...s.formats, f];
     b.classList.toggle("on");
@@ -1525,7 +1586,7 @@ async function openEditor(id){
     if(dup){ toast("Esa canción ya existe: " + dup.title + (dup.artist ? " de " + dup.artist : "") + "."); $("#eTitle").focus(); return; }
     rememberValue("artists", artist); rememberValue("styles", style); (s.tags||[]).forEach(t => rememberValue("tags", t));
     s.title = title; s.artist = artist; s.style = style;
-    s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value; s.have = $("#eHave").value;
+    s.status = $("#eStatus").value; s.priority = $("#ePrio").value; s.goal = $("#eGoal").value;
     s.progress = parseInt($("#eProg").value,10)||0; s.tone = $("#eTone").value; s.bpm = $("#eBpm").value ? String(Math.max(30,Math.min(300,parseInt($("#eBpm").value,10)||0))) : ""; s.notes = $("#eNotes").value.trim(); s.lyrics = $("#eLyrics").value.replace(/\s+$/,"");
     s.due = $("#eDue").value || ""; s.focus = $("#eFocus").classList.contains("on"); s.cringe = $("#eCringe2").classList.contains("on") ? 2 : ($("#eCringe").classList.contains("on") ? 1 : 0);
     s.partial = $("#ePartial").classList.contains("on");
@@ -1624,8 +1685,8 @@ function renderPlan(){
   h += `<div class="sec-h"><h3>Para completar</h3><span>${sug.length}</span></div>`;
   h += sug.length
     ? sug.map(s => planCard(s,false)).join("")
-    : `<div class="panel warm hint">En «A trozos» puedes sugerir que una canción se haga entera y aparecerá aquí.</div>`;
-  if(parts.length) h += `<div class="sec-h"><h3>A trozos</h3><span>${parts.length}</span></div><button class="bigplay alt" id="planFeed" style="margin-top:0">${IC.play} Escuchar las ${parts.length} canciones a trozos</button>`;
+    : `<div class="panel warm hint">En Shorts puedes sugerir que una canción se haga entera y aparecerá aquí.</div>`;
+  if(parts.length) h += `<div class="sec-h"><h3>Shorts</h3><span>${parts.length}</span></div><button class="bigplay alt" id="planFeed" style="margin-top:0">${IC.play} Abrir los ${parts.length} shorts</button>`;
   h += `<div class="sec-h"><h3>Recorrido</h3><span>desliza para ver cada fase</span></div><div class="board">`;
   const colColors = ["#fff0a0","#ffe270","#ffd24d","#ffc23d","#8fd9a8","#5cc487","#c9c7e6"];
   STATUSES.forEach((st,i) => {
@@ -1636,7 +1697,7 @@ function renderPlan(){
   $("#main").innerHTML = h;
   addPlanSeg();
   $("#main").querySelectorAll(".pcard").forEach(c => c.onclick = () => openDetail(c.dataset.id));
-  const pf = $("#planFeed"); if(pf) pf.onclick = () => openFeed(false);
+  const pf = $("#planFeed"); if(pf) pf.onclick = goShorts;
   $("#main").querySelectorAll("[data-aprj]").forEach(c => c.onclick = () => openAlbum(c.dataset.aprj));
   $("#main").querySelectorAll("[data-adv]").forEach(b => b.onclick = async e => {
     e.stopPropagation();
@@ -1658,10 +1719,12 @@ const IC = {
   shuffle:'<svg viewBox="0 0 24 24"><path d="M16 4h4v4l-1.6-1.6-3.1 3.1-1.4-1.4 3.1-3.1zM4 7h3.3c1.6 0 3 .8 3.9 2.1l4.8 7.3c.4.6 1 .9 1.7.9H18l-1.6-1.6 1.4-1.4L22 18l-4.2 4.2-1.4-1.4L18 19.2h-.3c-1.4 0-2.7-.7-3.4-1.8L9.5 10.2C9.1 9.4 8.3 9 7.3 9H4zM4 17h3.3c.9 0 1.7-.4 2.2-1.1l.9-1.3 1.2 1.8-.5.7C10.2 18.2 8.8 19 7.3 19H4zM18.4 6.4 22 10l-1.4 1.4-1.6-1.6z"/></svg>',
   repeat:'<svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2zM17 17H7v-3l-4 4 4 4v-3h12v-6h-2z"/></svg>',
   down:'<svg viewBox="0 0 24 24"><path d="M5.3 8.3a1 1 0 0 1 1.4 0L12 13.6l5.3-5.3a1 1 0 1 1 1.4 1.4l-6 6a1 1 0 0 1-1.4 0l-6-6a1 1 0 0 1 0-1.4z"/></svg>',
+  vol:'<svg viewBox="0 0 24 24"><path d="M4 9.5v5h3.2L12 18.6V5.4L7.2 9.5z"/></svg>',
+  vol2:'<svg viewBox="0 0 24 24"><path d="M3.5 9.5v5h3.2L11.5 18.6V5.4L6.7 9.5z"/><path d="M14.6 8.4a1 1 0 0 1 1.4 0 5.1 5.1 0 0 1 0 7.2 1 1 0 1 1-1.4-1.4 3.1 3.1 0 0 0 0-4.4 1 1 0 0 1 0-1.4z"/><path d="M17.3 5.7a1 1 0 0 1 1.4 0 9 9 0 0 1 0 12.6 1 1 0 0 1-1.4-1.4 7 7 0 0 0 0-9.8 1 1 0 0 1 0-1.4z"/></svg>',
   list:'<svg viewBox="0 0 24 24"><rect x="4" y="5" width="12" height="2.4" rx="1.2"/><rect x="4" y="10.8" width="12" height="2.4" rx="1.2"/><rect x="4" y="16.6" width="8" height="2.4" rx="1.2"/><path d="M18 14.5v5.2l4-2.6z"/></svg>'
 };
 const starRowHtml = (r, cls="") => `<span class="stars ${cls}" role="group" aria-label="Nota">${[1,2,3,4,5].map(i=>`<button type="button" data-r="${i}" class="${i<=r?"on":""}" aria-label="${i} estrellas">★</button>`).join("")}</span>`;
-function ratingPills(s){ return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:"") + (cringeLvl(s)===2?`<span class="pill cr cr2">mucho cringe</span>`:(cringeLvl(s)===1?`<span class="pill cr">cringe</span>`:"")) + (isPartial(s)?`<span class="pill pt">a trozos</span>`:"") + (s.suggestFull?`<span class="pill sg">para completar</span>`:""); }
+function ratingPills(s){ return (s.rating?`<span class="pill rt">★ ${s.rating}</span>`:"") + (s.liked?`<span class="pill lk">♥</span>`:"") + (cringeLvl(s)===2?`<span class="pill cr cr2">mucho cringe</span>`:(cringeLvl(s)===1?`<span class="pill cr">cringe</span>`:"")) + (isPartial(s)?`<span class="pill pt">short</span>`:"") + (s.suggestFull?`<span class="pill sg">para completar</span>`:""); }
 function cringeLvl(s){ const c = s && s.cringe; return c===true ? 1 : (+c||0); }
 
 /* ===== Permisos de cringe =====
@@ -1716,7 +1779,37 @@ async function setRating(id, r){ const s = byId(id); if(!s) return; s.rating = r
 async function toggleLike(id){ const s = byId(id); if(!s) return; s.liked = !s.liked; await saveSongLight(s); refreshPlayerUi(); if(!layerOpen) render(); return s.liked; }
 
 const AUD = $("#aud");
-const PL = { ids:[], order:[], pos:-1, shuffle:false, repeat:0, url:null, token:0, unlocked:false, seeking:false, skips:0 };
+/* ===== Volumen =====
+   En iPhone el volumen del audio no se puede tocar por código, así que si el
+   cambio no tiene efecto se enruta el sonido por Web Audio solo en ese caso. */
+let ACTX = null, GAIN = null;
+function volGet(){ const n = parseInt(lsGet("covers.vol","100"),10); return isFinite(n) ? Math.max(0, Math.min(100, n)) : 100; }
+function volApply(v, gesture){               // v de 0 a 1; el enrutado solo se crea al tocar la barra
+  v = Math.max(0, Math.min(1, v));
+  try{ AUD.volume = v; }catch(e){}
+  if(GAIN){ try{ GAIN.gain.value = v; }catch(e){} return; }
+  const nativeOk = Math.abs((AUD.volume||0) - v) < 0.02;
+  if(nativeOk || !gesture || v >= 0.995) return;
+  try{
+    const C = window.AudioContext || window.webkitAudioContext;
+    if(!C) return;
+    ACTX = new C();
+    const srcN = ACTX.createMediaElementSource(AUD);
+    GAIN = ACTX.createGain(); srcN.connect(GAIN); GAIN.connect(ACTX.destination);
+    if(ACTX.state==="suspended") ACTX.resume().catch(()=>{});
+    GAIN.gain.value = v;
+  }catch(e){ GAIN = null; }
+}
+function volSync(){
+  const p = volGet();
+  document.querySelectorAll("input.vol").forEach(el => { el.value = p; el.style.setProperty("--v", p+"%"); });
+  document.querySelectorAll("[data-volicon]").forEach(el => { el.innerHTML = p===0 ? IC.vol : IC.vol2; });
+}
+function volSet(p){ p = Math.max(0, Math.min(100, Math.round(p))); lsSet("covers.vol", String(p)); volApply(p/100, true); volSync(); }
+const volRowHtml = (cls) => `<div class="volrow ${cls||""}"><span data-volicon>${IC.vol2}</span><input class="vol" type="range" min="0" max="100" value="${volGet()}" step="1" aria-label="Volumen"></div>`;
+document.addEventListener("input", e => { const t = e.target; if(t && t.classList && t.classList.contains("vol")) volSet(+t.value); });
+volApply(volGet()/100);
+const PL = { ids:[], order:[], pos:-1, shuffle: lsGet("covers.shuffle","")==="1", repeat:0, url:null, token:0, unlocked:false, seeking:false, skips:0 };
 const fmtTime = t => { if(!isFinite(t)||t<0) t = 0; t = Math.floor(t); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); };
 const curId = () => PL.order.length ? PL.ids[PL.order[PL.pos]] : null;
 function silentWavUrl(){
@@ -1821,8 +1914,11 @@ function step(dir, auto){
 function togglePlay(){ if(!AUD.src || !curId()) return; if(AUD.paused) AUD.play().catch(()=>{}); else AUD.pause(); }
 function prevTrack(){ if(AUD.currentTime>3){ AUD.currentTime = 0; } else step(-1,false); }
 function toggleShuffle(){
-  PL.shuffle = !PL.shuffle; const cur = PL.order.length ? PL.order[PL.pos] : 0;
+  PL.shuffle = !PL.shuffle; lsSet("covers.shuffle", PL.shuffle ? "1" : "0");
+  const cur = PL.order.length ? PL.order[PL.pos] : 0;
   buildOrder(cur); updatePlayerUi();
+  const b = $("#nbShuf"); if(b) b.classList.toggle("on", PL.shuffle);
+  toast(PL.shuffle ? "Aleatorio activado." : "Aleatorio desactivado.");
 }
 function toggleRepeat(){ PL.repeat = (PL.repeat+1)%3; updatePlayerUi(); }
 function setMediaSession(s){
@@ -1853,7 +1949,8 @@ function updatePlayerUi(){
   $("#mC").style.cssText = coverStyle(s); $("#mC").innerHTML = initials(s);
   mini.querySelector(".mt b").textContent = s ? s.title : ""; mini.querySelector(".mt span").textContent = s ? (s.artist||"Sin artista") : "";
   const playing = !AUD.paused && !AUD.ended;
-  $("#mPlay").innerHTML = playing ? IC.pause : IC.play; $("#mNext").innerHTML = IC.next;
+  $("#mPlay").innerHTML = playing ? IC.pause : IC.play; $("#mNext").innerHTML = IC.next; $("#mPrev").innerHTML = IC.prev;
+  const nsh = $("#nbShuf"); if(nsh){ nsh.classList.toggle("on", PL.shuffle); nsh.setAttribute("aria-pressed", PL.shuffle ? "true" : "false"); }
   const pl = $("#player");
   if(!pl.classList.contains("hidden") && s){
     $("#pBg").style.cssText = coverStyle(s);
@@ -1889,6 +1986,7 @@ function openPlayer(){
       <div class="pstars" id="pStars"></div>
       <input type="range" id="pSeek" min="0" max="1000" value="0" step="1" aria-label="Posición">
       <div class="ptimes"><span id="pCur">0:00</span><span id="pDur">0:00</span></div>
+      ${volRowHtml()}
       <div class="pextra"><button id="pLyBtn">Letra</button></div>
       <div class="pctrl"><button id="pShuf" aria-label="Aleatorio">${IC.shuffle}</button><button id="pPrev" aria-label="Anterior">${IC.prev}</button><button class="pplay" id="pPlay" aria-label="Reproducir o pausar"></button><button id="pNext" aria-label="Siguiente">${IC.next}</button><button id="pRep" aria-label="Repetir"></button></div>
     </div>
@@ -1904,6 +2002,7 @@ function openPlayer(){
   const seek = $("#pSeek");
   seek.addEventListener("input", () => { PL.seeking = true; updateProgressUi(); });
   seek.addEventListener("change", () => { if(AUD.duration>0) AUD.currentTime = seek.value/1000*AUD.duration; PL.seeking = false; updateProgressUi(); });
+  volSync();
   updatePlayerUi();
 }
 
@@ -2067,6 +2166,7 @@ AUD.addEventListener("ended", () => {
   step(1,true);
 });
 AUD.addEventListener("error", () => { if(PL.url && AUD.src===PL.url) toast("No se pudo reproducir ese archivo."); });
+$("#mPrev").onclick = e => { e.stopPropagation(); prevTrack(); };
 $("#mPlay").onclick = e => { e.stopPropagation(); togglePlay(); };
 $("#mNext").onclick = e => { e.stopPropagation(); step(1,false); };
 $("#mT").onclick = openPlayer; $("#mC").onclick = openPlayer;
