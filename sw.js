@@ -1,4 +1,4 @@
-const CACHE = "covers-v21";
+const CACHE = "covers-v22";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icon-192.png", "icon-512.png", "apple-touch-icon.png"];
 
 // La app se guarda para poder usarla sin conexión, pero index.html y sw.js se piden
