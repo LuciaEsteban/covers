@@ -504,6 +504,17 @@ input.vol::-moz-range-thumb{width:15px;height:15px;border:0;border-radius:50%;ba
 #player .volrow{color:#fff;margin:4px 0 2px}
 .fvol{position:absolute;z-index:3;left:14px;right:14px;bottom:calc(66px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;color:#fff;background:rgba(0,0,0,.38);border-radius:999px;padding:5px 14px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 
+/* ===== Igualar el volumen ===== */
+.nmrow{display:flex;align-items:center;gap:10px;font-size:14px;padding:5px 0;border-bottom:1px solid var(--line)}
+.nmrow:last-child{border-bottom:0}
+.nmrow .nmn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nmrow .nmb{flex:none;width:72px;height:7px;border-radius:5px;background:var(--line);overflow:hidden}
+.nmrow .nmb i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#6fb3f2,#9a7ae8);animation:none}
+.nmrow .nmv{flex:none;width:62px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted);font-size:13px}
+.nmlist{max-height:260px;overflow-y:auto;margin-top:8px}
+.nmbar{height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin:10px 0 6px}
+.nmbar i{display:block;height:100%;background:linear-gradient(90deg,#6fb3f2,#9a7ae8);width:0;animation:none;transition:width .2s}
+
 /* ===== Pantalla de sincronizar letra ===== */
 #lyEd .stop{display:flex;align-items:center;gap:10px;margin:8px 0 2px}
 #lyEd .stop button{border:0;background:rgba(255,255,255,.18);color:#fff;width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:0;flex:none}
@@ -1600,6 +1611,7 @@ async function openEditor(id){
     s.updatedAt = Date.now();
     s.fileCount = existing.filter(f=>!removed.has(f.id)).length + pending.length;
     s.hasTrack = !!curTrack();
+    if(pending.some(f => f.role==="track") || !s.hasTrack){ delete s.peak; delete s.rms; delete s.gain; delete s.analyzedAt; }
     try{
       for(const f of pending) await dbPut("files", f);
       for(const fid of removed) await dbDel("files", fid);
@@ -1784,26 +1796,101 @@ async function setRating(id, r){ const s = byId(id); if(!s) return; s.rating = r
 async function toggleLike(id){ const s = byId(id); if(!s) return; s.liked = !s.liked; await saveSongLight(s); refreshPlayerUi(); if(!layerOpen) render(); return s.liked; }
 
 const AUD = $("#aud");
+/* ===== Igualar el volumen de todas las canciones =====
+   Analiza la onda de cada mp3 (pico máximo y volumen medio) y calcula cuánto
+   hay que bajar cada una para que todas lleguen al mismo pico. No toca los
+   archivos: solo ajusta el volumen al reproducir. */
+const NORM = { on: lsGet("covers.norm","")==="1", busy:false };
+const dBof = v => v>0 ? 20*Math.log10(v) : -99;
+const dBtxt = v => (v>0 ? (dBof(v)>=0?"+":"") + dBof(v).toFixed(1) : "-") + " dB";
+function songGain(s){
+  if(!NORM.on || !s) return 1;
+  const g = +s.gain;
+  return (isFinite(g) && g > 0 && g <= 1) ? g : 1;
+}
+function normTarget(){ const n = parseFloat(lsGet("covers.normTarget","0")); return isFinite(n) && n>0 ? n : 0; }
+function computeGains(){
+  const an = songs.filter(s => s.hasTrack && +s.peak > 0);
+  if(!an.length) return { target:0, changed:[] };
+  const peaks = an.map(s => +s.peak).sort((a,b)=>a-b);
+  let target = peaks[0];
+  const p10 = peaks[Math.floor(peaks.length*0.1)];       // un caso rarísimo no arrastra a todas
+  if(target < p10*0.6) target = p10;
+  target = Math.max(target, 0.2);                        // suelo de seguridad
+  const changed = [];
+  for(const s of an){
+    const g = Math.max(0.15, Math.min(1, target / (+s.peak)));
+    const r = Math.round(g*1000)/1000;
+    if(s.gain !== r){ s.gain = r; changed.push(s); }
+  }
+  lsSet("covers.normTarget", String(Math.round(target*1000)/1000));
+  return { target, changed };
+}
+async function analyzeLoudness(onStep, force){
+  const C = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+  if(!C) throw new Error("Este navegador no puede analizar el audio.");
+  const list = songs.filter(s => s.hasTrack);
+  if(!list.length) return { total:0, hechas:0, fallos:0, target:0 };
+  let hechas = 0, fallos = 0, i = 0;
+  const tocadas = [];
+  for(const s of list){
+    i++;
+    onStep(i, list.length, s.title);
+    await new Promise(r => setTimeout(r, 0));            // deja respirar a la pantalla
+    if(!force && +s.peak > 0){ hechas++; continue; }
+    try{
+      const tr = (await dbFilesOf(s.id)).find(f => f.role==="track");
+      if(!tr){ fallos++; continue; }
+      const ctx = new C(1, 1, 44100);
+      const buf = await ctx.decodeAudioData(await tr.blob.arrayBuffer());
+      let peak = 0, sum = 0, n = 0;
+      for(let ch = 0; ch < buf.numberOfChannels; ch++){
+        const d = buf.getChannelData(ch);
+        for(let k = 0; k < d.length; k++){ const v = d[k] < 0 ? -d[k] : d[k]; if(v > peak) peak = v; sum += d[k]*d[k]; }
+        n += d.length;
+      }
+      if(!(peak > 0)){ fallos++; continue; }
+      s.peak = Math.round(peak*10000)/10000;
+      s.rms = Math.round(Math.sqrt(sum/Math.max(1,n))*10000)/10000;
+      s.analyzedAt = Date.now();
+      tocadas.push(s); hechas++;
+    }catch(e){ console.error(e); fallos++; }
+  }
+  const { target, changed } = computeGains();
+  const guardar = new Set([...tocadas, ...changed]);
+  for(const s of guardar){ try{ await saveSongLight(s); }catch(e){} }
+  return { total:list.length, hechas, fallos, target };
+}
+
 /* ===== Volumen =====
    En iPhone el volumen del audio no se puede tocar por código, así que si el
    cambio no tiene efecto se enruta el sonido por Web Audio solo en ese caso. */
 let ACTX = null, GAIN = null;
 function volGet(){ const n = parseInt(lsGet("covers.vol","100"),10); return isFinite(n) ? Math.max(0, Math.min(100, n)) : 100; }
-function volApply(v, gesture){               // v de 0 a 1; el enrutado solo se crea al tocar la barra
-  v = Math.max(0, Math.min(1, v));
-  try{ AUD.volume = v; }catch(e){}
-  if(GAIN){ try{ GAIN.gain.value = v; }catch(e){} return; }
-  const nativeOk = Math.abs((AUD.volume||0) - v) < 0.02;
-  if(nativeOk || !gesture || v >= 0.995) return;
+function volNative(){                        // ¿deja el navegador cambiar el volumen? (en iPhone no)
+  try{ const c = AUD.volume; AUD.volume = 0.5; const ok = Math.abs(AUD.volume - 0.5) < 0.01; AUD.volume = c; return ok; }catch(e){ return false; }
+}
+function volRoute(){                         // enruta el sonido por Web Audio; solo dentro de un gesto
+  if(GAIN) return true;
   try{
     const C = window.AudioContext || window.webkitAudioContext;
-    if(!C) return;
+    if(!C) return false;
     ACTX = new C();
     const srcN = ACTX.createMediaElementSource(AUD);
     GAIN = ACTX.createGain(); srcN.connect(GAIN); GAIN.connect(ACTX.destination);
     if(ACTX.state==="suspended") ACTX.resume().catch(()=>{});
-    GAIN.gain.value = v;
-  }catch(e){ GAIN = null; }
+    AUD.volume = 1;
+    return true;
+  }catch(e){ GAIN = null; return false; }
+}
+function volApply(v, gesture){               // v de 0 a 1, con el ajuste de la canción que suena
+  let g = 1; try{ g = songGain(byId(curId())); }catch(e){}
+  v = Math.max(0, Math.min(1, v)) * g;
+  if(GAIN){ try{ AUD.volume = 1; GAIN.gain.value = v; }catch(e){} return; }
+  try{ AUD.volume = v; }catch(e){}
+  if(v >= 0.995) return;
+  if(Math.abs((AUD.volume||0) - v) < 0.02) return;      // el volumen normal funciona
+  if(gesture && volRoute()) GAIN.gain.value = v;
 }
 function volSync(){
   const p = volGet();
@@ -1811,6 +1898,7 @@ function volSync(){
   document.querySelectorAll("[data-volicon]").forEach(el => { el.innerHTML = p===0 ? IC.vol : IC.vol2; });
 }
 function volSet(p){ p = Math.max(0, Math.min(100, Math.round(p))); lsSet("covers.vol", String(p)); volApply(p/100, true); volSync(); }
+function volRefresh(){ volApply(volGet()/100, false); }
 const volRowHtml = (cls) => `<div class="volrow ${cls||""}"><span data-volicon>${IC.vol2}</span><input class="vol" type="range" min="0" max="100" value="${volGet()}" step="1" aria-label="Volumen"></div>`;
 document.addEventListener("input", e => { const t = e.target; if(t && t.classList && t.classList.contains("vol")) volSet(+t.value); });
 volApply(volGet()/100);
@@ -1827,6 +1915,7 @@ function silentWavUrl(){
 function unlockAudio(){
   if(PL.unlocked) return; PL.unlocked = true;
   try{ AUD.src = silentWavUrl(); const p = AUD.play(); if(p && p.catch) p.catch(()=>{}); }catch(e){}
+  try{ if(NORM.on && !volNative()) volRoute(); }catch(e){}   // iPhone: la única forma de igualar el volumen
 }
 function buildOrder(first){
   const idx = PL.ids.map((_,i)=>i);
@@ -1914,6 +2003,7 @@ async function loadCurrent(autoplay){
   if(PL.url) URL.revokeObjectURL(PL.url);
   PL.url = URL.createObjectURL(tr.blob); AUD.src = PL.url;
   if(autoplay){ const p = AUD.play(); if(p && p.catch) p.catch(() => { toast("Pulsa play para reproducir."); updatePlayerUi(); }); }
+  volRefresh();
   setMediaSession(s); updatePlayerUi();
   if(FEED) feedSyncToCurrent();
 }
@@ -2403,6 +2493,18 @@ async function renderSettings(){
       <input type="file" id="sImportFile" accept=".json,application/json" class="hidden">
       <p class="hint" style="margin-bottom:0">${esc(usage)}</p>
     </div>
+    <div class="panel"><h4>Igualar el volumen de todas</h4>
+      <p class="hint">Analiza la onda de cada mp3, busca su pico más alto y calcula cuánto bajar cada canción para que todas lleguen al mismo pico. Se hace solo y no toca los archivos: solo ajusta el volumen al reproducirlas.</p>
+      <p class="hint">En el iPhone, para poder bajarle el volumen a una canción, el sonido pasa por el procesador de audio del navegador. Si notas que la música se corta al bloquear la pantalla, apaga este interruptor y todo vuelve a como estaba.</p>
+      <div class="tglrow" style="margin:10px 0 4px"><button type="button" class="tgl ${NORM.on?"on":""}" id="nmOn" aria-pressed="${NORM.on?"true":"false"}"><i></i><span>Igualar al reproducir</span></button></div>
+      <div class="nmbar hidden" id="nmBar"><i></i></div>
+      <p class="hint" id="nmState"></p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+        <button class="btn" id="nmRun">Analizar canciones</button>
+        <button class="btn soft" id="nmAll">Analizar todas de nuevo</button>
+      </div>
+      <div class="nmlist" id="nmList"></div>
+    </div>
     <div class="panel"><h4>Ideas paradas</h4>
       <p class="hint">Días sin tocar una canción antes de avisarte.</p>
       <input class="in" type="number" min="1" max="365" id="sStale" value="${staleDays()}" style="max-width:120px">
@@ -2414,6 +2516,16 @@ async function renderSettings(){
       <button class="btn danger" id="sWipe" style="padding-left:0">Borrar los datos de este dispositivo</button>
     </div>`;
   renderCloudStatus();
+  renderNorm();
+  $("#nmOn").onclick = () => {
+    NORM.on = !NORM.on; lsSet("covers.norm", NORM.on ? "1" : "0");
+    $("#nmOn").classList.toggle("on", NORM.on); $("#nmOn").setAttribute("aria-pressed", NORM.on ? "true" : "false");
+    if(NORM.on && !volNative()) volRoute();
+    volRefresh(); renderNorm();
+    toast(NORM.on ? "Volumen igualado al reproducir." : "Cada canción suena con su volumen original.");
+  };
+  $("#nmRun").onclick = () => runAnalysis(false);
+  $("#nmAll").onclick = () => runAnalysis(true);
   $("#cSync").onclick = () => syncNow({toast:true});
   $("#cChange").onclick = () => showSetup();
   $("#cOff").onclick = () => { if(!confirm("Este dispositivo dejará de sincronizar y no podrás usar la app hasta volver a conectarlo. Los datos de la nube no se borran. ¿Continuar?")) return; localStorage.removeItem("covers.cloud"); localStorage.removeItem("covers.cloudstate"); setSyncUi("idle"); showSetup(); };
@@ -2426,6 +2538,48 @@ async function renderSettings(){
     if(!confirm("Última comprobación: ¿has hecho una copia de seguridad?")) return;
     await dbClear(); localStorage.removeItem("covers.cloudstate"); await loadSongs(); render(); toast("Datos borrados de este dispositivo. Los de la nube se recuperarán al sincronizar.");
   };
+}
+function renderNorm(){
+  const st = $("#nmState"), box = $("#nmList"); if(!st || !box) return;
+  const conAudio = songs.filter(s => s.hasTrack);
+  const an = conAudio.filter(s => +s.peak > 0);
+  const target = normTarget();
+  if(!conAudio.length){ st.textContent = "Todavía no hay canciones con mp3 que analizar."; box.innerHTML = ""; return; }
+  if(!an.length){ st.textContent = "Sin analizar. Pulsa Analizar canciones y lo calculo yo."; box.innerHTML = ""; return; }
+  const ajust = an.filter(s => songGainRaw(s) < 0.999).length;
+  st.innerHTML = `Analizadas <b>${an.length}</b> de ${conAudio.length}.`
+    + (target ? ` Todas se igualan al pico de ${dBtxt(target)}` : "")
+    + (ajust ? `, bajando ${ajust} ${ajust===1?"canción":"canciones"}.` : ".")
+    + (NORM.on ? "" : " El ajuste está desactivado ahora mismo.");
+  box.innerHTML = an.slice().sort((a,b)=>songGainRaw(a)-songGainRaw(b)).map(s => {
+    const g = songGainRaw(s);
+    return `<div class="nmrow"><span class="nmn">${esc(s.title)}</span><span class="nmb"><i style="width:${Math.round(Math.min(1,+s.peak)*100)}%"></i></span><span class="nmv">${g<0.999?dBtxt(g):"igual"}</span></div>`;
+  }).join("");
+}
+const songGainRaw = s => { const g = +s.gain; return (isFinite(g) && g>0 && g<=1) ? g : 1; };
+async function runAnalysis(force){
+  if(NORM.busy) return;
+  NORM.busy = true;
+  const bar = $("#nmBar"), st = $("#nmState"), run = $("#nmRun"), all = $("#nmAll");
+  if(run) run.disabled = true; if(all) all.disabled = true;
+  if(bar) bar.classList.remove("hidden");
+  try{
+    const r = await analyzeLoudness((i, n, t) => {
+      if(bar) bar.querySelector("i").style.width = Math.round(i/n*100)+"%";
+      if(st) st.textContent = "Analizando " + i + " de " + n + ": " + t;
+    }, force);
+    if(!NORM.on && r.hechas){ NORM.on = true; lsSet("covers.norm","1"); const b = $("#nmOn"); if(b){ b.classList.add("on"); b.setAttribute("aria-pressed","true"); } }
+    volRefresh();
+    toast(r.hechas ? "Listo: " + r.hechas + (r.hechas===1?" canción analizada":" canciones analizadas") + (r.fallos ? " y " + r.fallos + " sin poder leer." : ".") : "No he podido analizar ninguna.");
+  }catch(e){
+    console.error(e);
+    toast((e && e.message) || "No se pudo analizar el audio.");
+  }finally{
+    NORM.busy = false;
+    if(bar) bar.classList.add("hidden");
+    if(run) run.disabled = false; if(all) all.disabled = false;
+    renderNorm();
+  }
 }
 const blobToDataUrl = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(b); });
 async function exportBackup(withFiles){
